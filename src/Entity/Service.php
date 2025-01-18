@@ -20,6 +20,9 @@ class Service
     #[ORM\OneToOne(mappedBy: 'configure', cascade: ['persist', 'remove'])]
     private ?Admin $admin = null;
 
+    #[ORM\OneToOne(mappedBy: 'apply', cascade: ['persist', 'remove'])]
+    private ?Payment $payment = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -55,6 +58,28 @@ class Service
         }
 
         $this->admin = $admin;
+
+        return $this;
+    }
+
+    public function getPayment(): ?Payment
+    {
+        return $this->payment;
+    }
+
+    public function setPayment(?Payment $payment): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($payment === null && $this->payment !== null) {
+            $this->payment->setApply(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($payment !== null && $payment->getApply() !== $this) {
+            $payment->setApply($this);
+        }
+
+        $this->payment = $payment;
 
         return $this;
     }

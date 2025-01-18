@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\OfferRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,6 +33,17 @@ class Offer
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $available = null;
+
+    /**
+     * @var Collection<int, Owner>
+     */
+    #[ORM\OneToMany(targetEntity: Owner::class, mappedBy: 'publish')]
+    private Collection $owners;
+
+    public function __construct()
+    {
+        $this->owners = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -105,6 +118,36 @@ class Offer
     public function setAvailable(?string $available): static
     {
         $this->available = $available;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Owner>
+     */
+    public function getOwners(): Collection
+    {
+        return $this->owners;
+    }
+
+    public function addOwner(Owner $owner): static
+    {
+        if (!$this->owners->contains($owner)) {
+            $this->owners->add($owner);
+            $owner->setPublish($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOwner(Owner $owner): static
+    {
+        if ($this->owners->removeElement($owner)) {
+            // set the owning side to null (unless already changed)
+            if ($owner->getPublish() === $this) {
+                $owner->setPublish(null);
+            }
+        }
 
         return $this;
     }

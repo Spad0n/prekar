@@ -31,9 +31,19 @@ class Payment
     #[ORM\OneToMany(targetEntity: Admin::class, mappedBy: 'confirm')]
     private Collection $admins;
 
+    #[ORM\OneToOne(inversedBy: 'payment', cascade: ['persist', 'remove'])]
+    private ?Service $apply = null;
+
+    /**
+     * @var Collection<int, Owner>
+     */
+    #[ORM\OneToMany(targetEntity: Owner::class, mappedBy: 'payment')]
+    private Collection $askOwner;
+
     public function __construct()
     {
         $this->admins = new ArrayCollection();
+        $this->askOwner = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -101,6 +111,48 @@ class Payment
             // set the owning side to null (unless already changed)
             if ($admin->getConfirm() === $this) {
                 $admin->setConfirm(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getApply(): ?Service
+    {
+        return $this->apply;
+    }
+
+    public function setApply(?Service $apply): static
+    {
+        $this->apply = $apply;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Owner>
+     */
+    public function getAskOwner(): Collection
+    {
+        return $this->askOwner;
+    }
+
+    public function addAskOwner(Owner $askOwner): static
+    {
+        if (!$this->askOwner->contains($askOwner)) {
+            $this->askOwner->add($askOwner);
+            $askOwner->setPayment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAskOwner(Owner $askOwner): static
+    {
+        if ($this->askOwner->removeElement($askOwner)) {
+            // set the owning side to null (unless already changed)
+            if ($askOwner->getPayment() === $this) {
+                $askOwner->setPayment(null);
             }
         }
 

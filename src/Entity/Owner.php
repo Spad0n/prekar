@@ -16,6 +16,18 @@ class Owner extends User
     #[ORM\Column(type: Types::BIGINT, nullable: true)]
     private ?string $balance = null;
 
+    #[ORM\ManyToOne(inversedBy: 'askOwner')]
+    private ?Payment $payment = null;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Borrower $report = null;
+
+    #[ORM\ManyToOne(inversedBy: 'owners')]
+    private ?Offer $publish = null;
+
+    #[ORM\ManyToOne(inversedBy: 'owners')]
+    private ?Car $Own = null;
+
     public function getNbOffers(): ?int
     {
         return $this->nbOffers;
@@ -36,6 +48,54 @@ class Owner extends User
     public function setBalance(?string $balance): static
     {
         $this->balance = $balance;
+
+        return $this;
+    }
+
+    public function getPayment(): ?Payment
+    {
+        return $this->payment;
+    }
+
+    public function setPayment(?Payment $payment): static
+    {
+        $this->payment = $payment;
+
+        return $this;
+    }
+
+    public function getReport(): ?Borrower
+    {
+        return $this->report;
+    }
+
+    public function setReport(?Borrower $report): static
+    {
+        $this->report = $report;
+
+        return $this;
+    }
+
+    public function getPublish(): ?Offer
+    {
+        return $this->publish;
+    }
+
+    public function setPublish(?Offer $publish): static
+    {
+        $this->publish = $publish;
+
+        return $this;
+    }
+
+    public function getOwn(): ?Car
+    {
+        return $this->Own;
+    }
+
+    public function setOwn(?Car $Own): static
+    {
+        $this->Own = $Own;
 
         return $this;
     }
