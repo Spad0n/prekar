@@ -26,21 +26,21 @@ class Dispute
     private ?\DateTimeInterface $reportingDate = null;
 
     /**
-     * @var Collection<int, Jurist>
-     */
-    #[ORM\OneToMany(targetEntity: Jurist::class, mappedBy: 'manage')]
-    private Collection $jurists;
-
-    /**
      * @var Collection<int, Report>
      */
     #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'dispute', orphanRemoval: true)]
     private Collection $reports;
 
+    /**
+     * @var Collection<int, Jurist>
+     */
+    #[ORM\OneToMany(targetEntity: Jurist::class, mappedBy: 'manage')]
+    private Collection $jurist;
+
     public function __construct()
     {
-        $this->jurists = new ArrayCollection();
         $this->reports = new ArrayCollection();
+        $this->jurist = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,35 +84,7 @@ class Dispute
         return $this;
     }
 
-    /**
-     * @return Collection<int, Jurist>
-     */
-    public function getJurists(): Collection
-    {
-        return $this->jurists;
-    }
 
-    public function addJurist(Jurist $jurist): static
-    {
-        if (!$this->jurists->contains($jurist)) {
-            $this->jurists->add($jurist);
-            $jurist->setManage($this);
-        }
-
-        return $this;
-    }
-
-    public function removeJurist(Jurist $jurist): static
-    {
-        if ($this->jurists->removeElement($jurist)) {
-            // set the owning side to null (unless already changed)
-            if ($jurist->getManage() === $this) {
-                $jurist->setManage(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Report>
@@ -138,6 +110,36 @@ class Dispute
             // set the owning side to null (unless already changed)
             if ($report->getDispute() === $this) {
                 $report->setDispute(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Jurist>
+     */
+    public function getJurist(): Collection
+    {
+        return $this->jurist;
+    }
+
+    public function addJurist(Jurist $jurist): static
+    {
+        if (!$this->jurist->contains($jurist)) {
+            $this->jurist->add($jurist);
+            $jurist->setManage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJurist(Jurist $jurist): static
+    {
+        if ($this->jurist->removeElement($jurist)) {
+            // set the owning side to null (unless already changed)
+            if ($jurist->getManage() === $this) {
+                $jurist->setManage(null);
             }
         }
 

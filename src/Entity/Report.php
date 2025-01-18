@@ -13,9 +13,6 @@ class Report
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'dispute')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Jurist $jurist = null;
 
     #[ORM\ManyToOne(inversedBy: 'reports')]
     #[ORM\JoinColumn(nullable: false)]
@@ -25,22 +22,14 @@ class Report
     #[ORM\JoinColumn(nullable: false)]
     private ?Owner $owner = null;
 
+    #[ORM\ManyToOne(inversedBy: 'reports')]
+    private ?Borrower $borrower = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getJurist(): ?Jurist
-    {
-        return $this->jurist;
-    }
-
-    public function setJurist(?Jurist $jurist): static
-    {
-        $this->jurist = $jurist;
-
-        return $this;
-    }
 
     public function getDispute(): ?Dispute
     {
@@ -62,6 +51,18 @@ class Report
     public function setOwner(?Owner $owner): static
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getBorrower(): ?Borrower
+    {
+        return $this->borrower;
+    }
+
+    public function setBorrower(?Borrower $borrower): static
+    {
+        $this->borrower = $borrower;
 
         return $this;
     }

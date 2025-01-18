@@ -24,9 +24,16 @@ class Borrower extends User
     #[ORM\ManyToMany(targetEntity: Renting::class, mappedBy: 'reservedBy')]
     private Collection $rentings;
 
+    /**
+     * @var Collection<int, Report>
+     */
+    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'borrower')]
+    private Collection $reports;
+
     public function __construct()
     {
         $this->rentings = new ArrayCollection();
+        $this->reports = new ArrayCollection();
     }
 
 
@@ -76,6 +83,36 @@ class Borrower extends User
     {
         if ($this->rentings->removeElement($renting)) {
             $renting->removeReservedBy($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): static
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setBorrower($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): static
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getBorrower() === $this) {
+                $report->setBorrower(null);
+            }
         }
 
         return $this;
