@@ -40,9 +40,19 @@ class Offer
     #[ORM\OneToMany(targetEntity: Owner::class, mappedBy: 'publish')]
     private Collection $owners;
 
+    /**
+     * @var Collection<int, Car>
+     */
+    #[ORM\OneToMany(targetEntity: Car::class, mappedBy: 'offer')]
+    private Collection $relateTo;
+
+    #[ORM\OneToOne(inversedBy: 'offer', cascade: ['persist', 'remove'])]
+    private ?Renting $basedOn = null;
+
     public function __construct()
     {
         $this->owners = new ArrayCollection();
+        $this->relateTo = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -148,6 +158,48 @@ class Offer
                 $owner->setPublish(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Car>
+     */
+    public function getRelateTo(): Collection
+    {
+        return $this->relateTo;
+    }
+
+    public function addRelateTo(Car $relateTo): static
+    {
+        if (!$this->relateTo->contains($relateTo)) {
+            $this->relateTo->add($relateTo);
+            $relateTo->setOffer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRelateTo(Car $relateTo): static
+    {
+        if ($this->relateTo->removeElement($relateTo)) {
+            // set the owning side to null (unless already changed)
+            if ($relateTo->getOffer() === $this) {
+                $relateTo->setOffer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getBasedOn(): ?Renting
+    {
+        return $this->basedOn;
+    }
+
+    public function setBasedOn(?Renting $basedOn): static
+    {
+        $this->basedOn = $basedOn;
 
         return $this;
     }

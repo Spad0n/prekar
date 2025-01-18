@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DisputeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,6 +24,24 @@ class Dispute
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $reportingDate = null;
+
+    /**
+     * @var Collection<int, Jurist>
+     */
+    #[ORM\OneToMany(targetEntity: Jurist::class, mappedBy: 'manage')]
+    private Collection $jurists;
+
+    /**
+     * @var Collection<int, Report>
+     */
+    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'dispute', orphanRemoval: true)]
+    private Collection $reports;
+
+    public function __construct()
+    {
+        $this->jurists = new ArrayCollection();
+        $this->reports = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -60,6 +80,66 @@ class Dispute
     public function setReportingDate(\DateTimeInterface $reportingDate): static
     {
         $this->reportingDate = $reportingDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Jurist>
+     */
+    public function getJurists(): Collection
+    {
+        return $this->jurists;
+    }
+
+    public function addJurist(Jurist $jurist): static
+    {
+        if (!$this->jurists->contains($jurist)) {
+            $this->jurists->add($jurist);
+            $jurist->setManage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJurist(Jurist $jurist): static
+    {
+        if ($this->jurists->removeElement($jurist)) {
+            // set the owning side to null (unless already changed)
+            if ($jurist->getManage() === $this) {
+                $jurist->setManage(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): static
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setDispute($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): static
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getDispute() === $this) {
+                $report->setDispute(null);
+            }
+        }
 
         return $this;
     }
