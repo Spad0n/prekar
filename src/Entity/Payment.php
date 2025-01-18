@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PaymentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,6 +24,17 @@ class Payment
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $payDate = null;
+
+    /**
+     * @var Collection<int, Admin>
+     */
+    #[ORM\OneToMany(targetEntity: Admin::class, mappedBy: 'confirm')]
+    private Collection $admins;
+
+    public function __construct()
+    {
+        $this->admins = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -60,6 +73,36 @@ class Payment
     public function setPayDate(\DateTimeInterface $payDate): static
     {
         $this->payDate = $payDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Admin>
+     */
+    public function getAdmins(): Collection
+    {
+        return $this->admins;
+    }
+
+    public function addAdmin(Admin $admin): static
+    {
+        if (!$this->admins->contains($admin)) {
+            $this->admins->add($admin);
+            $admin->setConfirm($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdmin(Admin $admin): static
+    {
+        if ($this->admins->removeElement($admin)) {
+            // set the owning side to null (unless already changed)
+            if ($admin->getConfirm() === $this) {
+                $admin->setConfirm(null);
+            }
+        }
 
         return $this;
     }
