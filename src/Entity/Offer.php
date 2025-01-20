@@ -16,6 +16,10 @@ class Offer
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\ManyToOne(inversedBy: 'offers')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Car $car = null;
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $startDate = null;
 
@@ -34,26 +38,12 @@ class Offer
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $available = null;
 
-    /**
-     * @var Collection<int, Owner>
-     */
-    #[ORM\OneToMany(targetEntity: Owner::class, mappedBy: 'publish')]
-    private Collection $owners;
+    #[ORM\ManyToOne(inversedBy: 'offers')]
+    private ?Owner $owner = null;
 
-    /**
-     * @var Collection<int, Car>
-     */
-    #[ORM\OneToMany(targetEntity: Car::class, mappedBy: 'offer')]
-    private Collection $relateTo;
 
-    #[ORM\OneToOne(inversedBy: 'offer', cascade: ['persist', 'remove'])]
-    private ?Renting $basedOn = null;
 
-    public function __construct()
-    {
-        $this->owners = new ArrayCollection();
-        $this->relateTo = new ArrayCollection();
-    }
+
 
     public function getId(): ?int
     {
@@ -132,75 +122,30 @@ class Offer
         return $this;
     }
 
-    /**
-     * @return Collection<int, Owner>
-     */
-    public function getOwners(): Collection
+
+    public function getCar(): ?Car
     {
-        return $this->owners;
+        return $this->car;
     }
 
-    public function addOwner(Owner $owner): static
+    public function setCar(?Car $car): static
     {
-        if (!$this->owners->contains($owner)) {
-            $this->owners->add($owner);
-            $owner->setPublish($this);
-        }
+        $this->car = $car;
 
         return $this;
     }
 
-    public function removeOwner(Owner $owner): static
+    public function getOwner(): ?Owner
     {
-        if ($this->owners->removeElement($owner)) {
-            // set the owning side to null (unless already changed)
-            if ($owner->getPublish() === $this) {
-                $owner->setPublish(null);
-            }
-        }
+        return $this->owner;
+    }
+
+    public function setOwner(?Owner $owner): static
+    {
+        $this->owner = $owner;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Car>
-     */
-    public function getRelateTo(): Collection
-    {
-        return $this->relateTo;
-    }
 
-    public function addRelateTo(Car $relateTo): static
-    {
-        if (!$this->relateTo->contains($relateTo)) {
-            $this->relateTo->add($relateTo);
-            $relateTo->setOffer($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRelateTo(Car $relateTo): static
-    {
-        if ($this->relateTo->removeElement($relateTo)) {
-            // set the owning side to null (unless already changed)
-            if ($relateTo->getOffer() === $this) {
-                $relateTo->setOffer(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getBasedOn(): ?Renting
-    {
-        return $this->basedOn;
-    }
-
-    public function setBasedOn(?Renting $basedOn): static
-    {
-        $this->basedOn = $basedOn;
-
-        return $this;
-    }
 }

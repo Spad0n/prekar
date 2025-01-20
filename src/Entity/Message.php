@@ -22,11 +22,11 @@ class Message
 
     #[ORM\ManyToOne(inversedBy: 'message_snd')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $id_sender = null;
+    private ?User $sender = null;
 
     #[ORM\ManyToOne(inversedBy: 'message_rcv')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $id_receiver = null;
+    private ?User $receiver = null;
 
     public function getId(): ?int
     {

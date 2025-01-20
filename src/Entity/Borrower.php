@@ -20,19 +20,23 @@ class Borrower extends User
 
 
 
-    #[ORM\ManyToOne(inversedBy: 'reservedBy')]
-    private ?Renting $reserved = null;
-
     /**
      * @var Collection<int, Report>
      */
     #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'borrower')]
     private Collection $reported;
 
+    /**
+     * @var Collection<int, Renting>
+     */
+    #[ORM\OneToMany(targetEntity: Renting::class, mappedBy: 'borrower')]
+    private Collection $rentings;
+
     public function __construct()
     {
         parent::__construct();
         $this->reported = new ArrayCollection();
+        $this->rentings = new ArrayCollection();
     }
 
 
@@ -62,17 +66,6 @@ class Borrower extends User
 
 
 
-    public function getReserved(): ?Renting
-    {
-        return $this->reserved;
-    }
-
-    public function setReserved(?Renting $reserved): static
-    {
-        $this->reserved = $reserved;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Report>
@@ -98,6 +91,36 @@ class Borrower extends User
             // set the owning side to null (unless already changed)
             if ($reported->getBorrower() === $this) {
                 $reported->setBorrower(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Renting>
+     */
+    public function getRentings(): Collection
+    {
+        return $this->rentings;
+    }
+
+    public function addRenting(Renting $renting): static
+    {
+        if (!$this->rentings->contains($renting)) {
+            $this->rentings->add($renting);
+            $renting->setBorrower($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRenting(Renting $renting): static
+    {
+        if ($this->rentings->removeElement($renting)) {
+            // set the owning side to null (unless already changed)
+            if ($renting->getBorrower() === $this) {
+                $renting->setBorrower(null);
             }
         }
 

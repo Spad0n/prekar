@@ -11,48 +11,82 @@ use Doctrine\ORM\Mapping as ORM;
 class Admin extends User
 {
 
-    #[ORM\OneToOne(inversedBy: 'admin', cascade: ['persist', 'remove'])]
-    private ?Service $configure = null;
-
-    #[ORM\ManyToOne(inversedBy: 'admins')]
-    private ?Payment $confirm = null;
-
-    #[ORM\ManyToOne]
-    private ?user $banned = null;
 
 
-    public function getConfigure(): ?Service
+    /**
+     * @var Collection<int, Payment>
+     */
+    #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'admin')]
+    private Collection $payments;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\JoinTable(name: 'user_banned')]
+    private Collection $banned;
+
+    public function __construct()
     {
-        return $this->configure;
+        parent::__construct();
+        $this->payments = new ArrayCollection();
+        $this->banned = new ArrayCollection();
     }
 
-    public function setConfigure(?Service $configure): static
+
+
+
+
+    /**
+     * @return Collection<int, Payment>
+     */
+    public function getPayments(): Collection
     {
-        $this->configure = $configure;
+        return $this->payments;
+    }
+
+    public function addPayment(Payment $payment): static
+    {
+        if (!$this->payments->contains($payment)) {
+            $this->payments->add($payment);
+            $payment->setAdmin($this);
+        }
 
         return $this;
     }
 
-    public function getConfirm(): ?Payment
+    public function removePayment(Payment $payment): static
     {
-        return $this->confirm;
-    }
-
-    public function setConfirm(?Payment $confirm): static
-    {
-        $this->confirm = $confirm;
+        if ($this->payments->removeElement($payment)) {
+            // set the owning side to null (unless already changed)
+            if ($payment->getAdmin() === $this) {
+                $payment->setAdmin(null);
+            }
+        }
 
         return $this;
     }
 
-    public function getBanned(): ?user
+    /**
+     * @return Collection<int, User>
+     */
+    public function getBanned(): Collection
     {
         return $this->banned;
     }
 
-    public function setBanned(?user $banned): static
+    public function addBanned(User $banned): static
     {
-        $this->banned = $banned;
+        if (!$this->banned->contains($banned)) {
+            $this->banned->add($banned);
+        }
+
+        return $this;
+    }
+
+    public function removeBanned(User $banned): static
+    {
+        $this->banned->removeElement($banned);
 
         return $this;
     }

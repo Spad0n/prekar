@@ -38,21 +38,21 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $nom = null;
+    private ?string $lastName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $prenom = null;
+    private ?string $name = null;
 
     /**
      * @var Collection<int, Message>
      */
-    #[ORM\OneToMany(mappedBy: 'id_sender', targetEntity: Message::class)]
+    #[ORM\OneToMany(targetEntity: Message::class,mappedBy: 'sender')]
     private Collection $message_snd;
 
     /**
      * @var Collection<int, Message>
      */
-    #[ORM\OneToMany(mappedBy: 'id_receiver', targetEntity: Message::class)]
+    #[ORM\OneToMany(targetEntity: Message::class,mappedBy: 'receiver')]
     private Collection $message_rcv;
 
     public function __construct()
@@ -138,24 +138,24 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getNom(): ?string
     {
-        return $this->nom;
+        return $this->lastName;
     }
 
-    public function setNom(?string $nom): static
+    public function setNom(?string $lastName): static
     {
-        $this->nom = $nom;
+        $this->lastName = $lastName;
 
         return $this;
     }
 
     public function getPrenom(): ?string
     {
-        return $this->prenom;
+        return $this->name;
     }
 
-    public function setPrenom(?string $prenom): static
+    public function setPrenom(?string $name): static
     {
-        $this->prenom = $prenom;
+        $this->name = $name;
 
         return $this;
     }

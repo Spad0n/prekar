@@ -17,11 +17,12 @@ class Service
     #[ORM\Column(type: Types::BIGINT, nullable: true)]
     private ?string $serviceFee = null;
 
-    #[ORM\OneToOne(mappedBy: 'configure', cascade: ['persist', 'remove'])]
-    private ?Admin $admin = null;
 
     #[ORM\OneToOne(mappedBy: 'apply', cascade: ['persist', 'remove'])]
     private ?Payment $payment = null;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Admin $admin = null;
 
     public function getId(): ?int
     {
@@ -40,27 +41,7 @@ class Service
         return $this;
     }
 
-    public function getAdmin(): ?Admin
-    {
-        return $this->admin;
-    }
 
-    public function setAdmin(?Admin $admin): static
-    {
-        // unset the owning side of the relation if necessary
-        if ($admin === null && $this->admin !== null) {
-            $this->admin->setConfigure(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($admin !== null && $admin->getConfigure() !== $this) {
-            $admin->setConfigure($this);
-        }
-
-        $this->admin = $admin;
-
-        return $this;
-    }
 
     public function getPayment(): ?Payment
     {
@@ -80,6 +61,18 @@ class Service
         }
 
         $this->payment = $payment;
+
+        return $this;
+    }
+
+    public function getAdmin(): ?Admin
+    {
+        return $this->admin;
+    }
+
+    public function setAdmin(?Admin $admin): static
+    {
+        $this->admin = $admin;
 
         return $this;
     }

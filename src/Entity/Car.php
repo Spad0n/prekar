@@ -38,18 +38,16 @@ class Car
     #[ORM\Column(length: 20)]
     private ?string $fuelType = null;
 
-    /**
-     * @var Collection<int, Owner>
-     */
-    #[ORM\OneToMany(targetEntity: Owner::class, mappedBy: 'Own')]
-    private Collection $owners;
+    #[ORM\OneToMany(targetEntity: Offer::class, mappedBy: 'car')]
+    private Collection $offers;
 
-    #[ORM\ManyToOne(inversedBy: 'relateTo')]
-    private ?Offer $offer = null;
+    #[ORM\ManyToOne(inversedBy: 'cars')]
+    private ?Owner $owner = null;
+
 
     public function __construct()
     {
-        $this->owners = new ArrayCollection();
+        $this->offers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -141,45 +139,46 @@ class Car
         return $this;
     }
 
+
     /**
-     * @return Collection<int, Owner>
+     * @return Collection<int, Offer>
      */
-    public function getOwners(): Collection
+    public function getOffers(): Collection
     {
-        return $this->owners;
+        return $this->offers;
     }
 
-    public function addOwner(Owner $owner): static
+    public function addOffer(Offer $offer): static
     {
-        if (!$this->owners->contains($owner)) {
-            $this->owners->add($owner);
-            $owner->setOwn($this);
+        if (!$this->offers->contains($offer)) {
+            $this->offers->add($offer);
+            $offer->setCar($this);
         }
 
         return $this;
     }
 
-    public function removeOwner(Owner $owner): static
+    public function removeOffer(Offer $offer): static
     {
-        if ($this->owners->removeElement($owner)) {
-            // set the owning side to null (unless already changed)
-            if ($owner->getOwn() === $this) {
-                $owner->setOwn(null);
+        if ($this->offers->removeElement($offer)) {
+            if ($offer->getCar() === $this) {
+                $offer->setCar(null);
             }
         }
 
         return $this;
     }
 
-    public function getOffer(): ?Offer
+    public function getOwner(): ?Owner
     {
-        return $this->offer;
+        return $this->owner;
     }
 
-    public function setOffer(?Offer $offer): static
+    public function setOwner(?Owner $owner): static
     {
-        $this->offer = $offer;
+        $this->owner = $owner;
 
         return $this;
     }
+
 }

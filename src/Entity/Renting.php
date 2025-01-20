@@ -28,14 +28,20 @@ class Renting
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $endDate = null;
 
-    #[ORM\OneToOne(mappedBy: 'basedOn', cascade: ['persist', 'remove'])]
-    private ?Offer $offer = null;
+
+
 
     /**
      * @var Collection<int, Borrower>
      */
     #[ORM\OneToMany(targetEntity: Borrower::class, mappedBy: 'reserved')]
     private Collection $reservedBy;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Offer $offer = null;
+
+    #[ORM\ManyToOne(inversedBy: 'rentings')]
+    private ?Borrower $borrower = null;
 
     public function __construct()
     {
@@ -97,6 +103,8 @@ class Renting
         return $this;
     }
 
+
+
     public function getOffer(): ?Offer
     {
         return $this->offer;
@@ -104,47 +112,19 @@ class Renting
 
     public function setOffer(?Offer $offer): static
     {
-        // unset the owning side of the relation if necessary
-        if ($offer === null && $this->offer !== null) {
-            $this->offer->setBasedOn(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($offer !== null && $offer->getBasedOn() !== $this) {
-            $offer->setBasedOn($this);
-        }
-
         $this->offer = $offer;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Borrower>
-     */
-    public function getReservedBy(): Collection
+    public function getBorrower(): ?Borrower
     {
-        return $this->reservedBy;
+        return $this->borrower;
     }
 
-    public function addReservedBy(Borrower $reservedBy): static
+    public function setBorrower(?Borrower $borrower): static
     {
-        if (!$this->reservedBy->contains($reservedBy)) {
-            $this->reservedBy->add($reservedBy);
-            $reservedBy->setReserved($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReservedBy(Borrower $reservedBy): static
-    {
-        if ($this->reservedBy->removeElement($reservedBy)) {
-            // set the owning side to null (unless already changed)
-            if ($reservedBy->getReserved() === $this) {
-                $reservedBy->setReserved(null);
-            }
-        }
+        $this->borrower = $borrower;
 
         return $this;
     }

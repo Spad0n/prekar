@@ -25,26 +25,16 @@ class Payment
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $payDate = null;
 
-    /**
-     * @var Collection<int, Admin>
-     */
-    #[ORM\OneToMany(targetEntity: Admin::class, mappedBy: 'confirm')]
-    private Collection $admins;
-
     #[ORM\OneToOne(inversedBy: 'payment', cascade: ['persist', 'remove'])]
     private ?Service $apply = null;
 
-    /**
-     * @var Collection<int, Owner>
-     */
-    #[ORM\OneToMany(targetEntity: Owner::class, mappedBy: 'payment')]
-    private Collection $askOwner;
 
-    public function __construct()
-    {
-        $this->admins = new ArrayCollection();
-        $this->askOwner = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(inversedBy: 'payments')]
+    private ?Admin $admin = null;
+
+    #[ORM\ManyToOne(inversedBy: 'payments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Owner $owner = null;
 
     public function getId(): ?int
     {
@@ -87,36 +77,6 @@ class Payment
         return $this;
     }
 
-    /**
-     * @return Collection<int, Admin>
-     */
-    public function getAdmins(): Collection
-    {
-        return $this->admins;
-    }
-
-    public function addAdmin(Admin $admin): static
-    {
-        if (!$this->admins->contains($admin)) {
-            $this->admins->add($admin);
-            $admin->setConfirm($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAdmin(Admin $admin): static
-    {
-        if ($this->admins->removeElement($admin)) {
-            // set the owning side to null (unless already changed)
-            if ($admin->getConfirm() === $this) {
-                $admin->setConfirm(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getApply(): ?Service
     {
         return $this->apply;
@@ -129,32 +89,27 @@ class Payment
         return $this;
     }
 
-    /**
-     * @return Collection<int, Owner>
-     */
-    public function getAskOwner(): Collection
+
+    public function getAdmin(): ?Admin
     {
-        return $this->askOwner;
+        return $this->admin;
     }
 
-    public function addAskOwner(Owner $askOwner): static
+    public function setAdmin(?Admin $admin): static
     {
-        if (!$this->askOwner->contains($askOwner)) {
-            $this->askOwner->add($askOwner);
-            $askOwner->setPayment($this);
-        }
+        $this->admin = $admin;
 
         return $this;
     }
 
-    public function removeAskOwner(Owner $askOwner): static
+    public function getOwner(): ?Owner
     {
-        if ($this->askOwner->removeElement($askOwner)) {
-            // set the owning side to null (unless already changed)
-            if ($askOwner->getPayment() === $this) {
-                $askOwner->setPayment(null);
-            }
-        }
+        return $this->owner;
+    }
+
+    public function setOwner(?Owner $owner): static
+    {
+        $this->owner = $owner;
 
         return $this;
     }
