@@ -44,15 +44,15 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $prenom = null;
 
     /**
-     * @var Collection<int, message>
+     * @var Collection<int, Message>
      */
-    #[ORM\OneToMany(targetEntity: message::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'user')]
     private Collection $message_snd;
 
     /**
-     * @var Collection<int, message>
+     * @var Collection<int, Message>
      */
-    #[ORM\OneToMany(targetEntity: message::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'user')]
     private Collection $message_rcv;
 
     public function __construct()
@@ -161,14 +161,14 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, message>
+     * @return Collection<int, Message>
      */
     public function getMessageSnd(): Collection
     {
         return $this->message_snd;
     }
 
-    public function addMessageSnd(message $messageSnd): static
+    public function addMessageSnd(Message $messageSnd): static
     {
         if (!$this->message_snd->contains($messageSnd)) {
             $this->message_snd->add($messageSnd);
@@ -178,7 +178,7 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeMessageSnd(message $messageSnd): static
+    public function removeMessageSnd(Message $messageSnd): static
     {
         if ($this->message_snd->removeElement($messageSnd)) {
             // set the owning side to null (unless already changed)
@@ -191,14 +191,14 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, message>
+     * @return Collection<int, Message>
      */
     public function getMessageRcv(): Collection
     {
         return $this->message_rcv;
     }
 
-    public function addMessageRcv(message $messageRcv): static
+    public function addMessageRcv(Message $messageRcv): static
     {
         if (!$this->message_rcv->contains($messageRcv)) {
             $this->message_rcv->add($messageRcv);
@@ -208,7 +208,7 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeMessageRcv(message $messageRcv): static
+    public function removeMessageRcv(Message $messageRcv): static
     {
         if ($this->message_rcv->removeElement($messageRcv)) {
             // set the owning side to null (unless already changed)
