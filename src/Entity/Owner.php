@@ -32,12 +32,15 @@ class Owner extends User
      * @var Collection<int, Report>
      */
     #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'owner')]
-    private Collection $reports;
+    private Collection $reported;
 
     public function __construct()
     {
-        $this->reports = new ArrayCollection();
+        parent::__construct();
+        $this->reported = new ArrayCollection();
     }
+
+
 
     public function getNbOffers(): ?int
     {
@@ -103,30 +106,32 @@ class Owner extends User
     /**
      * @return Collection<int, Report>
      */
-    public function getReports(): Collection
+    public function getReported(): Collection
     {
-        return $this->reports;
+        return $this->reported;
     }
 
-    public function addReport(Report $report): static
+    public function addReported(Report $reported): static
     {
-        if (!$this->reports->contains($report)) {
-            $this->reports->add($report);
-            $report->setOwner($this);
+        if (!$this->reported->contains($reported)) {
+            $this->reported->add($reported);
+            $reported->setOwner($this);
         }
 
         return $this;
     }
 
-    public function removeReport(Report $report): static
+    public function removeReported(Report $reported): static
     {
-        if ($this->reports->removeElement($report)) {
+        if ($this->reported->removeElement($reported)) {
             // set the owning side to null (unless already changed)
-            if ($report->getOwner() === $this) {
-                $report->setOwner(null);
+            if ($reported->getOwner() === $this) {
+                $reported->setOwner(null);
             }
         }
 
         return $this;
     }
+
+
 }

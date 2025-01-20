@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ReportRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReportRepository::class)]
@@ -18,12 +20,14 @@ class Report
     #[ORM\JoinColumn(nullable: false)]
     private ?Dispute $dispute = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reports')]
+    #[ORM\ManyToOne(inversedBy: 'reported')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Owner $owner = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reports')]
+    #[ORM\ManyToOne(inversedBy: 'reported')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Borrower $borrower = null;
+
 
     public function getId(): ?int
     {
@@ -66,4 +70,5 @@ class Report
 
         return $this;
     }
+
 }

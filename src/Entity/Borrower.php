@@ -18,18 +18,21 @@ class Borrower extends User
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endSub = null;
 
-    /**
-     * @var Collection<int, Report>
-     */
-    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'borrower')]
-    private Collection $reports;
+
 
     #[ORM\ManyToOne(inversedBy: 'reservedBy')]
     private ?Renting $reserved = null;
 
+    /**
+     * @var Collection<int, Report>
+     */
+    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'borrower')]
+    private Collection $reported;
+
     public function __construct()
     {
-        $this->reports = new ArrayCollection();
+        parent::__construct();
+        $this->reported = new ArrayCollection();
     }
 
 
@@ -59,36 +62,6 @@ class Borrower extends User
 
 
 
-    /**
-     * @return Collection<int, Report>
-     */
-    public function getReports(): Collection
-    {
-        return $this->reports;
-    }
-
-    public function addReport(Report $report): static
-    {
-        if (!$this->reports->contains($report)) {
-            $this->reports->add($report);
-            $report->setBorrower($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReport(Report $report): static
-    {
-        if ($this->reports->removeElement($report)) {
-            // set the owning side to null (unless already changed)
-            if ($report->getBorrower() === $this) {
-                $report->setBorrower(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getReserved(): ?Renting
     {
         return $this->reserved;
@@ -100,4 +73,35 @@ class Borrower extends User
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReported(): Collection
+    {
+        return $this->reported;
+    }
+
+    public function addReported(Report $reported): static
+    {
+        if (!$this->reported->contains($reported)) {
+            $this->reported->add($reported);
+            $reported->setBorrower($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReported(Report $reported): static
+    {
+        if ($this->reported->removeElement($reported)) {
+            // set the owning side to null (unless already changed)
+            if ($reported->getBorrower() === $this) {
+                $reported->setBorrower(null);
+            }
+        }
+
+        return $this;
+    }
+
 }
