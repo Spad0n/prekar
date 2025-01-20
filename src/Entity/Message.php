@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\MessageRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -24,9 +22,11 @@ class Message
 
     #[ORM\ManyToOne(inversedBy: 'message_snd')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+    private ?User $id_sender = null;
 
-
+    #[ORM\ManyToOne(inversedBy: 'message_rcv')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $id_receiver = null;
 
     public function getId(): ?int
     {
@@ -57,17 +57,27 @@ class Message
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getIdSender(): ?User
     {
-        return $this->user;
+        return $this->id_sender;
     }
 
-    public function setUser(?User $user): static
+    public function setIdSender(?User $id_sender): static
     {
-        $this->user = $user;
+        $this->id_sender = $id_sender;
 
         return $this;
     }
 
+    public function getIdReceiver(): ?User
+    {
+        return $this->id_receiver;
+    }
 
+    public function setIdReceiver(?User $id_receiver): static
+    {
+        $this->id_receiver = $id_receiver;
+
+        return $this;
+    }
 }

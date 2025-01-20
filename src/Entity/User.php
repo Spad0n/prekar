@@ -46,13 +46,13 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Message>
      */
-    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'user')]
+    #[ORM\OneToMany(mappedBy: 'id_sender', targetEntity: Message::class)]
     private Collection $message_snd;
 
     /**
      * @var Collection<int, Message>
      */
-    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'user')]
+    #[ORM\OneToMany(mappedBy: 'id_receiver', targetEntity: Message::class)]
     private Collection $message_rcv;
 
     public function __construct()
@@ -168,22 +168,21 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->message_snd;
     }
 
-    public function addMessageSnd(Message $messageSnd): static
+    public function addMessageSnd(Message $message): static
     {
-        if (!$this->message_snd->contains($messageSnd)) {
-            $this->message_snd->add($messageSnd);
-            $messageSnd->setUser($this);
+        if (!$this->message_snd->contains($message)) {
+            $this->message_snd->add($message);
+            $message->setIdSender($this);
         }
 
         return $this;
     }
 
-    public function removeMessageSnd(Message $messageSnd): static
+    public function removeMessageSnd(Message $message): static
     {
-        if ($this->message_snd->removeElement($messageSnd)) {
-            // set the owning side to null (unless already changed)
-            if ($messageSnd->getUser() === $this) {
-                $messageSnd->setUser(null);
+        if ($this->message_snd->removeElement($message)) {
+            if ($message->getIdSender() === $this) {
+                $message->setIdSender(null);
             }
         }
 
@@ -198,22 +197,21 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->message_rcv;
     }
 
-    public function addMessageRcv(Message $messageRcv): static
+    public function addMessageRcv(Message $message): static
     {
-        if (!$this->message_rcv->contains($messageRcv)) {
-            $this->message_rcv->add($messageRcv);
-            $messageRcv->setUser($this);
+        if (!$this->message_rcv->contains($message)) {
+            $this->message_rcv->add($message);
+            $message->setIdReceiver($this);
         }
 
         return $this;
     }
 
-    public function removeMessageRcv(Message $messageRcv): static
+    public function removeMessageRcv(Message $message): static
     {
-        if ($this->message_rcv->removeElement($messageRcv)) {
-            // set the owning side to null (unless already changed)
-            if ($messageRcv->getUser() === $this) {
-                $messageRcv->setUser(null);
+        if ($this->message_rcv->removeElement($message)) {
+            if ($message->getIdReceiver() === $this) {
+                $message->setIdReceiver(null);
             }
         }
 
