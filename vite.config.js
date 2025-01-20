@@ -12,9 +12,14 @@ export default defineConfig({
     build: {
         rollupOptions: {
             input: {
-                home_navbar: "./assets/app.ts",
+                app: "./assets/app.ts",
                 styles: "./assets/styles/app.css",
             },
+	    //output: {
+	    //    manualChunks: {
+	    //        'htmx': ['htmx.org']
+	    //    }
+	    //}
         }
     },
 });

@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
-	"./assets/**/*.{js|ts}",
+	"./assets/**/*.js|ts",
 	"./templates/**/*.html.twig",
     ],
     theme: {
@@ -13,8 +13,14 @@ export default {
 		sans: ['ui-sans-serif', 'system-ui', 'sans-serif'],
 	    },
 	    colors: {
-		'custom-black': '#282828',
-		'custom-white': '#e2e2e2',
+		'primary': {
+		    'DEFAULT': '#000000',
+		    'hover': '#282828',
+		},
+		'secondary': {
+		    'DEFAULT': '#FFFFFF',
+		    'hover': '#e2e2e2',
+		},
 	    }
 	},
     },
