@@ -34,14 +34,15 @@ class Renting
     /**
      * @var Collection<int, Borrower>
      */
-    #[ORM\ManyToMany(targetEntity: Borrower::class, inversedBy: 'rentings')]
-    #[ORM\JoinTable(name: 'renting_reserved_by')]
+    #[ORM\OneToMany(targetEntity: Borrower::class, mappedBy: 'reserved')]
     private Collection $reservedBy;
 
     public function __construct()
     {
         $this->reservedBy = new ArrayCollection();
     }
+
+
 
     public function getId(): ?int
     {
@@ -130,6 +131,7 @@ class Renting
     {
         if (!$this->reservedBy->contains($reservedBy)) {
             $this->reservedBy->add($reservedBy);
+            $reservedBy->setReserved($this);
         }
 
         return $this;
@@ -137,8 +139,14 @@ class Renting
 
     public function removeReservedBy(Borrower $reservedBy): static
     {
-        $this->reservedBy->removeElement($reservedBy);
+        if ($this->reservedBy->removeElement($reservedBy)) {
+            // set the owning side to null (unless already changed)
+            if ($reservedBy->getReserved() === $this) {
+                $reservedBy->setReserved(null);
+            }
+        }
 
         return $this;
     }
+
 }
