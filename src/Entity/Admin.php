@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\AdminRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AdminRepository::class)]
@@ -18,7 +16,7 @@ class Admin extends User
     private ?Payment $confirm = null;
 
     #[ORM\ManyToOne]
-    private ?user $banned = null;
+    private ?User $banned = null;
 
 
     public function getConfigure(): ?Service
@@ -45,12 +43,12 @@ class Admin extends User
         return $this;
     }
 
-    public function getBanned(): ?user
+    public function getBanned(): ?User
     {
         return $this->banned;
     }
 
-    public function setBanned(?user $banned): static
+    public function setBanned(?User $banned): static
     {
         $this->banned = $banned;
 
