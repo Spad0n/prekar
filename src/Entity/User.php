@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -40,6 +42,24 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $prenom = null;
+
+    /**
+     * @var Collection<int, message>
+     */
+    #[ORM\OneToMany(targetEntity: message::class, mappedBy: 'user')]
+    private Collection $message_snd;
+
+    /**
+     * @var Collection<int, message>
+     */
+    #[ORM\OneToMany(targetEntity: message::class, mappedBy: 'user')]
+    private Collection $message_rcv;
+
+    public function __construct()
+    {
+        $this->message_snd = new ArrayCollection();
+        $this->message_rcv = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -136,6 +156,66 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPrenom(?string $prenom): static
     {
         $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, message>
+     */
+    public function getMessageSnd(): Collection
+    {
+        return $this->message_snd;
+    }
+
+    public function addMessageSnd(message $messageSnd): static
+    {
+        if (!$this->message_snd->contains($messageSnd)) {
+            $this->message_snd->add($messageSnd);
+            $messageSnd->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessageSnd(message $messageSnd): static
+    {
+        if ($this->message_snd->removeElement($messageSnd)) {
+            // set the owning side to null (unless already changed)
+            if ($messageSnd->getUser() === $this) {
+                $messageSnd->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, message>
+     */
+    public function getMessageRcv(): Collection
+    {
+        return $this->message_rcv;
+    }
+
+    public function addMessageRcv(message $messageRcv): static
+    {
+        if (!$this->message_rcv->contains($messageRcv)) {
+            $this->message_rcv->add($messageRcv);
+            $messageRcv->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessageRcv(message $messageRcv): static
+    {
+        if ($this->message_rcv->removeElement($messageRcv)) {
+            // set the owning side to null (unless already changed)
+            if ($messageRcv->getUser() === $this) {
+                $messageRcv->setUser(null);
+            }
+        }
 
         return $this;
     }

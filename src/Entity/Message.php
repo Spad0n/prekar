@@ -22,25 +22,10 @@ class Message
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateMessage = null;
 
-    /**
-     * @var Collection<int, User>
-     */
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'message_sent')]
-    #[ORM\JoinTable(name: 'message_sent')]
-    private Collection $message_snd;
+    #[ORM\ManyToOne(inversedBy: 'message_snd')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
-    /**
-     * @var Collection<int, User>
-     */
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'message_rcved')]
-    #[ORM\JoinTable(name: 'message_received')]
-    private Collection $message_rcv;
-
-    public function __construct()
-    {
-        $this->message_snd = new ArrayCollection();
-        $this->message_rcv = new ArrayCollection();
-    }
 
 
     public function getId(): ?int
@@ -72,50 +57,14 @@ class Message
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getMessageSnd(): Collection
+    public function getUser(): ?User
     {
-        return $this->message_snd;
+        return $this->user;
     }
 
-    public function addMessageSnd(User $messageSnd): static
+    public function setUser(?User $user): static
     {
-        if (!$this->message_snd->contains($messageSnd)) {
-            $this->message_snd->add($messageSnd);
-        }
-
-        return $this;
-    }
-
-    public function removeMessageSnd(User $messageSnd): static
-    {
-        $this->message_snd->removeElement($messageSnd);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, User>
-     */
-    public function getMessageRcv(): Collection
-    {
-        return $this->message_rcv;
-    }
-
-    public function addMessageRcv(User $messageRcv): static
-    {
-        if (!$this->message_rcv->contains($messageRcv)) {
-            $this->message_rcv->add($messageRcv);
-        }
-
-        return $this;
-    }
-
-    public function removeMessageRcv(User $messageRcv): static
-    {
-        $this->message_rcv->removeElement($messageRcv);
+        $this->user = $user;
 
         return $this;
     }
