@@ -31,16 +31,13 @@ class Dispute
     #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'dispute', orphanRemoval: true)]
     private Collection $reports;
 
-    /**
-     * @var Collection<int, Jurist>
-     */
-    #[ORM\OneToMany(targetEntity: Jurist::class, mappedBy: 'manage')]
-    private Collection $jurist;
+    #[ORM\ManyToOne(inversedBy: 'disputes')]
+    private ?Jurist $jurist = null;
+
 
     public function __construct()
     {
         $this->reports = new ArrayCollection();
-        $this->jurist = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -116,33 +113,17 @@ class Dispute
         return $this;
     }
 
-    /**
-     * @return Collection<int, Jurist>
-     */
-    public function getJurist(): Collection
+    public function getJurist(): ?Jurist
     {
         return $this->jurist;
     }
 
-    public function addJurist(Jurist $jurist): static
+    public function setJurist(?Jurist $jurist): static
     {
-        if (!$this->jurist->contains($jurist)) {
-            $this->jurist->add($jurist);
-            $jurist->setManage($this);
-        }
+        $this->jurist = $jurist;
 
         return $this;
     }
 
-    public function removeJurist(Jurist $jurist): static
-    {
-        if ($this->jurist->removeElement($jurist)) {
-            // set the owning side to null (unless already changed)
-            if ($jurist->getManage() === $this) {
-                $jurist->setManage(null);
-            }
-        }
 
-        return $this;
-    }
 }
