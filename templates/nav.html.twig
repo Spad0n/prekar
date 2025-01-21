@@ -6,11 +6,11 @@
       <span class="text-2xl pr-6">Prekar</span>
 
       <!-- Navigation Links -->
-      <a href="#" class="rounded-full px-3 py-2 transition-background duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-primary-hover">Ride</a>
-      <a href="#" class="rounded-full px-3 py-2 transition-background duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-primary-hover">Drive</a>
-      <a href="#" class="rounded-full px-3 py-2 transition-background duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-primary-hover">Business</a>
-      <div class="relative group">
-        <button id="about-toggle" class="flex items-center rounded-full px-3 py-2 transition-background duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-primary-hover">
+      <a href="#" class="nav-link">Ride</a>
+      <a href="#" class="nav-link">Drive</a>
+      <a href="#" class="nav-link">Business</a>
+      <div x-data="{ open: false }" class="relative group">
+        <button @click="open = !open" class="nav-link flex items-center">
           About
           <div class="ml-2">
             <svg id="about-arrow" width="18" height="18" viewBox="0 0 24 24" fill="white">
@@ -19,13 +19,13 @@
           </div>
         </button>
         <!-- Dropdown -->
-        <div class="absolute mt-2">
-          <ul id="about-dropdown" class="absolute left-0 mt-2 hidden w-48 bg-secondary text-primary rounded shadow-lg py-2">
-            <li><a href="#" class="block px-4 py-2 hover:bg-secondary-hover">About us</a></li>
-            <li><a href="#" class="block px-4 py-2 hover:bg-secondary-hover">Our offerings</a></li>
-            <li><a href="#" class="block px-4 py-2 hover:bg-secondary-hover">How Uber works</a></li>
-            <li><a href="#" class="block px-4 py-2 hover:bg-secondary-hover">Impact</a></li>
-            <li><a href="#" class="block px-4 py-2 hover:bg-secondary-hover">Sustainability</a></li>
+        <div x-show="open" style="display: none;" class="absolute mt-2">
+          <ul id="about-dropdown" class="dropdown-menu">
+            <li><a href="#" @click="open = false" class="dropdown-item">About us</a></li>
+            <li><a href="#" @click="open = false" class="dropdown-item">Our offerings</a></li>
+            <li><a href="#" @click="open = false" class="dropdown-item">How Uber works</a></li>
+            <li><a href="#" @click="open = false" class="dropdown-item">Impact</a></li>
+            <li><a href="#" @click="open = false" class="dropdown-item">Sustainability</a></li>
           </ul>
         </div>
       </div>
@@ -34,17 +34,27 @@
     <!-- Right Side: Buttons and Dropdown -->
     <div class="flex items-center space-x-1">
       <!-- Language Selector -->
-      <div class="flex items-center space-x-1 rounded-full px-3 py-2 transition-background duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-primary-hover">
+      <div class="nav-link flex items-center space-x-1">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M12 1C5.9 1 1 5.9 1 12s4.9 11 11 11 11-4.9 11-11S18.1 1 12 1Zm8 11c0 .7-.1 1.4-.3 2-.6-1.5-1.6-3.1-3-4.7l1.8-1.8c1 1.3 1.5 2.8 1.5 4.5ZM6.5 6.5c1.3 0 3.6.8 6 2.9l-3.2 3.2C7.1 9.8 6.5 7.5 6.5 6.5Zm8.1 5c2.3 2.7 2.9 5 2.9 6-1.3 0-3.6-.8-6-2.9l3.1-3.1Zm1.9-6.1-1.9 1.9c-1.6-1.4-3.2-2.4-4.7-3 .7-.2 1.3-.3 2-.3 1.8 0 3.3.5 4.6 1.4ZM4 12c0-.7.1-1.4.3-2 .6 1.5 1.6 3.1 3 4.7l-1.8 1.8C4.5 15.2 4 13.7 4 12Zm3.5 6.6 1.9-1.9c1.6 1.4 3.2 2.4 4.7 3-.7.2-1.3.3-2 .3-1.8 0-3.3-.5-4.6-1.4Z" fill="currentColor"></path>
+          <path d="M12 1C5.9 1 1 5.9 1 12s4.9 11 11 11 11-4.9
+          11-11S18.1 1 12 1Zm8 11c0 .7-.1 1.4-.3
+          2-.6-1.5-1.6-3.1-3-4.7l1.8-1.8c1 1.3 1.5 2.8 1.5 4.5ZM6.5
+          6.5c1.3 0 3.6.8 6 2.9l-3.2 3.2C7.1 9.8 6.5 7.5 6.5 6.5Zm8.1
+          5c2.3 2.7 2.9 5 2.9 6-1.3
+          0-3.6-.8-6-2.9l3.1-3.1Zm1.9-6.1-1.9
+          1.9c-1.6-1.4-3.2-2.4-4.7-3 .7-.2 1.3-.3 2-.3 1.8 0 3.3.5 4.6
+          1.4ZM4 12c0-.7.1-1.4.3-2 .6 1.5 1.6 3.1 3 4.7l-1.8 1.8C4.5
+          15.2 4 13.7 4 12Zm3.5 6.6 1.9-1.9c1.6 1.4 3.2 2.4 4.7
+          3-.7.2-1.3.3-2 .3-1.8 0-3.3-.5-4.6-1.4Z"
+          fill="currentColor"></path>
         </svg>
         <span>EN</span>
       </div>
 
       <div hx-target="this" hx-swap="outerHTML">
-        <button hx-get="/" class="rounded-full px-3 py-2 transition-background duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-primary-hover">Help</button>
-        <a href="#" class="rounded-full px-3 py-2 transition-background duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-primary-hover">Log in</a>
-        <a href="#" class="bg-secondary text-primary rounded-full px-3 py-2 transition-background duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-secondary-hover">Sign up</a>
+        <button hx-get="/" class="nav-link">Help</button>
+        <a href="#" class="nav-link">Log in</a>
+        <a href="#" class="btn-primary">Sign up</a>
       </div>
     </div>
   </div>

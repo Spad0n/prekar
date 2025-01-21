@@ -13,5 +13,9 @@
         "typescript-language-server": "^4.3.3",
         "vite": "^5.0",
         "vite-plugin-symfony": "^7.1"
+    },
+    "dependencies": {
+        "alpinejs": "^3.14.8",
+        "htmx.org": "^1.9.12"
     }
 }
