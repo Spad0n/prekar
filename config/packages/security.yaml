@@ -22,9 +22,7 @@ security:
                 default_target_path: /
                 username_parameter: email
                 password_parameter: password
-            logout:
-                path: app_prekar_home_page
-                target: /
+
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
