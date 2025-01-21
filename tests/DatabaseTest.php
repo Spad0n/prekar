@@ -22,17 +22,17 @@ class DatabaseTest extends KernelTestCase{
     public function testOwnerInsertedSuccessfully(): void
     {
         $owner = new Owner();
-        $owner->setNom('Leo Andre');
-        $owner->setEmail('c@b.c');
+        $owner->setName('Leo Andre');
+        $owner->setEmail('1b.c');
         $owner->setPassword('123456');
         $this->entityManager->persist($owner);
         $this->entityManager->flush();
 
         $insertedNom = $this->entityManager->getRepository(Owner::class)->findOneBy([
-            'nom' => 'Leo Andre',
+            'name' => 'Leo Andre',
         ]);
 
         $this->assertNotNull($insertedNom);
-        $this->assertEquals('Leo Andre', $insertedNom->getNom());
+        $this->assertEquals('Leo Andre', $insertedNom->getName());
     }
 }
