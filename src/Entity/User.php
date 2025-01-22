@@ -135,24 +135,24 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getNom(): ?string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    public function setNom(?string $lastName): static
+    public function setLastName(?string $lastName): static
     {
         $this->lastName = $lastName;
 
         return $this;
     }
 
-    public function getPrenom(): ?string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setPrenom(?string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
