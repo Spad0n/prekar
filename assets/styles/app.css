@@ -1,3 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
-    background-color: skyblue;
+    margin: 0;
+    padding: 0;
+    background-image: url('../img/background.webp');
+    background-repeat: repeat;
+    background-size: auto;
+    background-attachment: fixed;
+}
+
+.nav-link {
+    @apply rounded-full px-3 py-2 transition duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-primary-hover;
+}
+
+.dropdown-menu {
+    @apply absolute left-0 mt-2 w-48 bg-secondary text-primary rounded shadow-lg py-2;
+}
+
+.dropdown-item {
+    @apply block px-4 py-2 hover:bg-secondary-hover;
+}
+
+.btn-primary {
+    @apply bg-secondary text-primary rounded-full px-3 py-2 transition duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-secondary-hover;
 }

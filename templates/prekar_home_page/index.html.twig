@@ -1,20 +1,155 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PrekarHomePageController!{% endblock %}
+{% block title %}Prekar{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+  <main>
+    <div class="px-4 sm:px-8 py-8 sm:py-16 text-center">
+      <h1 class="text-4xl sm:text-6xl font-bold">Prekar</h1>
+      <p class="text-lg sm:text-xl text-600 mt-4">Drive and share with Prekar</p>
+    </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <div class="bg-white">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 px-4 sm:px-8 py-8 sm:py-16">
+        <!-- Card 1 -->
+        <div class="bg-[#f3f3f3] p-6 rounded-lg shadow-md">
+          <h2 class="text-xl font-bold">Car Listings</h2>
+          <p class="text-sm text-gray-600 mt-2">
+            Rent out your car and earn extra income by listing it on Prekar.
+          </p>
+          <button class="mt-4 bg-black text-white px-4 py-2 rounded-full">
+            Learn More
+          </button>
+        </div>
+        <!-- Card 2 -->
+        <div class="bg-[#f3f3f3] p-6 rounded-lg shadow-md">
+          <h2 class="text-xl font-bold">Find Rentals</h2>
+          <p class="text-sm text-gray-600 mt-2">
+            Discover the perfect car for your needs, wherever and whenever you need it.
+          </p>
+          <button class="mt-4 bg-black text-white px-4 py-2 rounded-full">
+            Search Now
+          </button>
+        </div>
+        <!-- Card 3 -->
+        <div class="bg-[#f3f3f3] p-6 rounded-lg shadow-md">
+          <h2 class="text-xl font-bold">Flexible Options</h2>
+          <p class="text-sm text-gray-600 mt-2">
+            Customize rental options like delivery location, duration, and mileage.
+          </p>
+          <button class="mt-4 bg-black text-white px-4 py-2 rounded-full">
+            Learn More
+          </button>
+        </div>
+        <!-- Card 4 -->
+        <div class="bg-[#f3f3f3] p-6 rounded-lg shadow-md">
+          <h2 class="text-xl font-bold">Secure Rentals</h2>
+          <p class="text-sm text-gray-600 mt-2">
+            Enjoy a safe and seamless experience with verified users and insurance coverage.
+          </p>
+          <button class="mt-4 bg-black text-white px-4 py-2 rounded-full">
+            Find Out More
+          </button>
+        </div>
+        <!-- Card 5 -->
+        <div class="bg-[#f3f3f3] p-6 rounded-lg shadow-md">
+          <h2 class="text-xl font-bold">Pricing Plans</h2>
+          <p class="text-sm text-gray-600 mt-2">
+            Benefit from clear pricing and fair commission rates for both owners and renters.
+          </p>
+          <button class="mt-4 bg-black text-white px-4 py-2 rounded-full">
+            Learn More
+          </button>
+        </div>
+        <!-- Card 6 -->
+        <div class="bg-[#f3f3f3] p-6 rounded-lg shadow-md">
+          <h2 class="text-xl font-bold">Dispute Assistance</h2>
+          <p class="text-sm text-gray-600 mt-2">
+            Resolve conflicts easily with dedicated legal support for any disputes.
+          </p>
+          <button class="mt-4 bg-black text-white px-4 py-2 rounded-full">
+            Get Support
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- <img src="{{ asset('zoe-the-cat.jpg') }}"/> -->
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/otomai/Informatique/Scolaire/S6/PPIL/prekar/src/Controller/PrekarHomePageController.php</code></li>
-        <li>Your template at <code>/home/otomai/Informatique/Scolaire/S6/PPIL/prekar/templates/prekar_home_page/index.html.twig</code></li>
-    </ul>
-</div>
+<footer class="bg-black text-white py-12">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
+      <!-- Liens utiles -->
+      <div>
+        <h3 class="text-lg font-bold mb-4">Useful Links</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:underline">Download Prekar App</a></li>
+          <li><a href="#" class="hover:underline">Offers</a></li>
+          <li><a href="#" class="hover:underline">Promotions</a></li>
+          <li><a href="#" class="hover:underline">Customer Reviews</a></li>
+          <li><a href="#" class="hover:underline">Gift Cards</a></li>
+          <li><a href="#" class="hover:underline">Q&A</a></li>
+          <li><a href="#" class="hover:underline">Contact Prekar</a></li>
+        </ul>
+      </div>
+
+      <!-- Découvrir Prekar -->
+      <div>
+        <h3 class="text-lg font-bold mb-4">Discover Prekar</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:underline">How it Works</a></li>
+          <li><a href="#" class="hover:underline">Flexible Rental Options</a></li>
+          <li><a href="#" class="hover:underline">Owner Benefits</a></li>
+          <li><a href="#" class="hover:underline">Secure Rentals</a></li>
+          <li><a href="#" class="hover:underline">Insurance Coverage</a></li>
+          <li><a href="#" class="hover:underline">Support</a></li>
+        </ul>
+      </div>
+
+      <!-- Explore Rentals -->
+      <div>
+        <h3 class="text-lg font-bold mb-4">Explore Rentals</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:underline">Search Vehicles</a></li>
+          <li><a href="#" class="hover:underline">Top-Rated Cars</a></li>
+          <li><a href="#" class="hover:underline">New Offers</a></li>
+          <li><a href="#" class="hover:underline">Prekar Blog</a></li>
+          <li><a href="#" class="hover:underline">Community Stories</a></li>
+        </ul>
+      </div>
+
+      <!-- À propos de Prekar -->
+      <div>
+        <h3 class="text-lg font-bold mb-4">About Prekar</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:underline">Press & News</a></li>
+          <li><a href="#" class="hover:underline">Partnerships</a></li>
+          <li><a href="#" class="hover:underline">Prekar Careers</a></li>
+          <li><a href="#" class="hover:underline">Legal Information</a></li>
+          <li><a href="#" class="hover:underline">Open Source</a></li>
+        </ul>
+      </div>
+
+      <!-- Légal -->
+      <div>
+        <h3 class="text-lg font-bold mb-4">Legal</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:underline">Terms & Conditions</a></li>
+          <li><a href="#" class="hover:underline">Privacy Policy</a></li>
+          <li><a href="#" class="hover:underline">Cookies</a></li>
+          <li><a href="#" class="hover:underline">Confidentiality</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Social media links -->
+    <div class="flex justify-start items-center border-t border-gray-700 mt-12 pt-8">
+    </div>
+
+    <!-- Footer bottom -->
+    <div class="mt-8 text-center text-sm text-gray-500">
+      &copy; 2025 Prekar. All rights reserved.
+    </div>
+  </div>
+</footer>
 {% endblock %}
