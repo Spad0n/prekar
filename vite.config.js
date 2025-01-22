@@ -12,7 +12,6 @@ export default defineConfig({
     build: {
         rollupOptions: {
             input: {
-                app: "./assets/app.js",
                 htmx: "./assets/htmx-global.js",
 		alpinejs: "./assets/alpine-global.js",
                 styles: "./assets/styles/app.css",
