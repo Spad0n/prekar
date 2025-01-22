@@ -11,8 +11,6 @@ final class PrekarHomePageController extends AbstractController
     #[Route('', name: 'app_prekar_home_page')]
     public function index(): Response
     {
-        return $this->render('prekar_home_page/index.html.twig', [
-            'controller_name' => 'PrekarHomePageController',
-        ]);
+        return $this->render('prekar_home_page/index.html.twig', []);
     }
 }
