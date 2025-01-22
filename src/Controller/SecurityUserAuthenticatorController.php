@@ -13,7 +13,7 @@ class SecurityUserAuthenticatorController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
          if ($this->getUser()) {
-             return $this->redirectToRoute('target_path');
+             return $this->redirectToRoute('app_prekar_home_page');
          }
 
         // get the login error if there is one
