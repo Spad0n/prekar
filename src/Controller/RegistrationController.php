@@ -13,6 +13,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class RegistrationController extends AbstractController
 {
+
+
     #[Route('/registration', name: 'app_registration')]
     public function index(
         Request $request,
