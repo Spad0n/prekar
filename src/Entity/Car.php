@@ -41,8 +41,9 @@ class Car
     #[ORM\OneToMany(targetEntity: Offer::class, mappedBy: 'car')]
     private Collection $offers;
 
+
     #[ORM\ManyToOne(inversedBy: 'cars')]
-    private ?Owner $owner = null;
+    private ?User $userOwner = null;
 
 
     public function __construct()
@@ -169,14 +170,14 @@ class Car
         return $this;
     }
 
-    public function getOwner(): ?Owner
+    public function getUserOwner(): ?User
     {
-        return $this->owner;
+        return $this->userOwner;
     }
 
-    public function setOwner(?Owner $owner): static
+    public function setUserOwner(?User $userOwner): static
     {
-        $this->owner = $owner;
+        $this->userOwner = $userOwner;
 
         return $this;
     }
