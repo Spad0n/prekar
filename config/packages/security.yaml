@@ -24,6 +24,7 @@ security:
                 password_parameter: password
 
 
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 

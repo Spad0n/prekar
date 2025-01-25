@@ -24,7 +24,9 @@ class RegistrationFormType extends AbstractType
                     'Emprunteur' => 'ROLE_BORROWER',
                     'Propriétaire' => 'ROLE_OWNER',
                 ],
-                'label' => 'Type de compte'
+                'label' => 'Type de compte',
+                'multiple' => true,
+                'expanded' => true,
             ]);
     }
 

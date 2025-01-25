@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\DiscriminatorMap(['user'=>User::class, 'borrower'=>Borrower::class,
     'owner'=>Owner::class, 'jurist'=>Jurist::class, 'admin'=>Admin::class])]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -95,18 +95,19 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        if (!in_array('ROLE_USER', $roles, true)) {
+            $roles[] = 'ROLE_USER';
+        }
 
         return array_unique($roles);
     }
 
-    /**
-     * @param list<string> $roles
-     */
-    public function setRoles(array $roles): static
+
+    public function addRole(string $role): static
     {
-        $this->roles = $roles;
+        if (!in_array($role, $this->roles, true)) {
+            $this->roles[] = $role;
+        }
 
         return $this;
     }

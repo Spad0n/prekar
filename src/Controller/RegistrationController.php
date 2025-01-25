@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\Borrower;
 use App\Entity\Owner;
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,19 +23,26 @@ final class RegistrationController extends AbstractController
         EntityManagerInterface $entityManager
     ): Response 
     {
+        $user = new User();
+
         $form = $this->createForm(RegistrationFormType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
             $userType = $form->get('userType')->getData();
-            
-            
-            $user = match ($userType) {
-                'ROLE_BORROWER' => new Borrower(),
-                'ROLE_OWNER' => new Owner(),
-                default => throw new \Exception('Type d\'utilisateur invalide'),
-            };
+
+            if(empty($userType)){
+                $this->addFlash('error', 'Please choose an user type');
+                return $this->redirectToRoute('app_registration');
+            }
+
+            $userType = $form->get('userType')->getData();
+            if (is_array($userType)) {
+                foreach ($userType as $role) {
+                    $user->addRole($role);
+                }
+            }
             
             
             $user->setEmail($formData['email']);
@@ -46,9 +54,7 @@ final class RegistrationController extends AbstractController
                 $formData['password']
             );
             $user->setPassword($hashedPassword);
-            
-            $user->setRoles([$userType]);
-            
+
 
             $entityManager->persist($user);
             $entityManager->flush();
