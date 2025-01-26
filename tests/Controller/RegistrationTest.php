@@ -37,7 +37,7 @@ class RegistrationTest extends WebTestCase
         $form['registration_form[password]'] = 'test123';
         $form['registration_form[lastName]'] = 'test';
         $form['registration_form[name]'] = 'test';
-        $form['registration_form[userType]'] = 'ROLE_BORROWER';
+        $form['registration_form[userType][0]'] = true;
 
 
         // submit the Form object
@@ -83,7 +83,7 @@ public function testValidRegistrationOwner(): void
         $form['registration_form[password]'] = 'test123';
         $form['registration_form[lastName]'] = 'test';
         $form['registration_form[name]'] = 'test';
-        $form['registration_form[userType]'] = 'ROLE_OWNER';
+        $form['registration_form[userType][1]'] = true;
 
 
         // submit the Form object
