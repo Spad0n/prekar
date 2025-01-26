@@ -32,9 +32,9 @@ class Payment
     #[ORM\ManyToOne(inversedBy: 'payments')]
     private ?Admin $admin = null;
 
+
     #[ORM\ManyToOne(inversedBy: 'payments')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Owner $owner = null;
+    private ?User $userOwner = null;
 
     public function getId(): ?int
     {
@@ -102,14 +102,15 @@ class Payment
         return $this;
     }
 
-    public function getOwner(): ?Owner
+
+    public function getUserOwner(): ?User
     {
-        return $this->owner;
+        return $this->userOwner;
     }
 
-    public function setOwner(?Owner $owner): static
+    public function setUserOwner(?User $userOwner): static
     {
-        $this->owner = $owner;
+        $this->userOwner = $userOwner;
 
         return $this;
     }

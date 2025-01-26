@@ -31,22 +31,13 @@ class Renting
 
 
 
-    /**
-     * @var Collection<int, Borrower>
-     */
-    #[ORM\OneToMany(targetEntity: Borrower::class, mappedBy: 'reserved')]
-    private Collection $reservedBy;
-
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Offer $offer = null;
 
-    #[ORM\ManyToOne(inversedBy: 'rentings')]
-    private ?Borrower $borrower = null;
 
-    public function __construct()
-    {
-        $this->reservedBy = new ArrayCollection();
-    }
+
+    #[ORM\ManyToOne(inversedBy: 'rentings')]
+    private ?User $userBorrower = null;
 
 
 
@@ -117,14 +108,15 @@ class Renting
         return $this;
     }
 
-    public function getBorrower(): ?Borrower
+
+    public function getUserBorrower(): ?User
     {
-        return $this->borrower;
+        return $this->userBorrower;
     }
 
-    public function setBorrower(?Borrower $borrower): static
+    public function setUserBorrower(?User $userBorrower): static
     {
-        $this->borrower = $borrower;
+        $this->userBorrower = $userBorrower;
 
         return $this;
     }

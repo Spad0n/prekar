@@ -39,7 +39,7 @@ class Offer
     private ?string $available = null;
 
     #[ORM\ManyToOne(inversedBy: 'offers')]
-    private ?Owner $owner = null;
+    private ?User $userOwner = null;
 
 
 
@@ -135,14 +135,15 @@ class Offer
         return $this;
     }
 
-    public function getOwner(): ?Owner
+
+    public function getUserOwner(): ?User
     {
-        return $this->owner;
+        return $this->userOwner;
     }
 
-    public function setOwner(?Owner $owner): static
+    public function setUserOwner(?User $userOwner): static
     {
-        $this->owner = $owner;
+        $this->userOwner = $userOwner;
 
         return $this;
     }

@@ -17,7 +17,7 @@ class Admin extends User
      * @var Collection<int, Payment>
      */
     #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'admin')]
-    private Collection $payments;
+    private Collection $paymentsAdmin;
 
     /**
      * @var Collection<int, User>
@@ -29,7 +29,7 @@ class Admin extends User
     public function __construct()
     {
         parent::__construct();
-        $this->payments = new ArrayCollection();
+        $this->paymentsAdmin = new ArrayCollection();
         $this->banned = new ArrayCollection();
     }
 
@@ -42,13 +42,13 @@ class Admin extends User
      */
     public function getPayments(): Collection
     {
-        return $this->payments;
+        return $this->paymentsAdmin;
     }
 
     public function addPayment(Payment $payment): static
     {
-        if (!$this->payments->contains($payment)) {
-            $this->payments->add($payment);
+        if (!$this->paymentsAdmin->contains($payment)) {
+            $this->paymentsAdmin->add($payment);
             $payment->setAdmin($this);
         }
 
@@ -57,7 +57,7 @@ class Admin extends User
 
     public function removePayment(Payment $payment): static
     {
-        if ($this->payments->removeElement($payment)) {
+        if ($this->paymentsAdmin->removeElement($payment)) {
             // set the owning side to null (unless already changed)
             if ($payment->getAdmin() === $this) {
                 $payment->setAdmin(null);
