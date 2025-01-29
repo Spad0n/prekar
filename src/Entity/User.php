@@ -103,6 +103,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $cars;
 
     /**
+     * Offers made by the owner
      * @var Collection<int, Offer>
      */
     #[ORM\OneToMany(targetEntity: Offer::class, mappedBy: 'userOwner')]
