@@ -46,8 +46,8 @@ final class RegistrationController extends AbstractController
             
             
             $user->setEmail($formData['email']);
-            $user->setPrenom($formData['name']);
-            $user->setNom($formData['lastName']);
+            $user->setName($formData['name']);
+            $user->setLastName($formData['lastName']);
             
             $hashedPassword = $passwordHasher->hashPassword(
                 $user,
