@@ -116,6 +116,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $payments;
 
 
+
     public function __construct()
     {
         $this->message_snd = new ArrayCollection();
@@ -523,4 +524,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /*
+     * Checking if the user is a borrower or an owner
+     * Used to modify the profile form
+     */
+    public function getUserType(): array
+    {
+        $filteredRoles = [];
+        foreach ($this->roles as $role) {
+            if ($role === 'ROLE_BORROWER' || $role === 'ROLE_OWNER') {
+                $filteredRoles[] = $role;
+            }
+        }
+        return $filteredRoles;
+    }
+
+    /*
+     * Setting the user type
+     * Used to modify the profile form
+     */
+    public function setUserType(array $userTypes): void
+    {
+        $filteredRoles = [];
+        foreach ($this->roles as $role) {
+            if ($role !== 'ROLE_BORROWER' && $role !== 'ROLE_OWNER') {
+                $filteredRoles[] = $role;
+            }
+        }
+        foreach ($userTypes as $userType) {
+            $filteredRoles[] = $userType;
+        }
+        $this->roles = $filteredRoles;
+    }
+
+
 }

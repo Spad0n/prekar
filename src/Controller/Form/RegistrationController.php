@@ -1,8 +1,6 @@
 <?php
 namespace App\Controller\Form;
 
-use App\Entity\Borrower;
-use App\Entity\Owner;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -43,8 +41,8 @@ final class RegistrationController extends AbstractController
                     $user->addRole($role);
                 }
             }
-            
-            
+
+
             $user->setEmail($formData['email']);
             $user->setName($formData['name']);
             $user->setLastName($formData['lastName']);
