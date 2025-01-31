@@ -21,21 +21,6 @@ class RegistrationFormType extends AbstractType
             ->add('password', PasswordType::class)
             ->add('lastName', TextType::class)
             ->add('name', TextType::class)
-            ->add('profileImage', FileType::class, [
-                'label' => 'Photo de profil',
-                'mapped' => false,
-                'required' => false,
-                'constraints' => [
-                    new File([
-                        'maxSize' => '1024k',
-                        'mimeTypes' => [
-                            'image/jpeg',
-                            'image/png',
-                        ],
-                        'mimeTypesMessage' => 'L\'image doit être soit en JPG soit en PNG',
-                    ])
-                ],
-            ])
             ->add('userType', ChoiceType::class, [
                 'mapped' => false,
                 'choices' => [
@@ -45,7 +30,6 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Type de compte',
                 'multiple' => true,
                 'expanded' => true,
-                'mapped' => true,
             ]);
     }
 
