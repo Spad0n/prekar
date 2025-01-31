@@ -61,6 +61,7 @@ class AdminController extends AbstractController
         // Create a new Payment entity
         $payment = new Payment();
         $admin = $entityManager->getRepository(Admin::class)->find($this->getUser()->getId());
+        dump($admin);
 
         // Set the properties of the Payment entity
         $payment->setTotal(344.00); // Example total amount
@@ -68,9 +69,9 @@ class AdminController extends AbstractController
         $payment->setPayDate(new \DateTime()); // Set the current date as the payment date
 
         // Retrieve the associated Service entity (example)
-        $service = $entityManager->getRepository(Service::class)->find(1); // Replace with actual service ID
+        $service = $entityManager->getRepository(Service::class)->find(1);
         if ($service) {
-            $payment->setService($service);
+            $payment->setApply($service);
         }else{
             $service = new Service();
             $service->setServiceFee(0.00);
@@ -78,8 +79,13 @@ class AdminController extends AbstractController
             $entityManager->persist($service);
             $payment->setApply($service);
         }
+
+
         $payment->setAdmin($admin);
         // Persist the Payment entity to the database
+        dump($service);
+        dump($payment);
+
         $entityManager->persist($payment);
 
         $entityManager->flush();
@@ -87,7 +93,7 @@ class AdminController extends AbstractController
         // Add a success flash message
         $this->addFlash('success', 'Payment added successfully!');
 
-        // Redirect to the admin dashboard or another page
+        // Redirect to the admin dashboard or another page*/
         return $this->redirectToRoute('admin_dashboard');
     }
 }
