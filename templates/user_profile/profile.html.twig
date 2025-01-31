@@ -15,7 +15,11 @@
 <div class="example-wrapper">
     <div class="profile-header" >
         <h2>  {{ app.user.name }} </h2>
-        <img src="https://placehold.co/200x200/png" alt="profile picture">
+        {% if app.user.profileImage %}
+        <img src="{{ asset('uploads/profile_images/' ~ app.user.profileImage) }}" alt="Photo de profil" class="profile-image">
+        {% else %}
+        <img src="https://placehold.co/200x200/png" alt="Photo de profil par défaut" class="profile-image">
+        {% endif %}
     </div>
 
     <a href="#">Modify informations</a> {# NEED TO CHANGE THE PATH WHEN FORM IS READY #}
