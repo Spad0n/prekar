@@ -28,7 +28,7 @@ jobs:
         shell: bash
 
       - name: Install Composer dependencies
-        run: composer install --no-dev --optimize-autoloader
+        run: composer install --no-dev --optimize-autoloader --no-scripts
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
