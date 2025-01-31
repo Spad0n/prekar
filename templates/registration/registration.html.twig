@@ -1,7 +1,12 @@
-{<h1>Inscription</h1>
+{# templates/registration/registration.html.twig #}
+<h1>Inscription</h1>
 
-{{ form_start(form) }}
-    {{ form_widget(form) }}
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.password) }}
+    {{ form_row(form.lastName) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.profileImage) }}
+    {{ form_row(form.userType) }}
     <button type="submit" name="submit">S'inscrire</button>
 {{ form_end(form) }}
-
