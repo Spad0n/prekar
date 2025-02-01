@@ -53,6 +53,7 @@
         <button hx-get="/" class="nav-link">Help</button>
         {% if app.user %}
           <a href={{path('app_logout')}} class="nav-link">Log out</a>
+          <a href={{path('app_user_profile')}} class="nav-link">Profile</a>
         {% else %}
           <a href={{path('app_login')}} class="nav-link">Log in</a>
           <a href={{path('app_registration')}} class="btn-primary">Sign up</a>

@@ -9,34 +9,35 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Date;
 
-class RegistrationFormType extends AbstractType
+class EditProfileFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $user = $options['data'];
+        $currentRoles = $user->getRoles();
         $builder
             ->add('email', EmailType::class)
-            ->add('password', PasswordType::class)
             ->add('lastName', TextType::class)
             ->add('name', TextType::class)
             ->add('userType', ChoiceType::class, [
-                'mapped' => false,
                 'choices' => [
                     'Emprunteur' => 'ROLE_BORROWER',
                     'Propriétaire' => 'ROLE_OWNER',
                 ],
-                'label' => 'Type de compte',
+                'label' => 'Account Type',
                 'multiple' => true,
                 'expanded' => true,
+                'mapped' => true,
+                'disabled' => true,
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => null  
+            'data_class' => User::class,
         ]);
     }
 }
