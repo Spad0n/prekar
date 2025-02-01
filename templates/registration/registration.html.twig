@@ -1,7 +1,10 @@
-{<h1>Inscription</h1>
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Inscription</h1>
 
 {{ form_start(form) }}
     {{ form_widget(form) }}
     <button type="submit" name="submit">S'inscrire</button>
 {{ form_end(form) }}
-
+{% endblock %}
