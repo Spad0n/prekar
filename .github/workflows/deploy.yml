@@ -3,7 +3,7 @@ name: Deploy on AlwaysData
 on:
   push:
     branches:
-      - master  # branch to lookup
+      - master # branch to lookup
 
 jobs:
   deploy:
@@ -60,7 +60,7 @@ jobs:
 
       - name: Create ZIP Archive
         run: |
-          zip -r deploy.zip . \
+          zip -rq deploy.zip . \
             -x "*.git*" \
             -x ".github/*" \
             -x "node_modules/*" \
@@ -89,7 +89,7 @@ jobs:
           port: 22
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
-            unzip -o deploy.zip
+            unzip -oq deploy.zip
             rm deploy.zip
             chmod -R 775 var/cache var/log public/build
             cp ${{ secrets.DEPLOY_PATH }}/../.htaccess public
