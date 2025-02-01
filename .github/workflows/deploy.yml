@@ -28,19 +28,35 @@ jobs:
           sed -i "s|^DATABASE_URL=.*|DATABASE_URL=${{ secrets.DATABASE_URL_PROD }}|" .env.dev
         shell: bash
 
-      - name: Install Composer dependencies
-        run: composer install --no-dev --optimize-autoloader --no-scripts
+      - name: Install Composer Dependencies (DEV)
+        run: composer install --no-scripts
+
+      - name: Database Operations (DEV)
+        run: |
+	  php bin/console doctrine:database:drop --force --env=prod 	
+	  php bin/console doctrine:database:create --env=prod 	
+	  php bin/console make:migration --no-interaction --env=dev 	
+          php bin/console doctrine:migrations:migrate --no-interaction --env=prod
+          php bin/console cache:clear --env=prod --no-debug
+          php bin/console cache:warmup --env=prod
+	shell: bash
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Install Node Dependencies
         run: npm install
 
       - name: Build Assets
         run: npx vite build
+
+      - name: Install Composer dependencies (PROD)
+        run: |
+	  rm -rf vendor
+	  composer install --no-dev --optimize-autoloader --no-scripts
+	shell: bash
 
       - name: Create ZIP Archive
         run: |
@@ -76,10 +92,4 @@ jobs:
             unzip -o deploy.zip
             rm deploy.zip
             chmod -R 775 var/cache var/log public/build
-            # Reset the database (only for training/test)
-            php bin/console doctrine:database:drop --force --env=prod
-            php bin/console doctrine:database:create --env=prod
-            php bin/console make:migration --no-interaction --env=dev
-            php bin/console doctrine:migrations:migrate --no-interaction --env=prod
-            php bin/console cache:clear --env=prod --no-debug
-            php bin/console cache:warmup --env=prod
+	    cp ${{ secrets.DEPLOY_PATH }}/../.htaccess public
