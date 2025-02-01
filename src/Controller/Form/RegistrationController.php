@@ -1,16 +1,20 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Form;
 
 use App\Entity\Borrower;
 use App\Entity\Owner;
 use App\Entity\User;
+use App\Form\RegistrationFormType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-use App\Form\RegistrationFormType;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 final class RegistrationController extends AbstractController
 {
@@ -21,7 +25,7 @@ final class RegistrationController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager
-    ): Response 
+    ): Response
     {
         $user = new User();
 
@@ -43,12 +47,12 @@ final class RegistrationController extends AbstractController
                     $user->addRole($role);
                 }
             }
-            
-            
+
+
             $user->setEmail($formData['email']);
             $user->setName($formData['name']);
             $user->setLastName($formData['lastName']);
-            
+
             $hashedPassword = $passwordHasher->hashPassword(
                 $user,
                 $formData['password']
