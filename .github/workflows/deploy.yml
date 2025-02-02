@@ -1,9 +1,10 @@
 name: Deploy on AlwaysData
 
 on:
-  push:
-    branches:
-      - master # branch to lookup
+  workflow_dispatch:
+  #push:
+  #  branches:
+  #    - master # branch to lookup
 
 jobs:
   deploy:
@@ -89,6 +90,7 @@ jobs:
           port: 22
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
+            find . -mindepth 1 ! -name deploy.zip -exec rm -rf {} +
             unzip -oq deploy.zip
             rm deploy.zip
             chmod -R 775 var/cache var/log public/build
