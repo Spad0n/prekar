@@ -3,18 +3,23 @@
 namespace App\Controller\Form;
 
 use App\Entity\Offer;
+use App\Entity\Car;
 use App\Form\OfferFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Security;
 
 final class OfferController extends AbstractController
 {
     #[Route('/offer/new', name: 'offer_new')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function new(Request $request, EntityManagerInterface $entityManager) {
+        if($this->getUser()== null) {
+            return $this->redirectToRoute('app_login');
+        }
         $offer = new Offer();
         $offer->setUserOwner($this->getUser()); // auto assign logged-in user
         $form = $this->createForm(OfferFormType::class, $offer);
