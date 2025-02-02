@@ -9,6 +9,7 @@ export default defineConfig({
         /* react(), // if you're using React */
         symfonyPlugin(),
     ],
+    publicDir: "assets/static",
     build: {
         rollupOptions: {
             input: {
