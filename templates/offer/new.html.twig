@@ -5,6 +5,9 @@
 {% block body %}
     <h1>Create a New Car Offer</h1>
     {{ form_start(form) }}
+        <h2>Car Details</h2>
+        {{ form_row(form.car) }}
+        <h2>Offer Details</h2>
         {{ form_widget(form) }}
         <button type="submit">Submit Offer</button>
     {{ form_end(form) }}

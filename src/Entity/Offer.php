@@ -17,7 +17,7 @@ class Offer
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'offers')]
+    #[ORM\ManyToOne(targetEntity: Car::class, cascade: ['persist'], inversedBy: 'offers')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Car $car = null;
 
@@ -133,7 +133,7 @@ class Offer
         return $this->car;
     }
 
-    public function setCar(?Car $car): static
+    public function setCar(?Car $car): self
     {
         $this->car = $car;
 
