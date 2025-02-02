@@ -26,10 +26,10 @@ class OfferFormType extends AbstractType
                 },
                 'label' => 'Select Car',
             ])
-            ->add('startDate', null, [
+            ->add('startDate', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Start Date',])
-            ->add('endDate', null, [
+            ->add('endDate', DateType::class, [
                 'widget' => 'single_text',
                 'required' => false,
                 'label' => 'End Date (Optional)',

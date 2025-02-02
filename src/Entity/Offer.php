@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OfferRepository::class)]
 class Offer
@@ -21,8 +22,12 @@ class Offer
     private ?Car $car = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\Type(\DateTimeInterface::class)]
+    #[Assert\GreaterThanOrEqual("today", message: "Start date cannot be in the past.")]
     private ?\DateTimeInterface $startDate = null;
 
+    #[Assert\Type(\DateTimeInterface::class)]
+    #[Assert\GreaterThan(propertyPath: "startDate", message: "End date must be after the start date.")]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endDate = null;
 
