@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Offers List{% endblock %}
+
+{% block body %}
+    <h1>Car Offers</h1>
+    <table>
+        <tr>
+            <th>Car</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+        {% for offer in offers %}
+            <tr>
+                <td>{{ offer.car.brand }} {{ offer.car.model }}</td>
+                <td>{{ offer.startDate|date('Y-m-d') }}</td>
+                <td>{{ offer.endDate ? offer.endDate|date('Y-m-d') : 'N/A' }}</td>
+                <td>{{ offer.price }} €</td>
+                <td><a href="{{ path('offer_view', {id: offer.id}) }}">View</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
