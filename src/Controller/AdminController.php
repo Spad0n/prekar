@@ -23,28 +23,36 @@ class AdminController extends AbstractController
             throw $this->createNotFoundException('Admin not found');
         }
 
-        // Récupère tous les paiements que cet admin contrôle
+        // Getting all payments from this admin
         $payments = $entityManager->getRepository(Payment::class)->findAll();
 
-        // Récupère le service associé à l’admin
-        $service = $entityManager->getRepository(Service::class)->findOneBy(['admin' => $admin]);
-        dump($service);
+        // Getting all services from this admin
+        $services = $entityManager->getRepository(Service::class)->findBy(['admin' => $admin]);
+        dump($services);
 
         if ($request->isMethod('POST')) {
             $newCommission = $request->request->get('service_fee');
-            $payments_selected[] = $request->request->get('payments_selected');
+            $payments_selected = $request->request->all('payments_selected'); // Récupérer toutes les cases cochées
+            dump ($newCommission);
+            dump ($payments_selected);
+
             if ($newCommission !== null && $payments_selected !== null) {
 
-                $service->setServiceFee((float) $newCommission);
+                foreach ($services as $service) {
+                    if(in_array($service->getPayment()->getId(),$payments_selected)){
+                        $service->setServiceFee((float) $newCommission);
+                        $entityManager->flush();
+                    }
+                }
                 $entityManager->flush();
                 $this->addFlash('success', 'Commission mise à jour avec succès !');
-                return $this->redirectToRoute('admin_dashboard');
+                return $this->redirectToRoute('services_dashboard');
             }
         }
 
         return $this->render('admin/services_dashboard.html.twig', [
             'payments' => $payments,
-            'service_fee' => $service ? $service->getServiceFee() : 0, // Mettre une valeur par défaut
+            'services' => $services,
         ]);
     }
 
@@ -64,7 +72,7 @@ class AdminController extends AbstractController
         dump($admin);
 
         // Set the properties of the Payment entity
-        $payment->setTotal(344.00);
+        $payment->setTotal(43.00);
         $payment->setStatus('Pending');
         $payment->setPayDate(new \DateTime());
 
@@ -95,4 +103,6 @@ class AdminController extends AbstractController
         // Redirect to the admin dashboard or another page*/
         return $this->redirectToRoute('services_dashboard');
     }
+
+
 }
