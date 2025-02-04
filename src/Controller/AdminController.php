@@ -14,6 +14,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AdminController extends AbstractController
 {
+
+
+
     #[Route('/admin/services_dashboard', name: 'services_dashboard')]
     public function dashboard(EntityManagerInterface $entityManager, Request $request): Response
     {
@@ -102,6 +105,49 @@ class AdminController extends AbstractController
 
         // Redirect to the admin dashboard or another page*/
         return $this->redirectToRoute('services_dashboard');
+    }
+
+    #[Route('/admin/user_dashboard', name: 'users_dashboard')]
+    public function userDashboard(EntityManagerInterface $entityManager, Request $request): Response
+    {
+        $admin = $entityManager->getRepository(Admin::class)->find($this->getUser()->getId());
+
+        if (!$admin) {
+            throw $this->createNotFoundException('Admin not found');
+        }
+
+        $users = [];
+
+        if ($request->isMethod('POST')) {
+            $criteria = [];
+            $id = $request->request->get('search_id');
+            $email = $request->request->get('search_email');
+            $name = $request->request->get('search_name');
+            $lastname = $request->request->get('search_lastname');
+
+            if (!empty($id)) {
+                $criteria['id'] = $id;
+            }
+            if (!empty($email)) {
+                $criteria['email'] = $email;
+            }
+            if (!empty($name)) {
+                $criteria['name'] = $name;
+            }
+            if (!empty($lastname)) {
+                $criteria['lastName'] = $lastname;
+            }
+
+            if (!empty($criteria)) {
+                $users = $entityManager->getRepository(User::class)->findBy($criteria);
+            }
+        }
+
+
+
+        return $this->render('admin/user_dashboard.html.twig', [
+            'users' => $users,
+        ]);
     }
 
 

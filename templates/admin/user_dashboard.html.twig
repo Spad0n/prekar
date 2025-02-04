@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+{% block title %}Users Dashboard{% endblock %}
+
+{% block body %}
+
+    <div>
+        <form method="post">
+            <input type="text" name="search_id" value="" class="form-control" placeholder="ID">
+            <input type="text" name="search_email" value="" class="form-control" placeholder="Email">
+            <input type="text" name="search_name" value="" class="form-control" placeholder="Prénom">
+            <input type="text" name="search_lastname" value="" class="form-control" placeholder="Nom">
+            <button type="submit" class="btn btn-primary mt-2">Rechercher</button>
+        </form>
+    </div>
+    <h2>Liste des users</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.lastname }}</td>
+                <td>{{ user.roles[0] }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+
+{% endblock %}

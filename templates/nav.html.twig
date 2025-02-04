@@ -52,6 +52,9 @@
       <div hx-target="this" hx-swap="outerHTML">
         <button hx-get="/" class="nav-link">Help</button>
         {% if app.user %}
+          {% if app.user.roles is defined and 'ROLE_ADMIN' in app.user.roles %}
+            <a href={{path('admin_panel')}} class="nav-link">Admin</a>
+          {% endif %}
           <a href={{path('app_logout')}} class="nav-link">Log out</a>
         {% else %}
           <a href={{path('app_login')}} class="nav-link">Log in</a>
