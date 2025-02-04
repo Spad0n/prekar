@@ -101,10 +101,11 @@
             <br>
             No offer
         {% else %}
-            Offers :
+            <br>
+            <a class = "test" href={{ path('offer_list') }}> Offers : </a>
             <ul>
                 {% for offer in app.user.offers %}
-                    <li> {{ offer.car.brand }} {{ offer.car.model }} </li>
+                    <li> from {{ offer.startDate|date('d-m-y') }} to {{ offer.endDate|date('d-m-y')}} : {{ offer.car.brand }} {{ offer.car.model }} | {{ offer.localisationGarage}}  </li>
                 {% endfor %}
             </ul>
         {% endif %}
