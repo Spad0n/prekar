@@ -5,10 +5,19 @@
 {% block body %}
     <h1>Create a New Car Offer</h1>
     {{ form_start(form) }}
-        <h2>Car Details</h2>
-        {{ form_row(form.car) }}
-        <h2>Offer Details</h2>
-        {{ form_widget(form) }}
-        <button type="submit">Submit Offer</button>
+        <p>Select an existing car:</p>
+        {{ form_row(form.existingCar) }}
+
+        <p>Or create a new car:</p>
+        {{ form_row(form.newCar) }}
+
+        {{ form_row(form.startDate) }}
+        {{ form_row(form.endDate) }}
+        {{ form_row(form.localisationGarage) }}
+        {{ form_row(form.price) }}
+        {{ form_row(form.delivery) }}
+        {{ form_row(form.available) }}
+
+        <button type="submit">Create Offer</button>
     {{ form_end(form) }}
 {% endblock %}
