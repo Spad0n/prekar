@@ -48,6 +48,7 @@ class OfferFormType extends AbstractType
             ->add('price', MoneyType::class, [
                 'currency' => 'EUR',
                 'label' => 'Price',
+                'attr' => ['min' => 100],
             ])
             ->add('delivery', ChoiceType::class, [
                 'choices' => [
@@ -62,7 +63,6 @@ class OfferFormType extends AbstractType
                     'Available' => 'available',
                     'Not Available' => 'not_available',
                 ],
-                'required' => false,
                 'label' => 'Availability',
             ])
         ;
