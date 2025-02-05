@@ -25,6 +25,9 @@ final class OfferController extends AbstractController
         $form = $this->createForm(OfferFormType::class, $offer);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $car = $form->get('car')->getData();
+            $offer->setCar($car);
+            $car->setUserOwner($this->getUser());
             $entityManager->persist($offer);
             $entityManager->flush();
             return $this->redirectToRoute('offer_list');
@@ -43,21 +46,5 @@ final class OfferController extends AbstractController
     #[Route('/offer/{id}', name: "offer_view")]
     public function view(Offer $offer) {
         return $this->render('offer/view.html.twig', ['offer' => $offer,]);
-    }
-
-    #[Route('/offer/new', name: 'offer_create')]
-    public function create(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $offer = new Offer();
-        $form = $this->createForm(OfferType::class, $offer);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($offer);
-            $entityManager->flush();
-            return $this->redirectToRoute('offer_list');
-        }
-        return $this->render('offer/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
     }
 }
