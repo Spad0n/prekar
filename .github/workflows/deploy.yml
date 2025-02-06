@@ -1,0 +1,99 @@
+name: Deploy on AlwaysData
+
+on:
+  workflow_dispatch:
+  #push:
+  #  branches:
+  #    - master # branch to lookup
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, intl, pdo_mysql
+
+      - name: Set production Environment Variables
+        run: |
+          # Replace APP_ENV with "prod"
+          sed -i 's/^APP_ENV=.*/APP_ENV=prod/' .env
+          # Update DATABASE_URL with the value from secrets
+          sed -i "s|^DATABASE_URL=.*|DATABASE_URL=${{ secrets.DATABASE_URL_PROD }}|" .env
+          sed -i "s|^DATABASE_URL=.*|DATABASE_URL=${{ secrets.DATABASE_URL_PROD }}|" .env.dev
+        shell: bash
+
+      - name: Install Composer Dependencies (DEV)
+        run: composer install --no-scripts
+
+      - name: Database Operations (DEV)
+        run: |
+          php bin/console doctrine:database:drop --force --env=prod 	
+          php bin/console doctrine:database:create --env=prod 	
+          php bin/console make:migration --no-interaction --env=dev 	
+          php bin/console doctrine:migrations:migrate --no-interaction --env=prod
+          php bin/console cache:clear --env=prod --no-debug
+          php bin/console cache:warmup --env=prod
+        shell: bash
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Node Dependencies
+        run: npm install
+
+      - name: Build Assets
+        run: npx vite build
+
+      - name: Install Composer dependencies (PROD)
+        run: |
+          rm -rf vendor
+          composer install --no-dev --optimize-autoloader --no-scripts
+        shell: bash
+
+      - name: Create ZIP Archive
+        run: |
+          zip -rq deploy.zip . \
+            -x "*.git*" \
+            -x ".github/*" \
+            -x "node_modules/*" \
+            -x "tests/*" \
+            -x "var/cache/*" \
+            -x "var/log/*" \
+            -x ".env.local*"
+        shell: bash
+
+      - name: Copy ZIP Archive to Server
+        uses: appleboy/scp-action@v0.1.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          source: "deploy.zip"
+          target: ${{ secrets.DEPLOY_PATH }}
+
+      - name: Unzip and Deploy on Server
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          script: |
+            rm -rf deploy
+            mkdir deploy
+            mv deploy.zip deploy
+            cd deploy
+            unzip -q deploy.zip
+            rm deploy.zip
+            chmod -R 775 var/cache var/log public/build
+            cp ../.htaccess public
