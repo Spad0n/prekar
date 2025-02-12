@@ -55,7 +55,7 @@
         <button class="px-3 py-2 font-semibold text-black transition duration-200 ease-[cubic-bezier(0,0,1,1)] hover:text-white">Help</button>
         {% if app.user %}
           <a href={{path('app_logout')}} class="px-3 py-2 font-semibold text-black transition duration-200 ease-[cubic-bezier(0,0,1,1)] hover:text-white">Log out</a>
-          <a href={{path('app_user_profile')}} class="rounded-full px-3 py-2 transition duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-primary-hover">Profile</a>
+          <a href={{path('app_user_profile')}} class="px-3 py-2 font-semibold text-white rounded-full bg-[#FF7F3E] transition duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-[#F96E2A]">Profile</a>
         {% else %}
 
           {% if app.request.get('_route') != 'app_login' %}
