@@ -7,6 +7,15 @@
 
 {% block body %}
     <h1>Create a New Car Offer</h1>
+
+    {% for label, messages in app.flashes %}
+        <div class="flash-{{ label }}">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
     {{ form_start(form) }}
 
 

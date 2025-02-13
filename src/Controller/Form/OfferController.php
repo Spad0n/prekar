@@ -29,6 +29,13 @@ final class OfferController extends AbstractController
             $existingCar = $form->get('existingCar')->getData();
             $newCar = $form->get('newCar')->getData();
             if ($existingCar) {
+                foreach($existingCar->getOffers() as $existingOffer) {
+                    if($existingOffer->getStartDate() <= $offer->getEndDate() && $existingOffer->getEndDate() >= $offer->getStartDate()) {
+                        $this->addFlash('error', 'You have another offer for this car during this period.');
+                        return $this->redirectToRoute('offer_new');
+                    }
+                }
+
                 $offer->setCar($existingCar);
             } elseif ($newCar) {
                 $newCar->setUserOwner($this->getUser());
