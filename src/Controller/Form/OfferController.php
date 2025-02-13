@@ -34,6 +34,10 @@ final class OfferController extends AbstractController
                 $newCar->setUserOwner($this->getUser());
                 $entityManager->persist($newCar);
                 $offer->setCar($newCar);
+            } elseif ($existingCar && $newCar) {
+                $this->addFlash('error', 'Please select OR create a car.');
+                return $this->redirectToRoute('offer_new');
+
             } else {
                 $this->addFlash('error', 'Please select or create a car.');
                 return $this->redirectToRoute('offer_new');
