@@ -11,6 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class CarType extends AbstractType
 {
@@ -19,7 +20,15 @@ class CarType extends AbstractType
         $builder
             ->add('brand', TextType::class, ['label' => 'Brand'])
             ->add('model', TextType::class, ['label' => 'Model'])
-            ->add('registration', TextType::class, ['label' => 'Registration'])
+            ->add('registration', TextType::class, [
+                'label' => 'Registration',
+                'constraints' => [
+                    new Assert\Regex([
+                        'pattern' => '/^([A-Z]{2} \d{3} [A-Z]{2}|\d{1,4} [A-Z]{2} \d{2,3})$/',
+                        'message' => 'Enter a valid French license plate (ex: AB 123 CD or 123 AB 75).',
+                    ]),
+                ],
+            ])
             ->add('nbSeat', IntegerType::class, [
                 'label' => 'Number of Seats',
                 'attr' => ['min' => 1, 'max' => 20],

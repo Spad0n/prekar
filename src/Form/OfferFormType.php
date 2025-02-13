@@ -19,8 +19,19 @@ class OfferFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('car', CarType::class, [
-                'label' => false,
+            ->add('existingCar', EntityType::class, [
+                'class' => Car::class,
+                'choices' => $options['user_cars'],
+                'choice_label' => function (Car $car) {
+                    return $car->getBrand() . ' ' . $car->getModel() . ' (' . $car->getRegistration() . ')';
+                },
+                'required' => false,
+                'placeholder' => 'Choose an existing car',
+                'mapped' => false,
+            ])
+            ->add('newCar', CarType::class, [
+                'required' => false,
+                'mapped' => false,
             ])
             ->add('startDate', DateType::class, [
                 'widget' => 'single_text',
@@ -37,6 +48,7 @@ class OfferFormType extends AbstractType
             ->add('price', MoneyType::class, [
                 'currency' => 'EUR',
                 'label' => 'Price',
+                'attr' => ['min' => 100],
             ])
             ->add('delivery', ChoiceType::class, [
                 'choices' => [
@@ -51,7 +63,6 @@ class OfferFormType extends AbstractType
                     'Available' => 'available',
                     'Not Available' => 'not_available',
                 ],
-                'required' => false,
                 'label' => 'Availability',
             ])
         ;
@@ -61,6 +72,7 @@ class OfferFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Offer::class,
+            'user_cars' => [],
         ]);
     }
 }
