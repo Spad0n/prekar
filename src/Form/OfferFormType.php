@@ -28,10 +28,12 @@ class OfferFormType extends AbstractType
                 'required' => false,
                 'placeholder' => 'Choose an existing car',
                 'mapped' => false,
+                'attr' => ['class' => 'existingCar'],
             ])
             ->add('newCar', CarType::class, [
                 'required' => false,
                 'mapped' => false,
+                'attr' => ['class' => 'newCar'],
             ])
             ->add('startDate', DateType::class, [
                 'widget' => 'single_text',
