@@ -115,6 +115,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'userOwner')]
     private Collection $payments;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?ValidateUser $validateUser = null;
+
 
     public function __construct()
     {
@@ -520,6 +523,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $payment->setUserOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getValidateUser(): ?ValidateUser
+    {
+        return $this->validateUser;
+    }
+
+    public function setValidateUser(ValidateUser $validateUser): static
+    {
+        // set the owning side of the relation if necessary
+        if ($validateUser->getUser() !== $this) {
+            $validateUser->setUser($this);
+        }
+
+        $this->validateUser = $validateUser;
 
         return $this;
     }
