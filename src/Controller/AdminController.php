@@ -34,29 +34,92 @@ class AdminController extends AbstractController
         dump($services);
 
         if ($request->isMethod('POST')) {
-            $newCommission = $request->request->get('service_fee');
+            //Getting form data
+            $action = $request->request->get('action');
             $payments_selected = $request->request->all('payments_selected'); // Récupérer toutes les cases cochées
-            dump ($newCommission);
-            dump ($payments_selected);
 
-            if ($newCommission !== null && $payments_selected !== null) {
 
-                foreach ($services as $service) {
-                    if(in_array($service->getPayment()->getId(),$payments_selected)){
-                        $service->setServiceFee((float) $newCommission);
-                        $entityManager->flush();
+            if($action === 'update_commission')
+            {
+                $newCommission = $request->request->get('service_fee');
+                dump ($newCommission);
+                dump ($payments_selected);
+
+                if ($newCommission !== null && $payments_selected !== null) {
+
+                    foreach ($services as $service) {
+                        if(in_array($service->getPayment()->getId(),$payments_selected)){
+                            $service->setServiceFee((float) $newCommission);
+                            $entityManager->flush();
+                        }
                     }
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Commissions updated !');
+                    return $this->redirectToRoute('services_dashboard');
                 }
-                $entityManager->flush();
-                $this->addFlash('success', 'Commission mise à jour avec succès !');
+            }
+            else if($action === 'UAS_commission')
+            {
+                $newCommission = $request->request->get('service_fee');
+                dump ($newCommission);
+                dump ($payments_selected);
+
+                if ($newCommission !== null && $payments_selected !== null) {
+
+                    foreach ($services as $service) {
+                        if(in_array($service->getPayment()->getId(),$payments_selected)){
+                            $service->setServiceFee((float) $newCommission);
+                            $entityManager->flush();
+                        }
+
+                    }
+                    foreach($payments_selected as $payment_id){
+                        $this->SendPayment($entityManager, $payment_id);
+
+                    }
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Commissions updated + Payments sent!');
+
+
+                    return $this->redirectToRoute('services_dashboard');
+                }
+            }
+            else if($action == 'send_payment')
+            {
+                foreach($payments_selected as $payment_id){
+                    $this->SendPayment($entityManager, $payment_id);
+                }
+                $this->addFlash('success', 'Payments sent!');
+                return $this->redirectToRoute('services_dashboard');
+            }else if(str_starts_with($action, 'process_payment_'))
+            {
+                $paymentId = str_replace('process_payment_', '', $action);
+                $this->SendPayment($entityManager, $paymentId);
+                $this->addFlash('success', 'Payment sent!');
                 return $this->redirectToRoute('services_dashboard');
             }
         }
 
+        // Sort payments by status
+        usort($payments, function($a, $b) {
+        if ($a->getStatus() == $b->getStatus()) {
+            return 0;
+        }
+        return ($a->getStatus() == 'Pending') ? -1 : 1;
+    });
+
         return $this->render('admin/services_dashboard.html.twig', [
             'payments' => $payments,
-            'services' => $services,
+            //'services' => $services,
         ]);
+    }
+
+    function SendPayment($entityManager,$payment_id): void
+    {
+        $payment = $entityManager->getRepository(Payment::class)->find($payment_id);
+        $payment->setStatus('Paid');
+        $payment->setPayDate(new \DateTime());
+        $entityManager->flush();
     }
 
     #[Route('/admin/', name: 'admin_panel')]
@@ -75,9 +138,8 @@ class AdminController extends AbstractController
         dump($admin);
 
         // Set the properties of the Payment entity
-        $payment->setTotal(43.00);
+        $payment->setTotal(89.00);
         $payment->setStatus('Pending');
-        $payment->setPayDate(new \DateTime());
 
         // Retrieve the associated Service entity
         $service = $entityManager->getRepository(Service::class)->find(1);
