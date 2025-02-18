@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+
+
+
+{% block title %}Create New Offer{% endblock %}
+
+{% block body %}
+    <h1>Create a New Car Offer</h1>
+
+    {% for label, messages in app.flashes %}
+        <div class="flash-{{ label }}">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    {{ form_start(form) }}
+
+
+        <br>
+
+        <button id= "carOption" type="button" onClick="toggleNewCar()">Create a new Car</button>
+
+
+            <div id="existingCarRow" style="display:block;">
+                {{ form_row(form.existingCar) }}
+            </div>
+            <div id="newCarRow" style="display:none;">
+                {{ form_row(form.newCar) }}
+            </div>
+
+        <br>
+        {{ form_row(form.startDate) }}
+        {{ form_row(form.endDate) }}
+        {{ form_row(form.localisationGarage) }}
+        {{ form_row(form.price) }}
+        {{ form_row(form.delivery) }}
+        {{ form_row(form.available) }}
+
+        <button type="submit">Create Offer</button>
+    {{ form_end(form) }}
+
+    <script>
+        function toggleNewCar(){
+            const carOption = document.getElementById('carOption');
+            const newCar = document.getElementById('newCarRow');
+            const existingCar = document.getElementById('existingCarRow');
+            console.log(newCar);
+            if(newCar.style.display === 'none') {
+                newCar.style.display = 'block';
+                existingCar.style.display = 'none';
+                carOption.innerText = "Use existing Car";
+
+            } else {
+                newCar.style.display = 'none';
+                existingCar.style.display = 'block';
+                carOption.innerText = "Create a new Car";
+
+            }
+        }
+
+    </script>
+
+{% endblock %}

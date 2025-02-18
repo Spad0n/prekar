@@ -6,7 +6,9 @@
       <span class="text-2xl pr-6">Prekar</span>
 
       <!-- Navigation Links -->
-      <a href="#" class="nav-link">List Your Car</a>
+      {% if is_granted('ROLE_OWNER') %}
+         <a href="{{ path('offer_new') }}" class="nav-link">Create an offer</a>
+      {% endif %}
       <a href="#" class="nav-link">Find Rentals</a>
       <a href="#" class="nav-link">Pricing Plans</a>
       <div x-data="{ open: false }" class="relative group">
