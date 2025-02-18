@@ -13,9 +13,12 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Doctrine\Persistence\ManagerRegistry;
 
 class OfferFormType extends AbstractType
 {
+
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -75,6 +78,7 @@ class OfferFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Offer::class,
             'user_cars' => [],
+            'csrf_protection' => false, // for test
         ]);
     }
 }
