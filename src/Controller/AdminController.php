@@ -6,6 +6,7 @@ use App\Entity\Admin;
 use App\Entity\Payment;
 use App\Entity\Service;
 use App\Entity\User;
+use App\Entity\ValidateUser;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -129,6 +130,47 @@ class AdminController extends AbstractController
     }
 
 
+    #[Route('/admin/driver_dashboard', name: 'drivers_dashboard')]
+    public function driver_dashboard(EntityManagerInterface $entityManager, Request $request): Response
+    {
+        $drivers = [];
+        $state = [];
+
+        if($request->isMethod('POST'))
+        {
+            $state = $request->request->all('filters');
+            $drivers = $entityManager->getRepository(ValidateUser::class)->findBy(['state' => $state]);
+        }else
+        {
+            $drivers = $entityManager->getRepository(ValidateUser::class)->findBy(['state' => 'Pending']);
+        }
+
+        if ($request->isMethod('POST')) {
+            $action = $request->request->get('action');
+
+            if(str_starts_with($action, 'accept_'))
+            {
+                $id = str_replace('accept_', '', $action);
+                $this->acceptDriverLicence($entityManager, $id);
+                $this->addFlash('success', 'Driver licence accepted!');
+                return $this->redirectToRoute('drivers_dashboard');
+            }
+            else if(str_starts_with($action,'deny_'))
+            {
+                $id = str_replace('deny_', '', $action);
+                $this->denyDriverLicence($entityManager, $id);
+                $this->addFlash('success', 'Driver licence denied!');
+                return $this->redirectToRoute('drivers_dashboard');
+            }
+        }
+
+        return $this->render('admin/driverlicencevalidation_dashboard.html.twig', [
+            'drivers' => $drivers,
+            'state' => $state,
+        ]);
+    }
+
+
     #[Route('/admin/add-payment', name: 'admin_add_payment')]
     public function addPayment(EntityManagerInterface $entityManager, Request $request): Response
     {
@@ -187,22 +229,28 @@ class AdminController extends AbstractController
             $name = $request->request->get('search_name');
             $lastname = $request->request->get('search_lastname');
 
-            if (!empty($id)) {
-                $criteria['id'] = $id;
-            }
-            if (!empty($email)) {
-                $criteria['email'] = $email;
-            }
-            if (!empty($name)) {
-                $criteria['name'] = $name;
-            }
-            if (!empty($lastname)) {
-                $criteria['lastName'] = $lastname;
-            }
+            $queryBuilder = $entityManager->getRepository(User::class)->createQueryBuilder('u')
+                        ->leftJoin('u.validateUser', 'v')
+                        ->addSelect('v');
 
-            if (!empty($criteria)) {
-                $users = $entityManager->getRepository(User::class)->findBy($criteria);
-            }
+                if (!empty($id)) {
+                    $queryBuilder->andWhere('u.id LIKE :id')
+                                 ->setParameter('id', '%' . $id . '%');
+                }
+                if (!empty($email)) {
+                    $queryBuilder->andWhere('u.email LIKE :email')
+                                 ->setParameter('email', '%' . $email . '%');
+                }
+                if (!empty($name)) {
+                    $queryBuilder->andWhere('u.name LIKE :name')
+                                 ->setParameter('name', '%' . $name . '%');
+                }
+                if (!empty($lastname)) {
+                    $queryBuilder->andWhere('u.lastname LIKE :lastname')
+                                 ->setParameter('lastname', '%' . $lastname . '%');
+                }
+
+                $users = $queryBuilder->getQuery()->getResult();
         }
 
 
@@ -210,6 +258,26 @@ class AdminController extends AbstractController
         return $this->render('admin/user_dashboard.html.twig', [
             'users' => $users,
         ]);
+    }
+
+    public function acceptDriverLicence($entityManager, $id): void
+    {
+        $user = $entityManager->getRepository(ValidateUser::class)->find($id);
+        $user->setState('Accepted');
+        $admin = $entityManager->getRepository(Admin::class)->find($this->getUser()->getId());
+        $user->setAdmin($admin);
+        $user->setValidationDate(new \DateTime());
+        $entityManager->flush();
+    }
+
+    public function denyDriverLicence($entityManager, $id): void
+    {
+        $user = $entityManager->getRepository(ValidateUser::class)->find($id);
+        $user->setState('Denied');
+        $admin = $entityManager->getRepository(Admin::class)->find($this->getUser()->getId());
+        $user->setAdmin($admin);
+        //$user->setValidationDate(new \DateTime());
+        $entityManager->flush();
     }
 
 

@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Borrower;
 use App\Entity\Owner;
 use App\Entity\User;
+use App\Entity\ValidateUser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,8 +56,13 @@ final class RegistrationController extends AbstractController
             );
             $user->setPassword($hashedPassword);
 
+            $validateUser = new ValidateUser();
+            $validateUser->setState('Pending');
+            $validateUser->setUser($user);
+
 
             $entityManager->persist($user);
+            $entityManager->persist($validateUser);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_login');
