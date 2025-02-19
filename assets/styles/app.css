@@ -14,23 +14,14 @@ body {
     background-blend-mode: overlay;
 }
 
-/*
-.nav-link {
-    @apply rounded-full px-3 py-2 transition duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-primary-hover;
-}
-
-.dropdown-menu {
-    @apply absolute left-0 mt-2 w-48 bg-secondary text-primary rounded shadow-lg py-2;
-}
-
-.dropdown-item {
-    @apply block px-4 py-2 hover:bg-secondary-hover;
-}
-
-.btn-primary {
-    @apply bg-secondary text-primary rounded-full px-3 py-2 transition duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-secondary-hover;
-}
-*/
 .card-background {
-    @apply bg-gradient-to-tr from-[#C9E6F0] via-[#FFF6E9] to-[#C9E6F0]
+    @apply bg-gradient-to-tr from-skyTheme-lightCyan via-sunsetTheme-paleYellow to-skyTheme-lightCyan;
+}
+
+.transparent-button {
+    @apply px-3 py-2 font-semibold text-black transition duration-200 ease-[cubic-bezier(0,0,1,1)] hover:text-white;
+}
+
+.orange-button {
+    @apply px-3 py-2 font-semibold text-white rounded-full bg-sunsetTheme-brightOrange transition duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-skyTheme-darkOrange;
 }
