@@ -11,8 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Admin extends User
 {
 
-
-
     /**
      * @var Collection<int, Payment>
      */
