@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Offer{% endblock %}
+
+{% block body %}
+
+    {% for label, messages in app.flashes %}
+        <div class="flash-{{ label }}">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    <h1>Edit Offer</h1>
+
+    {{ form_start(form) }}
+        <h3>Car Details</h3>
+        {{ form_row(form.car.brand) }}
+        {{ form_row(form.car.model) }}
+        {{ form_row(form.car.registration) }}
+        {{ form_row(form.car.fuelType) }}
+        {{ form_row(form.car.nbSeat) }}
+        {{ form_row(form.car.bootCapacity) }}
+
+        <h3>Offer Details</h3>
+        {{ form_row(form.startDate) }}
+        {{ form_row(form.endDate) }}
+        {{ form_row(form.localisationGarage) }}
+        {{ form_row(form.price) }}
+        {{ form_row(form.delivery) }}
+        {{ form_row(form.available) }}
+
+        <button type="submit">Save Changes</button>
+    {{ form_end(form) }}
+
+    <form method="post" action="{{ path('offer_delete', {'id': offer.id}) }}" onsubmit="return confirm('Are you sure you want to delete this offer?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ offer.id) }}">
+        <button class="btn btn-danger">Delete Offer</button>
+    </form>
+
+    <a href="{{ path('offer_list') }}">Cancel</a>
+{% endblock %}

@@ -5,6 +5,7 @@ namespace App\Controller\Form;
 use App\Entity\Offer;
 use App\Entity\Car;
 use App\Form\OfferFormType;
+use App\Form\CarType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -67,5 +68,45 @@ final class OfferController extends AbstractController
     #[Route('/offer/{id}', name: "offer_view")]
     public function view(Offer $offer) {
         return $this->render('user_profile/profile.html.twig', ['offer' => $offer,]); //need to be changed when the offer page is ready
+    }
+
+    #[Route('/offer/{id}/edit', name: 'offer_edit')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function edit(Request $request, EntityManagerInterface $entityManager, Offer $offer): Response {
+        if($offer->getUserOwner() == $this->getUser()) {
+            $car = $offer->getCar();
+            $form = $this->createForm(OfferFormType::class, $offer, [
+                'car' => $car,
+                'is_edit' => true,
+            ]);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $newCar = $form->get('car')->getData();
+                if ($newCar !== $car) {
+                    $entityManager->persist($newCar);
+                }
+                $entityManager->flush();
+                $this->addFlash('success', 'Offer and car details updated successfully.');
+                return $this->redirectToRoute('offer_list');
+            }
+            return $this->render('offer/edit.html.twig', [
+                'form' => $form->createView(),
+                'offer' => $offer
+            ]);
+        } else {
+            $this->addFlash('error', 'You can modify only offers you own.');
+            return $this->redirectToRoute('offer_list');
+        }
+    }
+
+    #[Route('/offer/{id}/delete', name: 'offer_delete', methods: ['POST'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function delete(Request $request, EntityManagerInterface $entityManager, Offer $offer): Response {
+        if ($this->isCsrfTokenValid('delete'.$offer->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($offer);
+            $entityManager->flush();
+            $this->addFlash('success', 'Offer deleted successfully.');
+        }
+        return $this->redirectToRoute('offer_list');
     }
 }

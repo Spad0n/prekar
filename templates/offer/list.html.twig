@@ -3,6 +3,15 @@
 {% block title %}Offers List{% endblock %}
 
 {% block body %}
+
+    {% for label, messages in app.flashes %}
+        <div class="flash-{{ label }}">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
     <h1>Car Offers</h1>
     <table>
         <tr>
@@ -19,6 +28,7 @@
                 <td>{{ offer.endDate ? offer.endDate|date('Y-m-d') : 'N/A' }}</td>
                 <td>{{ offer.price }} €</td>
                 <td><a href="{{ path('offer_view', {id: offer.id}) }}">View</a></td>
+                <td><a href="{{ path('offer_edit', {id: offer.id}) }}">Edit</a></td>
             </tr>
         {% endfor %}
     </table>
