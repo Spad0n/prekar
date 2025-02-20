@@ -40,8 +40,36 @@ class RegistrationFormType extends AbstractType
                 ])
             ]
             ])
-            ->add('lastName', TextType::class)
-            ->add('name', TextType::class)
+            ->add('lastName', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'Veuillez entrer votre nom']),
+                    new Length([
+                        'min' => 2,
+                        'max' => 50,
+                        'minMessage' => 'Votre nom doit contenir au moins {{ limit }} caractères',
+                        'maxMessage' => 'Votre nom ne peut pas dépasser {{ limit }} caractères'
+                    ]),
+                    new Regex([
+                        'pattern' => '/^[a-zA-ZÀ-ÿ\s\'-]+$/',
+                        'message' => 'Votre nom ne peut contenir que des lettres, espaces, tirets et apostrophes'
+                    ])
+                ]
+            ])
+            ->add('name', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'Veuillez entrer votre prénom']),
+                    new Length([
+                        'min' => 2,
+                        'max' => 50,
+                        'minMessage' => 'Votre prénom doit contenir au moins {{ limit }} caractères',
+                        'maxMessage' => 'Votre prénom ne peut pas dépasser {{ limit }} caractères'
+                    ]),
+                    new Regex([
+                        'pattern' => '/^[a-zA-ZÀ-ÿ\s\'-]+$/',
+                        'message' => 'Votre prénom ne peut contenir que des lettres, espaces, tirets et apostrophes'
+                    ])
+                ]
+            ])
             ->add('profileImage', FileType::class, [
                 'label' => 'Photo de profil',
                 'mapped' => false,
