@@ -3,7 +3,6 @@
 {% block title %}Offers List{% endblock %}
 
 {% block body %}
-
     {% for label, messages in app.flashes %}
         <div class="flash-{{ label }}">
             {% for message in messages %}
@@ -20,6 +19,7 @@
             <th>End Date</th>
             <th>Price</th>
             <th>Actions</th>
+            <th>Image</th>
         </tr>
         {% for offer in offers %}
             <tr>
@@ -27,8 +27,15 @@
                 <td>{{ offer.startDate|date('Y-m-d') }}</td>
                 <td>{{ offer.endDate ? offer.endDate|date('Y-m-d') : 'N/A' }}</td>
                 <td>{{ offer.price }} €</td>
-                <td><a href="{{ path('offer_view', {id: offer.id}) }}">View</a></td>
-                <td><a href="{{ path('offer_edit', {id: offer.id}) }}">Edit</a></td>
+                <td>
+                    <a href="{{ path('offer_view', {id: offer.id}) }}">View</a>
+                    <a href="{{ path('offer_edit', {id: offer.id}) }}">Edit</a>
+                </td>
+                <td>
+                    {% if offer.car.imageFilename %}
+                        <img src="{{ asset('uploads/cars/' ~ offer.car.imageFilename) }}" alt="Car image" width="100">
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
     </table>
