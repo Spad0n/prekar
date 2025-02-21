@@ -3,23 +3,32 @@
 {% block title %}Offers List{% endblock %}
 
 {% block body %}
-    <h1>Car Offers</h1>
+<h1>Car Offers</h1>
+
+{% if offers is empty %}
+    <p>No offers available at the moment.</p>
+{% else %}
     <table>
-        <tr>
-            <th>Car</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Price</th>
-            <th>Actions</th>
-        </tr>
-        {% for offer in offers %}
+        <thead>
             <tr>
-                <td>{{ offer.car.brand }} {{ offer.car.model }}</td>
-                <td>{{ offer.startDate|date('Y-m-d') }}</td>
-                <td>{{ offer.endDate ? offer.endDate|date('Y-m-d') : 'N/A' }}</td>
-                <td>{{ offer.price }} €</td>
-                <td><a href="{{ path('offer_view', {id: offer.id}) }}">View</a></td>
+                <th>Car</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Price</th>
+                <th>Actions</th>
             </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+            {% for offer in offers %}
+                <tr>
+                    <td>{{ offer.car.brand }} {{ offer.car.model }}</td>
+                    <td>{{ offer.startDate|date('Y-m-d') }}</td>
+                    <td>{{ offer.endDate ? offer.endDate|date('Y-m-d') : 'N/A' }}</td>
+                    <td>{{ offer.price }} €</td>
+                    <td><a href="{{ path('offer_view', {id: offer.id}) }}">View</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
+{% endif %}
 {% endblock %}

@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class OfferController extends AbstractController
 {
@@ -58,14 +59,9 @@ final class OfferController extends AbstractController
         ]);
     }
 
-    #[Route('/offer/list', name: 'offer_list')]
-    public function list(EntityManagerInterface $entityManager) {
-        $offers = $entityManager->getRepository(Offer::class)->findAll();
-        return $this->render('offer/list.html.twig', ['offers' => $offers,]);
-    }
-
-    #[Route('/offer/{id}', name: "offer_view")]
+    #[Route('/offer/{id<\d+>}', name: "offer_view")]
     public function view(Offer $offer) {
-        return $this->render('user_profile/profile.html.twig', ['offer' => $offer,]); //need to be changed when the offer page is ready
+        // TODO: change when the offer page is ready
+        return $this->render('user_profile/profile.html.twig', ['offer' => $offer,]);
     }
 }
