@@ -25,3 +25,7 @@ body {
 .orange-button {
     @apply px-3 py-2 font-semibold text-white rounded-full bg-sunsetTheme-brightOrange transition duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-skyTheme-darkOrange;
 }
+
+.blue-button {
+    @apply px-3 py-2 font-semibold text-white rounded-full bg-oceanTheme-deepBlue transition duration-200 ease-[cubic-bezier(0,0,1,1)] hover:bg-oceanTheme-navyBlue;
+}
