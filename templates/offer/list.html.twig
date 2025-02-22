@@ -1,34 +1,151 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Offers List{% endblock %}
+{% block title %}Car Rental Offers{% endblock %}
 
 {% block body %}
-<h1>Car Offers</h1>
+<h1>Available Car Offers</h1>
 
-{% if offers is empty %}
-    <p>No offers available at the moment.</p>
-{% else %}
-    <table>
-        <thead>
+<div>
+    <!-- Sidebar Filters -->
+    <aside>
+        <h2>Filters</h2>
+        <form method="get" action="{{ path('offer_list') }}">
+            
+            <!-- Global Select/Unselect All -->
+            <button type="button" onclick="toggleAllCheckboxes(true)">Select All</button>
+            <button type="button" onclick="toggleAllCheckboxes(false)">Unselect All</button>
+
+            <!-- Location Filter -->
+            <div>
+                <label>Location</label>
+                <button type="button" onclick="toggleCheckboxes('location', true)">Select All</button>
+                <button type="button" onclick="toggleCheckboxes('location', false)">Unselect All</button>
+                {% for location in locations %}
+                    <div>
+                        <input type="checkbox" class="location" id="location-{{ loop.index }}" name="locations[]" value="{{ location }}"
+                            {% if filters.locations is not defined or location in filters.locations %}checked{% endif %}>
+                        <label for="location-{{ loop.index }}">{{ location }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Brand Filter -->
+            <div>
+                <label>Brand</label>
+                <button type="button" onclick="toggleCheckboxes('brand', true)">Select All</button>
+                <button type="button" onclick="toggleCheckboxes('brand', false)">Unselect All</button>
+                {% for brand in brands %}
+                    <div>
+                        <input type="checkbox" class="brand" id="brand-{{ loop.index }}" name="brand[]" value="{{ brand }}"
+                            {% if filters.brand is not defined or brand in filters.brand %}checked{% endif %}>
+                        <label for="brand-{{ loop.index }}">{{ brand }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Fuel Type Filter -->
+            <div>
+                <label>Fuel Type</label>
+                <button type="button" onclick="toggleCheckboxes('fuelType', true)">Select All</button>
+                <button type="button" onclick="toggleCheckboxes('fuelType', false)">Unselect All</button>
+                {% for fuelType in fuelTypes %}
+                    <div>
+                        <input type="checkbox" class="fuelType" id="fuel-{{ loop.index }}" name="fuelType[]" value="{{ fuelType }}"
+                            {% if filters.fuelType is not defined or fuelType in filters.fuelType %}checked{% endif %}>
+                        <label for="fuel-{{ loop.index }}">{{ fuelType }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Seats Filter -->
+            <div>
+                <label>Seats</label>
+                <button type="button" onclick="toggleCheckboxes('nbSeat', true)">Select All</button>
+                <button type="button" onclick="toggleCheckboxes('nbSeat', false)">Unselect All</button>
+                {% for seat in seats %}
+                    <div>
+                        <input type="checkbox" class="nbSeat" id="seats-{{ loop.index }}" name="nbSeat[]" value="{{ seat }}"
+                            {% if filters.nbSeat is not defined or seat in filters.nbSeat %}checked{% endif %}>
+                        <label for="seats-{{ loop.index }}">{{ seat }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Boot Capacity Filter -->
+            <div>
+                <label>Boot Capacity</label>
+                <button type="button" onclick="toggleCheckboxes('bootCapacity', true)">Select All</button>
+                <button type="button" onclick="toggleCheckboxes('bootCapacity', false)">Unselect All</button>
+                {% for capacity in bootCapacities %}
+                    <div>
+                        <input type="checkbox" class="bootCapacity" id="bootCapacity-{{ loop.index }}" name="bootCapacity[]" value="{{ capacity }}"
+                            {% if filters.bootCapacity is not defined or capacity in filters.bootCapacity %}checked{% endif %}>
+                        <label for="bootCapacity-{{ loop.index }}">{{ capacity }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Delivery Filter -->
+            <div>
+                <label>Delivery</label>
+                {% for option in ['yes', 'no'] %}
+                    <div>
+                        <input type="checkbox" class="delivery" id="delivery-{{ option }}" name="delivery[]" value="{{ option }}"
+                            {% if filters.delivery is not defined or option in filters.delivery %}checked{% endif %}>
+                        <label for="delivery-{{ option }}">{{ option | capitalize }}</label>
+                    </div>
+                {% endfor %}
+            </div>                       
+
+            <!-- Submit Button -->
+            <button type="submit">Apply Filters</button>
+        </form>
+    </aside>
+</div>
+
+<!-- Offers List -->
+<div>
+    <h2>Car Offers</h2>
+    {% if offers is empty %}
+        <p>No offers found.</p>
+    {% else %}
+        <table>
             <tr>
                 <th>Car</th>
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Price</th>
+                <th>Delivery</th>
                 <th>Actions</th>
             </tr>
-        </thead>
-        <tbody>
             {% for offer in offers %}
                 <tr>
                     <td>{{ offer.car.brand }} {{ offer.car.model }}</td>
                     <td>{{ offer.startDate|date('Y-m-d') }}</td>
                     <td>{{ offer.endDate ? offer.endDate|date('Y-m-d') : 'N/A' }}</td>
                     <td>{{ offer.price }} €</td>
+                    <td>{{ offer.delivery ? 'Yes' : 'No' }}</td>
                     <td><a href="{{ path('offer_view', {id: offer.id}) }}">View</a></td>
                 </tr>
             {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
+        </table>
+    {% endif %}
+</div>
+
+<!-- JavaScript for Select/Unselect All -->
+<script>
+function toggleCheckboxes(className, check) {
+    document.querySelectorAll('.' + className).forEach(checkbox => {
+        checkbox.checked = check;
+    });
+}
+
+// Global Select/Unselect All
+function toggleAllCheckboxes(check) {
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = check;
+    });
+}
+</script>
+
 {% endblock %}
