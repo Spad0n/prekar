@@ -5,7 +5,6 @@
 
     <div>
         <form method="post">
-            <input type="text" name="search_id" value="" class="form-control" placeholder="ID">
             <input type="text" name="search_email" value="" class="form-control" placeholder="Mail">
             <input type="text" name="search_name" value="" class="form-control" placeholder="Name">
             <input type="text" name="search_lastname" value="" class="form-control" placeholder="Last Name">
@@ -33,7 +32,17 @@
                 <td>{{ user.name }}</td>
                 <td>{{ user.lastname }}</td>
                 <td>{{ user.roles[0] }}</td>
-                <td></td>
+                <td>
+                    {% if user.validateUser is not null %}
+                        {{ user.validateUser.state }}
+                    {% else %}
+                        undefined
+                    {% endif %}
+                </td>
+
+                <td>
+                    <a href="{{ path('admin_user_profilpage', {'id': user.id}) }}" class="btn btn-danger">Profil</a>
+                </td>
 
             </tr>
         {% endfor %}

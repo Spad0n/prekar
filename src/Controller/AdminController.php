@@ -28,36 +28,49 @@ class AdminController extends AbstractController
         }
 
         // Getting all payments from this admin
-        $payments = $entityManager->getRepository(Payment::class)->findAll();
+        $payments = [];
+        $statesFilters = [];
 
-        // Getting all services from this admin
-        $services = $entityManager->getRepository(Service::class)->findBy(['admin' => $admin]);
-        dump($services);
 
         if ($request->isMethod('POST')) {
             //Getting form data
             $action = $request->request->get('action');
-            $payments_selected = $request->request->all('payments_selected'); // Récupérer toutes les cases cochées
+            $payments_selected = $request->request->all('payments_selected'); // Getting all checked boxes
+            $statesFilters = $request->request->all('filters');
+
+
+
+
+
+
+            if($statesFilters !== null)
+            {
+                $payments = $entityManager->getRepository(Payment::class)->findBy(['admin' => $admin, 'status' => $statesFilters]);
+            }
+            else
+            {
+                $payments = $entityManager->getRepository(Payment::class)->findBy(['admin' => $admin]);
+            }
+
 
 
             if($action === 'update_commission')
             {
                 $newCommission = $request->request->get('service_fee');
-                dump ($newCommission);
-                dump ($payments_selected);
 
-                if ($newCommission !== null && $payments_selected !== null) {
 
-                    foreach ($services as $service) {
-                        if(in_array($service->getPayment()->getId(),$payments_selected)){
-                            $service->setServiceFee((float) $newCommission);
+                if ($newCommission !== null && $payments_selected !== null)
+                {
+
+                    foreach ($payments_selected as $payment) {
+                        $payment = $entityManager->getRepository(Payment::class)->find($payment);
+                        $payment->getApply()->setServiceFee((float) $newCommission);
                             $entityManager->flush();
                         }
-                    }
+                }
                     $entityManager->flush();
                     $this->addFlash('success', 'Commissions updated !');
-                    return $this->redirectToRoute('services_dashboard');
-                }
+
             }
             else if($action === 'UAS_commission')
             {
@@ -67,23 +80,21 @@ class AdminController extends AbstractController
 
                 if ($newCommission !== null && $payments_selected !== null) {
 
-                    foreach ($services as $service) {
-                        if(in_array($service->getPayment()->getId(),$payments_selected)){
-                            $service->setServiceFee((float) $newCommission);
-                            $entityManager->flush();
-                        }
-
-                    }
-                    foreach($payments_selected as $payment_id){
+                    foreach ($payments_selected as $payment) {
+                        $payment = $entityManager->getRepository(Payment::class)->find($payment);
+                        $payment->getApply()->setServiceFee((float) $newCommission);
+                        $entityManager->flush();
                         $this->SendPayment($entityManager, $payment_id);
+                     }
+
 
                     }
+
                     $entityManager->flush();
                     $this->addFlash('success', 'Commissions updated + Payments sent!');
 
 
-                    return $this->redirectToRoute('services_dashboard');
-                }
+
             }
             else if($action == 'send_payment')
             {
@@ -91,15 +102,16 @@ class AdminController extends AbstractController
                     $this->SendPayment($entityManager, $payment_id);
                 }
                 $this->addFlash('success', 'Payments sent!');
-                return $this->redirectToRoute('services_dashboard');
             }else if(str_starts_with($action, 'process_payment_'))
             {
                 $paymentId = str_replace('process_payment_', '', $action);
                 $this->SendPayment($entityManager, $paymentId);
                 $this->addFlash('success', 'Payment sent!');
-                return $this->redirectToRoute('services_dashboard');
             }
+
+
         }
+
 
         // Sort payments by status
         usort($payments, function($a, $b) {
@@ -111,9 +123,10 @@ class AdminController extends AbstractController
 
         return $this->render('admin/services_dashboard.html.twig', [
             'payments' => $payments,
-            //'services' => $services,
+            'state' => $statesFilters,
         ]);
     }
+
 
     function SendPayment($entityManager,$payment_id): void
     {
@@ -197,6 +210,8 @@ class AdminController extends AbstractController
 
 
         $payment->setAdmin($admin);
+        $user = $entityManager->getRepository(User::class)->find(1);
+        $payment->setUserOwner($user);
         // Persist the Payment entity to the database
         dump($service);
         dump($payment);
@@ -214,17 +229,11 @@ class AdminController extends AbstractController
     #[Route('/admin/user_dashboard', name: 'users_dashboard')]
     public function userDashboard(EntityManagerInterface $entityManager, Request $request): Response
     {
-        $admin = $entityManager->getRepository(Admin::class)->find($this->getUser()->getId());
 
-        if (!$admin) {
-            throw $this->createNotFoundException('Admin not found');
-        }
 
         $users = [];
 
         if ($request->isMethod('POST')) {
-            $criteria = [];
-            $id = $request->request->get('search_id');
             $email = $request->request->get('search_email');
             $name = $request->request->get('search_name');
             $lastname = $request->request->get('search_lastname');
@@ -233,10 +242,6 @@ class AdminController extends AbstractController
                         ->leftJoin('u.validateUser', 'v')
                         ->addSelect('v');
 
-                if (!empty($id)) {
-                    $queryBuilder->andWhere('u.id LIKE :id')
-                                 ->setParameter('id', '%' . $id . '%');
-                }
                 if (!empty($email)) {
                     $queryBuilder->andWhere('u.email LIKE :email')
                                  ->setParameter('email', '%' . $email . '%');
@@ -279,6 +284,25 @@ class AdminController extends AbstractController
         //$user->setValidationDate(new \DateTime());
         $entityManager->flush();
     }
+
+    #[Route('/admin/user/profil/{id}', name: 'admin_user_profilpage', methods: ['POST', 'GET'])]
+    public function visitUser(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $user = $entityManager->getRepository(User::class)->find($id);
+        if(!$user)
+        {
+            throw $this->createNotFoundException('User not found');
+        }
+
+        return $this->render('admin/adminprofil.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+
+
+
+
 
 
 }

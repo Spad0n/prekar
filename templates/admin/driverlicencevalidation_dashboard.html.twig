@@ -11,9 +11,9 @@
     <div class="p-6">
         <form method="post">
 
-            <input type="checkbox" name="filters[]" value="Pending" checked="">Pending
-            <input type="checkbox" name="filters[]" value="Accepted">Accepted
-            <input type="checkbox" name="filters[]" value="Denied">Denied
+            <input type="checkbox" name="filters[]" value="Pending" {% if "Pending" in state %}checked{% endif %}> Pending
+            <input type="checkbox" name="filters[]" value="Accepted" {% if "Accepted" in state %}checked{% endif %}> Accepted
+            <input type="checkbox" name="filters[]" value="Denied" {% if "Denied" in state %}checked{% endif %}> Denied
             <button type="submit" class="btn btn-primary mt-2">Apply Filter</button>
         </form>
 
