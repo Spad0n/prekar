@@ -30,6 +30,7 @@ class AdminPanelControllerTest extends WebTestCase
         $user = new Admin();
 
         $user ->setName('admin');
+        $user->addRole('ROLE_ADMIN');
 
         $user ->setEmail('admin@admin.com');
         $passwordHasher = $container->get(UserPasswordHasherInterface::class);
@@ -42,19 +43,67 @@ class AdminPanelControllerTest extends WebTestCase
 
     public function testRedirectNonAdminUser(): void
     {
-        //$client = static::createClient();
-        $crawler = $this->client->request('GET', '/admin/services_dashboard');
+        $crawler = $this->client->request('GET', '/admin');
         $this->assertResponseRedirects('/login');
     }
 
-    /*
+    public function testAdminPanel(): void
+    {
+        $crawler = $this->client->request('GET', '/admin');
+        $this->assertResponseRedirects('/login');
+    }
+
+
+    public function testAdminServices(): void
+    {
+        $crawler = $this->client->request('GET', '/login');
+        $submitButton = $crawler->selectButton('Sign in');
+        $form = $submitButton->form([
+            'email' => 'admin@admin.com',
+            'password' => 'admin',
+        ]);
+        $this->client->submit($form);
+        $this->client->followRedirect();
+
+        $this->client->request('GET', '/admin/services_dashboard');
+        $this->assertResponseIsSuccessful();
+    }
+
     public function testAdminUser(): void
     {
-        //$client = static::createClient();
         $crawler = $this->client->request('GET', '/login');
-        $submitButton = $crawler->selectButton('submit');
-       // $form = $submitButton->form();
-        }
+        $submitButton = $crawler->selectButton('Sign in');
+        $form = $submitButton->form([
+            'email' => 'admin@admin.com',
+            'password' => 'admin',
+        ]);
+        $this->client->submit($form);
+        $this->client->followRedirect();
 
-    */
+        $this->client->request('GET', '/admin/user_dashboard');
+        $this->assertResponseIsSuccessful();
+    }
+
+
+    /*
+     * Problem in this test
+     */
+    public function testAdminDriverLicence(): void
+    {
+        $crawler = $this->client->request('GET', '/login');
+        $submitButton = $crawler->selectButton('Sign in');
+        $form = $submitButton->form([
+            'email' => 'admin@admin.com',
+            'password' => 'admin',
+        ]);
+        $this->client->submit($form);
+        $this->client->followRedirect();
+
+        $this->client->request('GET', '/admin/driver_dashboard');
+        $this->assertResponseIsSuccessful();
+    }
+
+
+
+
 }
