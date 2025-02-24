@@ -26,7 +26,7 @@ class RegistrationTest extends WebTestCase
 
         $email = 'test' . uniqid() . '@test.fr';
         $form['registration_form[email]'] = $email;
-        $form['registration_form[password]'] = 'test123';
+        $form['registration_form[password]'] = 'Test123*';
         $form['registration_form[lastName]'] = 'test';
         $form['registration_form[name]'] = 'test';
         $form['registration_form[userType][0]'] = true;
@@ -72,7 +72,7 @@ public function testValidRegistrationOwner(): void
 
         $email = 'test' . uniqid() . '@test.fr';
         $form['registration_form[email]'] = $email;
-        $form['registration_form[password]'] = 'test123';
+        $form['registration_form[password]'] = 'Test123*';
         $form['registration_form[lastName]'] = 'test';
         $form['registration_form[name]'] = 'test';
         $form['registration_form[userType][1]'] = true;
