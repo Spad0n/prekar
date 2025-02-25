@@ -9,7 +9,7 @@
       {% if is_granted('ROLE_OWNER') %}
          <a href="{{ path('offer_new') }}" class="nav-link">Create an offer</a>
       {% endif %}
-      <a href="#" class="nav-link">Find Rentals</a>
+      <a href="{{ path('offer_list') }}" class="nav-link">Find Rentals</a>
       <a href="#" class="nav-link">Pricing Plans</a>
       <div x-data="{ open: false }" class="relative group">
         <button @click="open = !open" class="nav-link flex items-center">
