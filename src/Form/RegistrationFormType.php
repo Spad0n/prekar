@@ -94,6 +94,10 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Type de compte',
                 'multiple' => true,
                 'expanded' => true,
+                'required' => true,
+                'constraints' => [
+                    new NotBlank(['message' => 'Veuillez choisir un type de compte'])
+                ]
             ]);
     }
 
