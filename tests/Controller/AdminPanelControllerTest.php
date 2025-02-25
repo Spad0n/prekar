@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Admin;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -26,6 +27,13 @@ class AdminPanelControllerTest extends WebTestCase
             $this->entityManager->flush();
         }
 
+        //check if there's not already a user :
+        $existingUser2 = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'user@user.com']);
+        if ($existingUser2) {
+            $this->entityManager->remove($existingUser2);
+            $this->entityManager->flush();
+        }
+
 
         $user = new Admin();
 
@@ -38,6 +46,18 @@ class AdminPanelControllerTest extends WebTestCase
         $user->setPassword($hashedPassword);
 
         $this->entityManager->persist($user);
+
+        $user2 = new User();
+
+        $user2 ->setName('user');
+        $user2->addRole('ROLE_USER');
+        $user2->addRole('ROLE_BORROWER');
+        $user2->setEmail('user@user.com');
+        $passwordHasher = $container->get(UserPasswordHasherInterface::class);
+        $hashedPassword = $passwordHasher->hashPassword($user2, 'user');
+        $user2->setPassword($hashedPassword);
+
+        $this->entityManager->persist($user2);
         $this->entityManager->flush();
     }
 
@@ -85,9 +105,6 @@ class AdminPanelControllerTest extends WebTestCase
     }
 
 
-    /*
-     * Problem in this test
-     */
     public function testAdminDriverLicence(): void
     {
         $crawler = $this->client->request('GET', '/login');
@@ -102,6 +119,55 @@ class AdminPanelControllerTest extends WebTestCase
         $this->client->request('GET', '/admin/driver_dashboard');
         $this->assertResponseIsSuccessful();
     }
+
+    /*
+     * Check if we can find one user
+     */
+    public function testFindUser(): void {
+        $crawler = $this->client->request('GET', '/login');
+        $submitButton = $crawler->selectButton('Sign in');
+        $form = $submitButton->form([
+            'email' => 'admin@admin.com',
+            'password' => 'admin',
+        ]);
+        $this->client->submit($form);
+        $this->client->followRedirect();
+
+        $crawlerUser = $this->client->request('GET', '/admin/user_dashboard');
+        $submitUser = $crawlerUser->selectButton('Search');
+        $formUser = $submitUser->form([
+            'search_email' => 'user@user.com']);
+        $this->client->submit($formUser);
+        $this->assertResponseIsSuccessful();
+
+        $clientnb = $this->client->getCrawler()->filter('tbody tr')->count();
+        $this->assertEquals(1, $clientnb);
+    }
+
+    public function testCantFindUser(): void {
+        $crawler = $this->client->request('GET', '/login');
+        $submitButton = $crawler->selectButton('Sign in');
+        $form = $submitButton->form([
+            'email' => 'admin@admin.com',
+            'password' => 'admin',
+        ]);
+        $this->client->submit($form);
+        $this->client->followRedirect();
+
+        $crawlerUser = $this->client->request('GET', '/admin/user_dashboard');
+        $submitUser = $crawlerUser->selectButton('Search');
+        $formUser = $submitUser->form([
+            'search_email' => 'user@user.fr',
+            'search_name' => 'üs3r',
+        ]);
+        $this->client->submit($formUser);
+        $this->assertResponseIsSuccessful();
+
+        $clientnb = $this->client->getCrawler()->filter('tbody tr')->count();
+        $this->assertEquals(0, $clientnb);
+    }
+
+
 
 
 
