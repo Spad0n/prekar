@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+.background-photo {
     margin: 0;
     padding: 0;
     background-image: url('../img/andrew-slifkin-2lp_2jtZAsg-unsplash.jpg');

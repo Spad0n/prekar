@@ -1,19 +1,19 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_form.html.twig' %}
 
 {% block title %}Profil{% endblock %}
 
 {% block body %}
-  <section class="flex items-center justify-center h-screen bg-skyTheme-skyBlue">
+  <section class="flex items-center justify-center h-screen">
     <div class="w-3/4 h-3/4 p-6 shadow-lg bg-white rounded-md flex flex-col">
       <div class="flex justify-between gap-10 flex-1 overflow-hidden">
         {# photo part #}
         <div class="profile-header flex-2" >
           <img src="https://placehold.co/200x200/png" alt="Photo de profil par défaut" class="profile-image">
-          <h2 class="mt-2 text-xl text-center">  {{ app.user.name }} </h2>
+          <h2 class="mt-2 text-xl text-center">{{ app.user.name }} {{ app.user.lastName }}</h2>
         </div>
         {# information #}
         <div class="flex-1 flex flex-col overflow-hidden">
-          <h1 class="text-4xl">Information</h1>
+          <h1 class="text-4xl font-bold text-oceanTheme-navyBlue">Information</h1>
           <hr class="my-4">
           {# BORROWER INFORMATION #}
           <div class="flex flex-col overflow-auto">

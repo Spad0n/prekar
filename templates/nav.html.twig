@@ -7,10 +7,10 @@
 
       <!-- Navigation Links -->
       {% if is_granted('ROLE_OWNER') %}
-        <a href="{{ path('offer_new') }}" class="nav-link">Create an offer</a>
+        <a href="{{ path('offer_new') }}" class="transparent-button">Create an offer</a>
+        <a href="{{ path('offer_list') }}" class="transparent-button">List your offers</a>
       {% endif %}
       {% if app.request.get('_route') == 'app_prekar_home_page' %}
-      <a href="#" class="transparent-button">List Your Car</a>
       <a href="#" class="transparent-button">Find Rentals</a>
       <a href="#" class="transparent-button">Pricing Plans</a>
       {% endif %}
