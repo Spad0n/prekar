@@ -118,6 +118,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?ValidateUser $validateUser = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profileImage = null;
 
     public function __construct()
     {
@@ -197,6 +199,56 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getProfileImage(): ?string
+    {
+        return $this->profileImage;
+    }
+
+    public function setProfileImage(?string $profileImage): static
+    {
+        $this->profileImage = $profileImage;
+
+        return $this;
+    }
+
+    /*
+    * Checking if the user is a borrower or an owner
+    * Used to modify the profile form
+    */
+    public function getUserType(): array
+    {
+        $filteredRoles = [];
+        foreach ($this->roles as $role) {
+        if ($role === 'ROLE_BORROWER' || $role === 'ROLE_OWNER') {
+             $filteredRoles[] = $role;
+             }
+         }
+        return $filteredRoles;
+    }
+
+    /*
+    * Setting the user type
+    * used to modify the profile form
+    */
+    public function setUserType(array $userTypes): void
+    {
+        $filteredRoles = [];
+        foreach($this->roles as $role)
+        {
+            if($role !== 'ROLE_BORROWER' && $role !== 'ROLE_OWNER')
+            {
+                $filteredRoles[] = $role;
+            }
+        }
+        foreach ($userTypes as $userType) {
+            $filteredRoles[] = $userType;
+        }
+
+        $this->roles = $filteredRoles;
+    }
+
+
 
     /**
      * @see UserInterface
