@@ -7,10 +7,12 @@
     <div class="w-3/4 p-6 shadow-lg bg-white rounded-md overflow-hidden">
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-oceanTheme-deepBlue">{{ offer.car.brand }} {{ offer.car.model }}</h1>
-        <div class="flex gap-2">
-          <a href="{{ path('offer_edit', {id: offer.id}) }}" class="blue-button">Edit Offer</a>
-          <a href="{{ path('offer_list') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">Back to List</a>
-        </div>
+        {% if actualUser %}
+          <div class="flex gap-2">
+            <a href="{{ path('offer_edit', {id: offer.id}) }}" class="blue-button">Edit Offer</a>
+            <a href="{{ path('offer_list') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">Back to List</a>
+          </div>
+        {% endif %}
       </div>
 
       <div class="flex flex-col md:flex-row gap-8">
