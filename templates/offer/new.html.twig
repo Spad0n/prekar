@@ -1,0 +1,103 @@
+{% extends 'base_form.html.twig' %}
+
+{% block title %}Create New Offer{% endblock %}
+
+{% block body %}
+  <section class="flex items-center justify-center min-h-screen py-8">
+    <div class="w-3/4 p-6 shadow-lg bg-white rounded-md">
+      <h1 class="text-4xl font-bold text-oceanTheme-deepBlue mb-6">Create a New Car Offer</h1>
+      
+      {% for label, messages in app.flashes %}
+        <div class="mb-4 p-3 rounded-md {% if label == 'success' %}bg-green-100 text-green-700{% elseif label == 'error' %}bg-red-100 text-red-700{% else %}bg-skyTheme-lightCyan text-oceanTheme-navyBlue{% endif %}">
+          {% for message in messages %}
+            <p class="{% if not loop.last %}mb-2{% endif %}">{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endfor %}
+      
+      {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+        
+        <div class="mb-6" x-data="{ showNewCar: false }">
+          <button 
+            type="button" 
+            @click="showNewCar = !showNewCar" 
+            class="transparent-button bg-skyTheme-lightCyan rounded-full mb-4"
+            x-text="showNewCar ? 'Use existing Car' : 'Create a new Car'"
+          >Create a new Car</button>
+          
+          <div 
+            id="existingCarRow" 
+            class="p-4 bg-skyTheme-cream rounded-md transition-all duration-300"
+            x-show="!showNewCar"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform scale-95"
+            x-transition:enter-end="opacity-100 transform scale-100"
+          >
+            <div class="mb-2 font-medium text-oceanTheme-deepBlue">Select Existing Car</div>
+            {{ form_widget(form.existingCar, {'attr': {'class': 'input-field w-full'}}) }}
+            {{ form_errors(form.existingCar, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+          </div>
+          
+          <div 
+            id="newCarRow" 
+            class="p-4 bg-sunsetTheme-paleYellow rounded-md transition-all duration-300"
+            x-show="showNewCar"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform scale-95"
+            x-transition:enter-end="opacity-100 transform scale-100"
+          >
+            <div class="mb-2 font-medium text-oceanTheme-deepBlue">Add New Car Details</div>
+            {{ form_widget(form.newCar, {'attr': {'class': 'space-y-3'}}) }}
+            {{ form_errors(form.newCar, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label class="block font-medium text-oceanTheme-deepBlue">{{ form_label(form.startDate) }}</label>
+            {{ form_widget(form.startDate, {'attr': {'class': 'input-field w-full'}}) }}
+            {{ form_errors(form.startDate, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block font-medium text-oceanTheme-deepBlue">{{ form_label(form.endDate) }}</label>
+            {{ form_widget(form.endDate, {'attr': {'class': 'input-field w-full'}}) }}
+            {{ form_errors(form.endDate, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block font-medium text-oceanTheme-deepBlue">{{ form_label(form.localisationGarage) }}</label>
+            {{ form_widget(form.localisationGarage, {'attr': {'class': 'input-field w-full'}}) }}
+            {{ form_errors(form.localisationGarage, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block font-medium text-oceanTheme-deepBlue">{{ form_label(form.price) }}</label>
+            {{ form_widget(form.price, {'attr': {'class': 'input-field w-full'}}) }}
+            {{ form_errors(form.price, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+            <span class="text-sm text-gray-500">Price per day in euros</span>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <div class="flex items-center">
+            {{ form_widget(form.delivery, {'attr': {'class': 'mr-2'}}) }}
+            <label class="font-medium text-oceanTheme-deepBlue">{{ form_label(form.delivery) }}</label>
+            {{ form_errors(form.delivery, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+          </div>
+          
+          <div class="flex items-center">
+            {{ form_widget(form.available, {'attr': {'class': 'mr-2'}}) }}
+            <label class="font-medium text-oceanTheme-deepBlue">{{ form_label(form.available) }}</label>
+            {{ form_errors(form.available, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+          </div>
+        </div>
+        
+        <div class="flex justify-between mt-8">
+          <a href="{{ path('offer_list') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">Cancel</a>
+          <button type="submit" class="orange-button">Create Offer</button>
+        </div>
+      {{ form_end(form) }}
+    </div>
+  </section>
+{% endblock %}

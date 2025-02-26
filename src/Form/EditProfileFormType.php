@@ -46,7 +46,7 @@ class EditProfileFormType extends AbstractType
                             'image/jpeg',
                             'image/png',
                         ],
-                        'mimeTypesMessage' => 'L\'image doit être soit en JPG soit en PNG',
+                        'mimeTypesMessage' => 'Invalid file type. Please upload a JPG, PNG, or GIF.',
                      ])
                 ],
             ]);

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OfferRepository::class)]
 class Offer
@@ -16,13 +17,17 @@ class Offer
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'offers')]
+    #[ORM\ManyToOne(targetEntity: Car::class, cascade: ['persist'], inversedBy: 'offers')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Car $car = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\Type(\DateTimeInterface::class)]
+    #[Assert\GreaterThanOrEqual("today", message: "Start date cannot be in the past.")]
     private ?\DateTimeInterface $startDate = null;
 
+    #[Assert\Type(\DateTimeInterface::class)]
+    #[Assert\GreaterThan(propertyPath: "startDate", message: "End date must be after the start date.")]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endDate = null;
 
@@ -30,7 +35,7 @@ class Offer
     private ?string $localisationGarage = null;
 
     #[ORM\Column(type: Types::BIGINT)]
-    private ?string $price = null;
+    private ?float $price = null;
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $delivery = null;
@@ -86,12 +91,12 @@ class Offer
         return $this;
     }
 
-    public function getPrice(): ?string
+    public function getPrice(): ?float
     {
         return $this->price;
     }
 
-    public function setPrice(string $price): static
+    public function setPrice(float $price): static
     {
         $this->price = $price;
 
@@ -128,7 +133,7 @@ class Offer
         return $this->car;
     }
 
-    public function setCar(?Car $car): static
+    public function setCar(?Car $car): self
     {
         $this->car = $car;
 

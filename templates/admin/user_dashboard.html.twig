@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+{% block title %}Users Dashboard{% endblock %}
+
+{% block body %}
+
+    <div>
+        <form method="post">
+            <input type="text" name="search_email" value="" class="form-control" placeholder="Mail">
+            <input type="text" name="search_name" value="" class="form-control" placeholder="Name">
+            <input type="text" name="search_lastname" value="" class="form-control" placeholder="Last Name">
+            <button type="submit" class="btn btn-primary mt-2">Search</button>
+        </form>
+    </div>
+    <h2>Users list</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Mail</th>
+            <th>Name</th>
+            <th>Last Name</th>
+            <th>Role</th>
+            <th>is Validated</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.lastname }}</td>
+                <td>{{ user.roles[0] }}</td>
+                <td>
+                    {% if user.validateUser is not null %}
+                        {{ user.validateUser.state }}
+                    {% else %}
+                        undefined
+                    {% endif %}
+                </td>
+
+                <td>
+                    <a href="{{ path('admin_user_profilpage', {'id': user.id}) }}" class="btn btn-danger">Profil</a>
+                </td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
