@@ -82,7 +82,8 @@ final class OfferController extends AbstractController
 
     #[Route('/offer/list', name: 'offer_list')]
     public function list(EntityManagerInterface $entityManager) {
-        $offers = $entityManager->getRepository(Offer::class)->findAll();
+        $user = $this->getUser();
+        $offers = $entityManager->getRepository(Offer::class)->findBy(['userOwner' => $user]);
         return $this->render('offer/list.html.twig', ['offers' => $offers,]);
     }
 
