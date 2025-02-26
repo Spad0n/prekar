@@ -35,7 +35,7 @@ class Offer
     private ?string $localisationGarage = null;
 
     #[ORM\Column(type: Types::BIGINT)]
-    private ?string $price = null;
+    private ?float $price = null;
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $delivery = null;
@@ -91,12 +91,12 @@ class Offer
         return $this;
     }
 
-    public function getPrice(): ?string
+    public function getPrice(): ?float
     {
         return $this->price;
     }
 
-    public function setPrice(string $price): static
+    public function setPrice(float $price): static
     {
         $this->price = $price;
 

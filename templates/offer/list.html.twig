@@ -1,25 +1,67 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_form.html.twig' %}
 
 {% block title %}Offers List{% endblock %}
 
 {% block body %}
-    <h1>Car Offers</h1>
-    <table>
-        <tr>
-            <th>Car</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Price</th>
-            <th>Actions</th>
-        </tr>
-        {% for offer in offers %}
-            <tr>
-                <td>{{ offer.car.brand }} {{ offer.car.model }}</td>
-                <td>{{ offer.startDate|date('Y-m-d') }}</td>
-                <td>{{ offer.endDate ? offer.endDate|date('Y-m-d') : 'N/A' }}</td>
-                <td>{{ offer.price }} €</td>
-                <td><a href="{{ path('offer_view', {id: offer.id}) }}">View</a></td>
+  <section class="flex items-center justify-center h-screen">
+    <div class="w-3/4 h-3/4 p-6 shadow-lg bg-white rounded-md flex flex-col overflow-hidden">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-4xl font-bold text-oceanTheme-navyBlue">Car Offers</h1>
+        <a href="{{ path('offer_new') }}" class="orange-button">Add New Offer</a>
+      </div>
+
+      {% for label, messages in app.flashes %}
+        <div class="flash-{{ label }}">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endfor %}
+      
+      <div class="overflow-auto flex-1">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-skyTheme-lightCyan text-oceanTheme-navyBlue border-b-2 border-skyTheme-skyBlue">
+              <th class="p-3 text-left font-semibold">Car</th>
+              <th class="p-3 text-left font-semibold">Start Date</th>
+              <th class="p-3 text-left font-semibold">End Date</th>
+              <th class="p-3 text-left font-semibold">Price</th>
+              <th class="p-3 text-center font-semibold">Actions</th>
+              <th class="p-3 text-center font-semibold">Images</th>
             </tr>
-        {% endfor %}
-    </table>
+          </thead>
+          <tbody>
+            {% for offer in offers %}
+              <tr class="border-b border-skyTheme-lightCyan hover:bg-sunsetTheme-paleYellow transition-colors duration-150">
+                <td class="p-3 font-medium">{{ offer.car.brand }} {{ offer.car.model }}</td>
+                <td class="p-3">{{ offer.startDate|date('Y-m-d') }}</td>
+                <td class="p-3">{{ offer.endDate ? offer.endDate|date('Y-m-d') : 'N/A' }}</td>
+                <td class="p-3 font-semibold text-oceanTheme-deepBlue">{{ offer.price }} €</td>
+                <td class="p-3 text-center">
+                  <div class="flex justify-center gap-2">
+                    <a href="{{ path('offer_view', {id: offer.id}) }}" class="blue-button">View</a>
+                    <a href="{{ path('offer_edit', {id: offer.id}) }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">Edit</a>
+                  </div>
+                </td>
+                <td>
+                  {% if offer.car.imageFilename %}
+                    <img src="{{ asset('uploads/cars/' ~ offer.car.imageFilename) }}" alt="Car image" width="100">
+                  {% endif %}
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="6" class="p-6 text-center text-gray-500 italic">No offers available at the moment</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="mt-auto pt-4 flex justify-between items-center">
+        <div class="text-sm text-gray-600">Showing {{ offers|length }} offers</div>
+        <a href="#" class="blue-button">Back to Dashboard</a>
+      </div>
+    </div>
+  </section>
 {% endblock %}

@@ -16,7 +16,8 @@ class Car
     #[ORM\Column]
     private ?int $id = null;
 
-
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageFilename = null;
 
     #[ORM\Column(length: 50)]
     private ?string $brand = null;
@@ -137,6 +138,17 @@ class Car
     {
         $this->fuelType = $fuelType;
 
+        return $this;
+    }
+
+    public function getImageFilename(): ?string
+    {
+        return $this->imageFilename;
+    }
+
+    public function setImageFilename(?string $imageFilename): self
+    {
+        $this->imageFilename = $imageFilename;
         return $this;
     }
 
