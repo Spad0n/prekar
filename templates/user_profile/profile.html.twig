@@ -9,13 +9,13 @@
         {# photo part #}
         <div class="profile-header flex-2" >
           {% if app.user.profileImage %}
-    <img src="{{ asset('uploads/profile_images/' ~ app.user.profileImage) }}" alt="Photo de profil" class="profile-image">
-{% else %}
-    <img src="https://placehold.co/200x200/png" alt="Photo de profil par défaut" class="profile-image">
-          <h2 class="mt-2 text-xl text-center">{{ app.user.name }} {{ app.user.lastName }}</h2>
-    {% endif %}
+            <img src="{{ asset('uploads/profile_images/' ~ app.user.profileImage) }}" alt="Photo de profil" class="profile-image" width="200px">
+          {% else %}
+            <img src="https://placehold.co/200x200/png" alt="Photo de profil par défaut" class="profile-image">
+            <h2 class="mt-2 text-xl text-center">{{ app.user.name }} {{ app.user.lastName }}</h2>
+          {% endif %}
 
-    </div>
+        </div>
         {# information #}
         <div class="flex-1 flex flex-col overflow-hidden">
           <h1 class="text-4xl font-bold text-oceanTheme-navyBlue">Information</h1>
