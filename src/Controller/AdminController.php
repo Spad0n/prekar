@@ -251,8 +251,8 @@ class AdminController extends AbstractController
                                  ->setParameter('name', '%' . $name . '%');
                 }
                 if (!empty($lastname)) {
-                    $queryBuilder->andWhere('u.lastname LIKE :lastname')
-                                 ->setParameter('lastname', '%' . $lastname . '%');
+                    $queryBuilder->andWhere('u.lastName LIKE :lastName')
+                                 ->setParameter('lastName', '%' . $lastname . '%');
                 }
 
                 $users = $queryBuilder->getQuery()->getResult();
