@@ -168,7 +168,7 @@ class AdminPanelControllerTest extends WebTestCase
     }
 
     //Test for the user's driver licence
-    public function testFindAcceptDriverLicence(): void {
+    public function testAcceptDriverLicence(): void {
         $crawler = $this->client->request('GET', '/login');
         $submitButton = $crawler->selectButton('Sign in');
         $form = $submitButton->form([
@@ -177,7 +177,7 @@ class AdminPanelControllerTest extends WebTestCase
         ]);
         $this->client->submit($form);
         $this->client->followRedirect();
-
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'user@user.com']);
         $crawlerUser = $this->client->request('GET', '/admin/driver_dashboard');
         $submitUser = $crawlerUser->selectButton('Accept');
         $formUser = $submitUser->form([
