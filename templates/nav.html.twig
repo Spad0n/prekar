@@ -1,4 +1,4 @@
-<nav id="nav" class="bg-gradient-to-t from-[transparent] to-sunsetTheme-lightBlue text-secondary py-3 fixed w-full transition duration-200">
+<nav id="nav" class="px-16 bg-gradient-to-t from-[transparent] to-sunsetTheme-lightBlue text-secondary py-3 fixed w-full transition duration-200">
   <div class="container mx-auto flex items-center justify-between">
     <!-- Left Side: Logo and Links -->
     <div class="flex items-center space-x-1">
@@ -55,15 +55,14 @@
       </div>
     </div>
   </div>
+  <script>
+   document.addEventListener('scroll', () => {
+       const nav = document.getElementById('nav');
+       if (window.scrollY > 0) {
+           nav.classList.add('backdrop-blur-md');
+       } else {
+           nav.classList.remove('backdrop-blur-md');
+       }
+   });
+  </script>
 </nav>
-
-<script>
- document.addEventListener('scroll', () => {
-     const nav = document.getElementById('nav');
-     if (window.scrollY > 0) {
-         nav.classList.add('backdrop-blur-md');
-     } else {
-         nav.classList.remove('backdrop-blur-md');
-     }
- });
-</script>
