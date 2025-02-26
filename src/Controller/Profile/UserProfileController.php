@@ -16,6 +16,7 @@ final class UserProfileController extends AbstractController
         }
         return $this->render('user_profile/profile.html.twig', [
             'controller_name' => 'UserProfileController',
+            'profile_image' => $this->getUser()->getProfileImage()
         ]);
     }
 }
