@@ -4,6 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\Admin;
 use App\Entity\User;
+use App\Entity\ValidateUser;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -12,6 +13,7 @@ class AdminPanelControllerTest extends WebTestCase
 {
     private $client;
     private $entityManager;
+    private $userId;
 
     public function setUp(): void
     {
@@ -57,7 +59,19 @@ class AdminPanelControllerTest extends WebTestCase
         $hashedPassword = $passwordHasher->hashPassword($user2, 'user');
         $user2->setPassword($hashedPassword);
 
+
+
         $this->entityManager->persist($user2);
+        $this->entityManager->flush();
+
+        $existingUser3 = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'user@user.com']);
+        $this->userId = $existingUser3->getId();
+
+
+        $userValidate = new ValidateUser();
+        $userValidate->setUser($existingUser3);
+        $userValidate->setState('Pending');
+        $this->entityManager->persist($userValidate);
         $this->entityManager->flush();
     }
 
@@ -167,8 +181,9 @@ class AdminPanelControllerTest extends WebTestCase
         $this->assertEquals(0, $clientnb);
     }
 
+
     //Test for the user's driver licence
-    public function testAcceptDriverLicence(): void {
+    public function testAcceptDriverLicenceFindUsertwo(): void {
         $crawler = $this->client->request('GET', '/login');
         $submitButton = $crawler->selectButton('Sign in');
         $form = $submitButton->form([
@@ -177,34 +192,14 @@ class AdminPanelControllerTest extends WebTestCase
         ]);
         $this->client->submit($form);
         $this->client->followRedirect();
-        //Filter the offer so it shows only the user we want to accept
-        $checkboxPending = $crawler->filter('input[type=checkbox]')->eq(0);
-        $checkboxPending->
-        $this->client->submit($crawler->selectButton('Apply filter')->form());
 
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'user@user.com']);
-        $crawlerUser = $this->client->request('GET', '/admin/driver_dashboard');
-            // Output the HTML content for debugging
-            file_put_contents('debug.html', $crawlerUser->html());
-        $submitUser = $crawlerUser->selectButton('Accept');
-        $formUser = $submitUser->form([
-            'user_id' => $user->getId(),
-        ]);
+        $this->client->request('POST', '/admin/driver_dashboard', ['filters' => ['Pending']]);
 
-
-        $this->client->submit($formUser);
         $this->assertResponseIsSuccessful();
+        $nbPending = $this->client->getCrawler()->filter('tbody')->count();
+        dump($this->client->getCrawler()->filter('tbody')->html());
 
-
-
-
-
-
+        $this->assertEquals(1, $nbPending);
     }
-
-
-
-
-
 
 }

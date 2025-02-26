@@ -14,7 +14,7 @@
             <input type="checkbox" name="filters[]" value="Pending" {% if "Pending" in state %}checked{% endif %}> Pending
             <input type="checkbox" name="filters[]" value="Accepted" {% if "Accepted" in state %}checked{% endif %}> Accepted
             <input type="checkbox" name="filters[]" value="Denied" {% if "Denied" in state %}checked{% endif %}> Denied
-            <button type="submit" class="btn btn-primary mt-2">Apply Filter</button>
+            <button type="submit" name="apply" class="btn btn-primary mt-2" value="apply">Apply Filter</button>
         </form>
 
     </div>
@@ -63,7 +63,8 @@
                             </td>
                             <td class="py-3 px-6 text-center">
                                 {% if driver.state == 'Pending' %}
-                                <button type="submit"  name="action" value="accept_{{ driver.id }}" class="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600 transition">
+                                <button type="submit"  name="action
+" value="accept_{{ driver.id }}" class="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600 transition">
                                     Accept
                                 </button>
                                 <button type="submit" name="action" value="deny_{{ driver.id }}" class="bg-red-500 text-black px-4 py-2 rounded hover:bg-red-600 transition ml-2">
