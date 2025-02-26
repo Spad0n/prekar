@@ -177,12 +177,21 @@ class AdminPanelControllerTest extends WebTestCase
         ]);
         $this->client->submit($form);
         $this->client->followRedirect();
+        //Filter the offer so it shows only the user we want to accept
+        $checkboxPending = $crawler->filter('input[type=checkbox]')->eq(0);
+        $checkboxPending->
+        $this->client->submit($crawler->selectButton('Apply filter')->form());
+
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'user@user.com']);
         $crawlerUser = $this->client->request('GET', '/admin/driver_dashboard');
+            // Output the HTML content for debugging
+            file_put_contents('debug.html', $crawlerUser->html());
         $submitUser = $crawlerUser->selectButton('Accept');
         $formUser = $submitUser->form([
             'user_id' => $user->getId(),
         ]);
+
+
         $this->client->submit($formUser);
         $this->assertResponseIsSuccessful();
 
