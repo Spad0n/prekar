@@ -27,11 +27,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var list<string> The user roles
      */
-    #[ORM\Column]
+    #[ORM\Column(type: 'json', nullable: true)]
     private array $roles = [];
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $profileImage = null;
 
 
     /**
@@ -107,7 +104,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $cars;
 
     /**
-     * Offers made by the owner
      * @var Collection<int, Offer>
      */
     #[ORM\OneToMany(targetEntity: Offer::class, mappedBy: 'userOwner')]
@@ -118,6 +114,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'userOwner')]
     private Collection $payments;
+
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?ValidateUser $validateUser = null;
 
 
     public function __construct()
@@ -146,17 +145,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->email = $email;
 
-        return $this;
-    }
-
-    public function getProfileImage(): ?string
-    {
-        return $this->profileImage;
-    }
-
-    public function setProfileImage(?string $profileImage): static
-    {
-        $this->profileImage = $profileImage;
         return $this;
     }
 
@@ -539,38 +527,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /*
-     * Checking if the user is a borrower or an owner
-     * Used to modify the profile form
-     */
-    public function getUserType(): array
+    public function getValidateUser(): ?ValidateUser
     {
-        $filteredRoles = [];
-        foreach ($this->roles as $role) {
-            if ($role === 'ROLE_BORROWER' || $role === 'ROLE_OWNER') {
-                $filteredRoles[] = $role;
-            }
-        }
-        return $filteredRoles;
+        return $this->validateUser;
     }
 
-    /*
-     * Setting the user type
-     * Used to modify the profile form
-     */
-    public function setUserType(array $userTypes): void
+    public function setValidateUser(ValidateUser $validateUser): static
     {
-        $filteredRoles = [];
-        foreach ($this->roles as $role) {
-            if ($role !== 'ROLE_BORROWER' && $role !== 'ROLE_OWNER') {
-                $filteredRoles[] = $role;
-            }
+        // set the owning side of the relation if necessary
+        if ($validateUser->getUser() !== $this) {
+            $validateUser->setUser($this);
         }
-        foreach ($userTypes as $userType) {
-            $filteredRoles[] = $userType;
-        }
-        $this->roles = $filteredRoles;
+
+        $this->validateUser = $validateUser;
+
+        return $this;
     }
-
-
 }
