@@ -167,6 +167,32 @@ class AdminPanelControllerTest extends WebTestCase
         $this->assertEquals(0, $clientnb);
     }
 
+    //Test for the user's driver licence
+    public function testFindAcceptDriverLicence(): void {
+        $crawler = $this->client->request('GET', '/login');
+        $submitButton = $crawler->selectButton('Sign in');
+        $form = $submitButton->form([
+            'email' => 'admin@admin.com',
+            'password' => 'admin',
+        ]);
+        $this->client->submit($form);
+        $this->client->followRedirect();
+
+        $crawlerUser = $this->client->request('GET', '/admin/driver_dashboard');
+        $submitUser = $crawlerUser->selectButton('Accept');
+        $formUser = $submitUser->form([
+            'user_id' => $user->getId(),
+        ]);
+        $this->client->submit($formUser);
+        $this->assertResponseIsSuccessful();
+
+
+
+
+
+
+    }
+
 
 
 
