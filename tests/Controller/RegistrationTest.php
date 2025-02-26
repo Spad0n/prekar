@@ -2,17 +2,9 @@
 
 namespace App\tests\Controller;
 
-use App\Controller\RegistrationController;
 use App\Entity\Borrower;
 use App\Entity\Owner;
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class RegistrationTest extends WebTestCase

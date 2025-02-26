@@ -1,17 +1,15 @@
 {% extends 'base_form.html.twig' %}
 
+{% block title %}Profil{% endblock %}
+
 {% block body %}
 <section class="flex items-center justify-center h-screen">
 {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'class': 'w-96 p-6 shadow-lg bg-white rounded-md'}}) }}
-  <h1 class="text-3xl block text-center font-semibold text-oceanTheme-navyBlue">Register</h1>
+  <h1 class="text-3xl block text-center font-semibold">Profil</h1>
   <hr class="mt-3">
   <div class="mt-3">
     {{ form_label(form.email) }}
     {{ form_widget(form.email, {'attr': {'class': 'form-control mt-2 w-full input-field'}}) }}
-  </div>
-  <div class="mt-3">
-    {{ form_label(form.password) }}
-    {{ form_widget(form.password, {'attr': {'class': 'form-control mt-2 w-full input-field'}}) }}
   </div>
   <div class="mt-3">
     {{ form_label(form.lastName) }}
@@ -29,7 +27,8 @@
   {% endfor %}
   {# {{ form_row(form.profileImage) }} #}
 
-  <button class="blue-button mt-3" type="submit" name="submit">Sign-up</button>
+  <button class="blue-button mt-3" type="submit" name="submit">Submit</button>
+  <button class="ml-3 orange-button" href="{{ path('app_user_profile') }}">Cancel</a>
 {{ form_end(form) }}
 </section>
 {% endblock %}
