@@ -31,6 +31,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profileImage = null;
+
+
     /**
      * @var string The hashed password
      */
@@ -104,6 +108,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $cars;
 
     /**
+     * Offers made by the owner
      * @var Collection<int, Offer>
      */
     #[ORM\OneToMany(targetEntity: Offer::class, mappedBy: 'userOwner')]
@@ -145,6 +150,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->email = $email;
 
+        return $this;
+    }
+
+    public function getProfileImage(): ?string
+    {
+        return $this->profileImage;
+    }
+
+    public function setProfileImage(?string $profileImage): static
+    {
+        $this->profileImage = $profileImage;
         return $this;
     }
 
@@ -543,4 +559,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /*
+     * Checking if the user is a borrower or an owner
+     * Used to modify the profile form
+     */
+    public function getUserType(): array
+    {
+        $filteredRoles = [];
+        foreach ($this->roles as $role) {
+            if ($role === 'ROLE_BORROWER' || $role === 'ROLE_OWNER') {
+                $filteredRoles[] = $role;
+            }
+        }
+        return $filteredRoles;
+    }
+
+    /*
+     * Setting the user type
+     * Used to modify the profile form
+     */
+    public function setUserType(array $userTypes): void
+    {
+        $filteredRoles = [];
+        foreach ($this->roles as $role) {
+            if ($role !== 'ROLE_BORROWER' && $role !== 'ROLE_OWNER') {
+                $filteredRoles[] = $role;
+            }
+        }
+        foreach ($userTypes as $userType) {
+            $filteredRoles[] = $userType;
+        }
+        $this->roles = $filteredRoles;
+    }
+
+
 }
