@@ -29,7 +29,7 @@ final class OfferController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $existingCar = $form->get('existingCar')->getData();
             $newCar = $form->get('newCar')->getData();
-            if ($existingCar) {
+            if ($existingCar && $existingCar->getBrand()) {
                 foreach($existingCar->getOffers() as $existingOffer) {
                     if($existingOffer->getStartDate() <= $offer->getEndDate() && $existingOffer->getEndDate() >= $offer->getStartDate()) {
                         $this->addFlash('error', 'You have another offer for this car during this period.');
@@ -38,7 +38,7 @@ final class OfferController extends AbstractController
                 }
 
                 $offer->setCar($existingCar);
-            } elseif ($newCar) {
+            } elseif ($newCar && $newCar->getBrand()) {
                 $newCar->setUserOwner($this->getUser());
                 $entityManager->persist($newCar);
                 $offer->setCar($newCar);
