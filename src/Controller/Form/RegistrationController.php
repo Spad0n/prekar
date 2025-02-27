@@ -4,6 +4,7 @@ namespace App\Controller\Form;
 use App\Entity\Borrower;
 use App\Entity\Owner;
 use App\Entity\User;
+use App\Entity\ValidateUser;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -68,6 +69,15 @@ public function index(
 
         $entityManager->persist($user);
         $entityManager->flush();
+
+            $validateUser = new ValidateUser();
+            $validateUser->setState('Pending');
+            $validateUser->setUser($user);
+
+
+            $entityManager->persist($user);
+            $entityManager->persist($validateUser);
+            $entityManager->flush();
 
         return $this->redirectToRoute('app_login');
     } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {

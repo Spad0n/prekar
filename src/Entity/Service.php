@@ -21,8 +21,10 @@ class Service
     #[ORM\OneToOne(mappedBy: 'apply', cascade: ['persist', 'remove'])]
     private ?Payment $payment = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'services')]
     private ?Admin $admin = null;
+
+
 
     public function getId(): ?int
     {
@@ -76,4 +78,6 @@ class Service
 
         return $this;
     }
+
+
 }

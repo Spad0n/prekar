@@ -11,8 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Admin extends User
 {
 
-
-
     /**
      * @var Collection<int, Payment>
      */
@@ -26,11 +24,18 @@ class Admin extends User
     #[ORM\JoinTable(name: 'user_banned')]
     private Collection $banned;
 
+    /**
+     * @var Collection<int, Service>
+     */
+    #[ORM\OneToMany(targetEntity: Service::class, mappedBy: 'admin')]
+    private Collection $services;
+
     public function __construct()
     {
         parent::__construct();
         $this->paymentsAdmin = new ArrayCollection();
         $this->banned = new ArrayCollection();
+        $this->services = new ArrayCollection();
     }
 
 
@@ -87,6 +92,36 @@ class Admin extends User
     public function removeBanned(User $banned): static
     {
         $this->banned->removeElement($banned);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Service>
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(Service $service): static
+    {
+        if (!$this->services->contains($service)) {
+            $this->services->add($service);
+            $service->setAdmin($this);
+        }
+
+        return $this;
+    }
+
+    public function removeService(Service $service): static
+    {
+        if ($this->services->removeElement($service)) {
+            // set the owning side to null (unless already changed)
+            if ($service->getAdmin() === $this) {
+                $service->setAdmin(null);
+            }
+        }
 
         return $this;
     }

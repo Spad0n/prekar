@@ -39,6 +39,9 @@
       <div>
         <button class="transparent-button">Help</button>
         {% if app.user %}
+          {% if app.user.roles is defined and 'ROLE_ADMIN' in app.user.roles %}
+            <a href={{path('admin_panel')}} class="transparent-button">Admin</a>
+          {% endif %}
           <a href={{path('app_logout')}} class="transparent-button">Log out</a>
           <a href={{path('app_user_profile')}} class="orange-button">Profile</a>
         {% else %}
