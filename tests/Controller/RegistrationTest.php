@@ -26,7 +26,7 @@ class RegistrationTest extends WebTestCase
 
         $email = 'test' . uniqid() . '@test.fr';
         $form['registration_form[email]'] = $email;
-        $form['registration_form[password]'] = 'test123';
+        $form['registration_form[password]'] = 'Test123*';
         $form['registration_form[lastName]'] = 'test';
         $form['registration_form[name]'] = 'test';
         $form['registration_form[userType][0]'] = true;
@@ -49,8 +49,8 @@ class RegistrationTest extends WebTestCase
 
                 // Verifying user's data
                 $this->assertEquals($email, $user->getEmail());
-                $this->assertEquals('test', $user->getPrenom());
-                $this->assertEquals('test', $user->getNom());
+                $this->assertEquals('test', $user->getName());
+                $this->assertEquals('test', $user->getLastname());
                 $this->assertTrue(in_array('ROLE_BORROWER', $user->getRoles()));
 
 
@@ -72,7 +72,7 @@ public function testValidRegistrationOwner(): void
 
         $email = 'test' . uniqid() . '@test.fr';
         $form['registration_form[email]'] = $email;
-        $form['registration_form[password]'] = 'test123';
+        $form['registration_form[password]'] = 'Test123*';
         $form['registration_form[lastName]'] = 'test';
         $form['registration_form[name]'] = 'test';
         $form['registration_form[userType][1]'] = true;
@@ -95,8 +95,8 @@ public function testValidRegistrationOwner(): void
 
                 // Verifying user's data
                 $this->assertEquals($email, $user->getEmail());
-                $this->assertEquals('test', $user->getPrenom());
-                $this->assertEquals('test', $user->getNom());
+                $this->assertEquals('test', $user->getName());
+                $this->assertEquals('test', $user->getLastname());
                 $this->assertTrue(in_array('ROLE_OWNER', $user->getRoles()));
 
 
