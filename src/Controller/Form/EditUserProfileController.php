@@ -37,7 +37,7 @@ final class EditUserProfileController extends AbstractController
                     $form->addError(new FormError('Invalid file type. Please upload a JPG, PNG, or GIF.'));
 
                     return $this->render('user_profile/edit_information.html.twig', [
-                        'form' => $form->createView(),
+                        'form' => $form,
                     ]);
                 }
     
@@ -55,7 +55,7 @@ final class EditUserProfileController extends AbstractController
                     $form->addError(new FormError('An error occurred while uploading the image.'));
                     
                     return $this->render('user_profile/edit_information.html.twig', [
-                        'form' => $form->createView(),
+                        'form' => $form,
                     ]);
                 }
             }
@@ -68,7 +68,7 @@ final class EditUserProfileController extends AbstractController
         }
     
         return $this->render('user_profile/edit_information.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }    
 }

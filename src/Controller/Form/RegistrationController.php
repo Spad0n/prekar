@@ -87,7 +87,7 @@ public function index(
 }
 
     return $this->render('registration/registration.html.twig', [
-        'form' => $form->createView(),                                  
+        'form' => $form,                                  
     ]);
 }
 }
