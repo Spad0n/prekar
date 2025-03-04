@@ -80,8 +80,8 @@ class AdminController extends AbstractController
 
                 if ($newCommission !== null && $payments_selected !== null) {
 
-                    foreach ($payments_selected as $payment) {
-                        $payment = $entityManager->getRepository(Payment::class)->find($payment);
+                    foreach ($payments_selected as $payment_id) {
+                        $payment = $entityManager->getRepository(Payment::class)->find($payment_id);
                         $payment->getApply()->setServiceFee((float) $newCommission);
                         $entityManager->flush();
                         $this->SendPayment($entityManager, $payment_id);
@@ -289,6 +289,7 @@ class AdminController extends AbstractController
     public function visitUser(int $id, EntityManagerInterface $entityManager): Response
     {
         $user = $entityManager->getRepository(User::class)->find($id);
+        $driverLicence = $entityManager->getRepository(ValidateUser::class)->findOneBy(['user' => $user]);
         if(!$user)
         {
             throw $this->createNotFoundException('User not found');
@@ -296,6 +297,8 @@ class AdminController extends AbstractController
 
         return $this->render('admin/adminprofil.html.twig', [
             'user' => $user,
+            'driverLicence' => $driverLicence,
+            'profile_image' => $user->getProfileImage()
         ]);
     }
 
