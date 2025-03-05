@@ -12,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class OfferFormType extends AbstractType
 {
@@ -31,6 +33,12 @@ class OfferFormType extends AbstractType
                 ->add('localisationGarage', TextType::class, [
                     'required' => false,
                     'label' => 'Garage Location',
+                    'constraints' => [
+                        new Regex([
+                            'pattern' => '/^\d+\s+[\p{L}\p{N}\s\'-]+,\s+[\p{L}\p{N}\s\'-]+$/u',
+                            'message' => 'The address is not valid. Example: 1 Bd des Aiguillettes, Vandœuvre-lès-Nancy',
+                        ]),
+                    ],
                 ])
                 ->add('price', MoneyType::class, [
                     'currency' => 'EUR',
@@ -90,7 +98,13 @@ class OfferFormType extends AbstractType
                 ->add('price', MoneyType::class, [
                     'currency' => 'EUR',
                     'label' => 'Price',
-                    'attr' => ['min' => 100],
+                    'attr' => ['min' => 99],
+                    'constraints' => [
+                        new Assert\GreaterThan([
+                            'value' => 99,
+                            'message' => 'The price must be greater than 99.',
+                        ]),
+                    ],
                 ])
                 ->add('delivery', ChoiceType::class, [
                     'choices' => [
@@ -106,6 +120,7 @@ class OfferFormType extends AbstractType
                         'Not Available' => 'not_available',
                     ],
                     'label' => 'Availability',
+                    'mapped' => true,
                 ]);
         }
     }
