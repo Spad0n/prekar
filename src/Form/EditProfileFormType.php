@@ -20,16 +20,13 @@ class EditProfileFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $user = $options['data'];
-        $currentRoles = $user->getUserType(); // On récupère seulement ROLE_BORROWER et ROLE_OWNER
+        $currentRoles = $user->getUserType();
 
         $choices = [
-            'Emprunteur' => 'ROLE_BORROWER',
-            'Propriétaire' => 'ROLE_OWNER',
+            'Borrower' => 'ROLE_BORROWER',
+            'Owner' => 'ROLE_OWNER',
         ];
-
-        // Gestion des rôles désactivés
-        $disabledChoices = array_fill_keys($currentRoles, true); // Désactiver les rôles existants
-
+        $disabledChoices = array_fill_keys($currentRoles, true);
         $builder
             ->add('email', EmailType::class)
             ->add('lastName', TextType::class)
@@ -51,7 +48,7 @@ class EditProfileFormType extends AbstractType
                 ],
             ])
             ->add('profileImage', FileType::class, [
-                'label' => 'Photo de profil',
+                'label' => 'Profile picture',
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
