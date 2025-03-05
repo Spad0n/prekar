@@ -29,6 +29,10 @@
     </div>
   {% endfor %}
   <div class="text-red-500">{{ form_errors(form.userType) }}</div>
+  <div class="my-2">
+    {{ form_label(form.profileImage) }}
+    {{ form_widget(form.profileImage, {'attr': {'class': 'mt-2'}}) }}
+  </div>
   {# {{ form_row(form.profileImage) }} #}
 
   <button class="blue-button mt-3" type="submit" name="submit">Submit</button>
