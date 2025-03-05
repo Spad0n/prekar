@@ -18,8 +18,24 @@ class CarType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('brand', TextType::class, ['label' => 'Brand'])
-            ->add('model', TextType::class, ['label' => 'Model'])
+        ->add('brand', TextType::class, [
+            'label' => 'Brand',
+            'constraints' => [
+                new Assert\Regex([
+                    'pattern' => '/^[a-zA-Z\s]+$/',
+                    'message' => 'The brand can only contain letters.',
+                ]),
+            ],
+        ])
+        ->add('model', TextType::class, [
+            'label' => 'Model',
+            'constraints' => [
+                new Assert\Regex([
+                    'pattern' => '/^[a-zA-Z0-9\s]+$/',
+                    'message' => 'The model can only contain letters and numbers.',
+                ]),
+            ],
+        ])
             ->add('registration', TextType::class, [
                 'label' => 'Registration',
                 'constraints' => [
