@@ -21,7 +21,10 @@ class EditProfileFormType extends AbstractType
         $user = $options['data'];
         $currentRoles = $user->getRoles();
         $builder
-            ->add('email', EmailType::class)
+            ->add('email', EmailType::class, [
+                'disabled' => true,
+                ]
+            )
             ->add('lastName', TextType::class)
             ->add('name', TextType::class)
             ->add('userType', ChoiceType::class, [

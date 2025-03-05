@@ -9,7 +9,7 @@
   <hr class="mt-3">
   <div class="mt-3">
     {{ form_label(form.email) }}
-    {{ form_widget(form.email, {'attr': {'class': 'form-control mt-2 w-full input-field'}}) }}
+    {{ form_widget(form.email, {'attr': {'class': 'form-control mt-2 w-full input-field','readonly' : 'readonly','style' : 'background-color: gray;'}}) }}
   </div>
   <div class="mt-3">
     {{ form_label(form.lastName) }}
