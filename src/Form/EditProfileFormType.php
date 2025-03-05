@@ -39,11 +39,16 @@ class EditProfileFormType extends AbstractType
                 'label' => 'Account Type',
                 'multiple' => true,
                 'expanded' => true,
-                'mapped' => false, // On ne mappe pas directement
-                'data' => $currentRoles, // Pré-sélectionner les rôles actuels
+                'mapped' => false,
+                'data' => $currentRoles,
                 'choice_attr' => function ($choice, $key, $value) use ($disabledChoices) {
                     return isset($disabledChoices[$value]) ? ['disabled' => 'disabled'] : [];
                 },
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'You must select one or more roles.',
+                    ]),
+                ],
             ])
             ->add('profileImage', FileType::class, [
                 'label' => 'Photo de profil',
