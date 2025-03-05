@@ -35,7 +35,7 @@ class RegistrationFormType extends AbstractType
                     'minMessage' => 'Your password should be at least {{ limit }} characters',
                 ]),
                 new Regex([
-                    'pattern' => '/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
+                    'pattern' => '/^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$/',
                     'message' => 'Your password must contain at least one uppercase letter, one lowercase letter, one number and one special character'
                 ])
             ]
@@ -50,7 +50,7 @@ class RegistrationFormType extends AbstractType
                         'maxMessage' => 'Votre nom ne peut pas dépasser {{ limit }} caractères'
                     ]),
                     new Regex([
-                        'pattern' => '/^[a-zA-ZÀ-ÿ\s\'-]+$/',
+                        'pattern' => '/^[a-zA-ZÀ-ÿ\\s\'-]+$/',
                         'message' => 'Votre nom ne peut contenir que des lettres, espaces, tirets et apostrophes'
                     ])
                 ]
@@ -65,7 +65,7 @@ class RegistrationFormType extends AbstractType
                         'maxMessage' => 'Votre prénom ne peut pas dépasser {{ limit }} caractères'
                     ]),
                     new Regex([
-                        'pattern' => '/^[a-zA-ZÀ-ÿ\s\'-]+$/',
+                        'pattern' => '/^[a-zA-ZÀ-ÿ\\s\'-]+$/',
                         'message' => 'Votre prénom ne peut contenir que des lettres, espaces, tirets et apostrophes'
                     ])
                 ]

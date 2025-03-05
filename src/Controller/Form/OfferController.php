@@ -76,7 +76,7 @@ final class OfferController extends AbstractController
     }
     
     return $this->render('offer/new.html.twig', [
-        'form' => $form->createView(),
+        'form' => $form,
     ]);
 }
 
@@ -149,7 +149,7 @@ public function edit(Request $request, EntityManagerInterface $entityManager, in
         }
         
         return $this->render('offer/edit.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'offer' => $offer
         ]);
     }
