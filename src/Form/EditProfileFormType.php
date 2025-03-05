@@ -13,30 +13,37 @@ use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class EditProfileFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options, ): void
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $user = $options['data'];
-        $currentRoles = $user->getRoles();
+        $currentRoles = $user->getUserType(); // On récupère seulement ROLE_BORROWER et ROLE_OWNER
+
+        $choices = [
+            'Emprunteur' => 'ROLE_BORROWER',
+            'Propriétaire' => 'ROLE_OWNER',
+        ];
+
+        // Gestion des rôles désactivés
+        $disabledChoices = array_fill_keys($currentRoles, true); // Désactiver les rôles existants
+
         $builder
-            ->add('email', EmailType::class, [
-                'disabled' => true,
-                ]
-            )
+            ->add('email', EmailType::class)
             ->add('lastName', TextType::class)
             ->add('name', TextType::class)
             ->add('userType', ChoiceType::class, [
-                'choices' => [
-                    'Emprunteur' => 'ROLE_BORROWER',
-                    'Propriétaire' => 'ROLE_OWNER',
-                ],
+                'choices' => $choices,
                 'label' => 'Account Type',
                 'multiple' => true,
                 'expanded' => true,
-                'mapped' => true,
-                'disabled' => true,
+                'mapped' => false, // On ne mappe pas directement
+                'data' => $currentRoles, // Pré-sélectionner les rôles actuels
+                'choice_attr' => function ($choice, $key, $value) use ($disabledChoices) {
+                    return isset($disabledChoices[$value]) ? ['disabled' => 'disabled'] : [];
+                },
             ])
             ->add('profileImage', FileType::class, [
                 'label' => 'Photo de profil',
@@ -50,7 +57,7 @@ class EditProfileFormType extends AbstractType
                             'image/png',
                         ],
                         'mimeTypesMessage' => 'Invalid file type. Please upload a JPG, PNG, or GIF.',
-                     ])
+                    ])
                 ],
             ]);
     }
