@@ -142,7 +142,11 @@ public function edit(Request $request, EntityManagerInterface $entityManager, in
                     return $this->redirectToRoute('offer_edit', ['id' => $id]);
                 }
             }
-            
+
+            /* Check for available conflicts */
+            $available = $form->get('available')->getData();
+
+
             $entityManager->flush();
             $this->addFlash('success', 'Offer and car details updated successfully.');
             return $this->redirectToRoute('offer_list');
