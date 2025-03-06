@@ -1,118 +1,79 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_form.html.twig' %}
 
-{% block title %}Hello UserProfileController!{% endblock %}
+{% block title %}Profil{% endblock %}
 
 {% block body %}
-<style>
-    .wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .wrapper code { background: #F5F5F5; padding: 2px 6px; }
-
-    .profile-header { display : flex; align-items: end;}
-    .profile-header img{ margin-left: 20px;}
-    .test{ background-color: #bebeff;}
-    .title{
-        font-size: 28px;
-        letter-spacing: -2px;
-        word-spacing: 2px;
-        font-weight: 700;
-        text-decoration: underline rgb(68, 68, 68);
-        font-style: normal;
-        font-variant: small-caps;
-        text-transform: capitalize;}
-
-    .titleRole{
-        font-size: 25px;
-        letter-spacing: -2px;
-        word-spacing: 2px;
-        color: #956E72;
-        font-weight: 700;
-        text-decoration: rgb(68, 68, 68);
-        font-style: normal;
-        font-variant: small-caps;
-        text-transform: capitalize;
-    }
-
-</style>
-
-<div class="wrapper">
-    <div class="profile-header" >
-        <h2>  {{ app.user.name }} </h2>
-        <img src="https://placehold.co/200x200/png" alt="Photo de profil par défaut" class="profile-image">
+  <section class="flex items-center justify-center h-screen">
+    <div class="w-3/4 h-3/4 p-6 shadow-lg bg-white rounded-md flex flex-col">
+      <div class="flex justify-between gap-10 flex-1 overflow-hidden">
+        {# photo part #}
+        <div class="profile-header flex-2" >
+          <img src="https://placehold.co/200x200/png" alt="Photo de profil par dÃ©faut" class="profile-image">
+          <h2 class="mt-2 text-xl text-center">{{ app.user.name }} {{ app.user.lastName }}</h2>
+        </div>
+        {# information #}
+        <div class="flex-1 flex flex-col overflow-hidden">
+          <h1 class="text-4xl font-bold text-oceanTheme-navyBlue">Information</h1>
+          <hr class="my-4">
+          {# BORROWER INFORMATION #}
+          <div class="flex flex-col overflow-auto">
+            {% if is_granted('ROLE_BORROWER') %}
+              <div class="text-2xl">Borrower</div>
+              {% if app.user.startSub is not null %}
+                <div>Subcription start date : {{ startSub|date('Y-m-d') }}</div>
+                <br>
+                <div>Subcription end date : {{ startSub|date('Y-m-d') }}</div>
+                <br>
+              {% else %}
+                <div>No subscription</div>
+              {% endif %}
+              <br>
+              {# Renting made by the borrower #}
+              {% if app.user.rentings is empty %}
+                <div>No renting</div>
+              {% else %}
+                <div>Rentings:</div>
+                <ul class="overflow-y-auto max-h-36">
+                  {% for renting in app.user.rentings %}
+                    <li> {{ renting.car.brand }} {{ renting.car.model }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+              <hr class="my-4">
+            {% endif %}
+            {# OWNER INFORMATION #}
+            {% if is_granted('ROLE_OWNER') %}
+              {# car owner by the owner #}
+              <div class="text-2xl">Owner</div>
+              {% if app.user.cars is empty %}
+                <div>No car</div>
+              {% else %}
+                <div>Cars: </div>
+                <ul class="overflow-y-auto max-h-36">
+                  {% for car in app.user.cars %}
+                    <li>{{ car.brand }} {{ car.model }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+              <br>
+              {# Offer made by the owner #}
+              {% if app.user.offers is empty %}
+                <div>No offer</div>
+              {% else %}
+                <div>Offers: </div>
+                <ul class="overflow-y-auto max-h-36">
+                  {% for offer in app.user.offers %}
+                    <li>{{ offer.car.brand }} {{ offer.car.model }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            {% endif %}
+          </div>
+          <div class="flex justify-end mt-auto pt-4">
+            <a class="blue-button" href="{{ path('app_edit_user_profile') }}">Modify informations</a>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <a class="test" href={{path('app_edit_user_profile')}}>Modify informations</a> {# NEED TO CHANGE THE PATH WHEN FORM IS READY #}
-    <br>
-    <h1 class="title"> Informations : </h1>
-    <ul>
-
-
-    {% if is_granted('ROLE_BORROWER') %}
-        {# ----------------- BORROWER INFORMATIONS ----------------- #}
-         <li class="titleRole">  Borrower </li>
-        {# checking if the user have a sub on #}
-
-        {% if app.user.startSub is not null %}
-            <br>
-            Subscription start date : {{ startSub|date('Y-m-d') }}
-            <br>
-            Subscription end date : {{ endSub|date('Y-m-d') }}
-        {% else %}
-            <br>
-            No subscription
-        {% endif %}
-        {# Renting made by the borrower#}
-
-        {% if app.user.rentings is empty  %}
-            <br>
-            No renting
-        {% else %}
-            <br>
-            Rentings :
-            <ul>
-                {% for renting in app.user.rentings %}
-                    <li> {{ renting.car.brand }} {{ renting.car.model }} </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
-    {% endif %}
-
-    {% if is_granted('ROLE_OWNER') %}
-        <br>
-
-        {# ----------------- OWNER INFORMATIONS ----------------- #}
-        <li class="titleRole"> Owner </li>
-        {# car owned by the owner#}
-
-        {% if app.user.cars is empty  %}
-            <br>
-            No car
-        {% else %}
-            Cars :
-            <ul>
-                {% for car in app.user.cars %}
-                    <li> {{ car.brand }} {{ car.model }} </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-        {# Offer made by the owner#}
-
-        {%  if app.user.offers is empty  %}
-            <br>
-            No offer
-        {% else %}
-            <br>
-            <a class = "test" href={{ path('offer_list') }}> Offers : </a>
-            <ul>
-                {% for offer in app.user.offers %}
-                    <li> from {{ offer.startDate|date('d-m-y') }} to {{ offer.endDate|date('d-m-y')}} : {{ offer.car.brand }} {{ offer.car.model }} | {{ offer.localisationGarage}}  </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endif %}
-
-    </ul>
-
-
-</div>
+  </section>
 {% endblock %}

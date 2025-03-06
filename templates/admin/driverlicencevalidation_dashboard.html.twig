@@ -1,0 +1,84 @@
+{% extends 'base_form.html.twig' %}
+{% block title %}Driver licence Dashboard{% endblock %}
+
+{% block body %}
+    <div class="pt-16">
+    <h1>Driver licence dashboard</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    <div class="p-6">
+        <form method="post">
+
+            <input type="checkbox" name="filters[]" value="Pending" {% if "Pending" in state %}checked{% endif %}> Pending
+            <input type="checkbox" name="filters[]" value="Accepted" {% if "Accepted" in state %}checked{% endif %}> Accepted
+            <input type="checkbox" name="filters[]" value="Denied" {% if "Denied" in state %}checked{% endif %}> Denied
+            <button type="submit" name="apply" class="btn btn-primary mt-2" value="apply">Apply Filter</button>
+        </form>
+
+    </div>
+
+    <div class="p-6">
+        <form method="post">
+            <div class="overflow-x-auto">
+                <table class="table-auto w-full border border-gray-300 rounded-lg shadow-md">
+                    <thead>
+                    <tr class="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left">Name</th>
+                        <th class="py-3 px-6 text-left">Last Name</th>
+                        <th class="py-3 px-6 text-center">NEPH</th>
+                        <th class="py-3 px-6 text-center">Validation status</th>
+                        <th class="py-3 px-6 text-center">Validation date</th>
+                        <th class="py-3 px-6 text-center">Validation by</th>
+                        <th class="py-3 px-6 text-center">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                    {% for driver in drivers %}
+                        <tr class="border-b border-gray-200 hover:bg-gray-100 even:bg-gray-50">
+                            <td class="py-3 px-6 text-left">{{ driver.user.name }}</td>
+                            <td class="py-3 px-6 text-left">{{ driver.user.lastname }}</td>
+                            <td class="py-3 px-6 text-center">
+                                {% if driver.getDriverLicenceNb() %}
+                                    {{ driver.driver_lience_nb }}
+                                {% endif %}
+                            </td>
+                            <td class="py-3 px-6 text-center">
+                                {{ driver.state }}
+                            </td>
+                            <td class="py-3 px-6 text-center">
+                                {% if driver.getValidationDate() %}
+                                    {{ driver.getValidationDate|date('Y-m-d') }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td class="py-3 px-6 text-center">
+                                {% if driver.admin %}
+                                    {{ driver.admin.name }} {{ driver.admin.lastname }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td class="py-3 px-6 text-center">
+                                {% if driver.state == 'Pending' %}
+                                    <button type="submit"  name="action" value="accept_{{ driver.id }}" class="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600 transition">
+                                        Accept
+                                </button>
+                                <button type="submit" name="action" value="deny_{{ driver.id }}" class="bg-red-500 text-black px-4 py-2 rounded hover:bg-red-600 transition ml-2">
+                                    Deny
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+    </div>
+
+{% endblock %}

@@ -12,6 +12,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
+
 
 class CarType extends AbstractType
 {
@@ -60,6 +63,21 @@ class CarType extends AbstractType
                     'Diesel' => 'diesel',
                     'Electric' => 'electric',
                     'Hybrid' => 'hybrid',
+                ],
+            ])
+            ->add('image', FileType::class, [
+                'label' => 'Car Image',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid image file (JPEG or PNG)',
+                    ])
                 ],
             ])
         ;

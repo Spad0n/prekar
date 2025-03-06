@@ -13,14 +13,24 @@ export default {
 		sans: ['ui-sans-serif', 'system-ui', 'sans-serif'],
 	    },
 	    colors: {
-		'primary': {
-		    'DEFAULT': '#000000',
-		    'hover': '#282828',
+		'oceanTheme': {
+		    'lightBlue':    '#D4EBF8',
+		    'deepBlue':     '#1F509A',
+		    'navyBlue':     '#0A3981',
+		    'orange':       '#E38E49'
 		},
-		'secondary': {
-		    'DEFAULT': '#FFFFFF',
-		    'hover': '#e2e2e2',
+		'skyTheme': {
+		    'skyBlue':      '#78B3CE',
+		    'lightCyan':    '#C9E6F0',
+		    'cream':        '#FBF8EF',
+		    'darkOrange':   '#F96E2A'
 		},
+		'sunsetTheme': {
+		    'indigo':       '#4335A7',
+		    'lightBlue':    '#80C4E9',
+		    'paleYellow':   '#FFF6E9',
+		    'brightOrange': '#FF7F3E'
+		}
 	    }
 	},
     },

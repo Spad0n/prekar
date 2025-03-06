@@ -10,15 +10,21 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class EditProfileFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $builder, array $options, ): void
     {
         $user = $options['data'];
         $currentRoles = $user->getRoles();
         $builder
-            ->add('email', EmailType::class)
+            ->add('email', EmailType::class, [
+                'disabled' => true,
+                ]
+            )
             ->add('lastName', TextType::class)
             ->add('name', TextType::class)
             ->add('userType', ChoiceType::class, [
@@ -31,9 +37,23 @@ class EditProfileFormType extends AbstractType
                 'expanded' => true,
                 'mapped' => true,
                 'disabled' => true,
+            ])
+            ->add('profileImage', FileType::class, [
+                'label' => 'Photo de profil',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                        ],
+                        'mimeTypesMessage' => 'Invalid file type. Please upload a JPG, PNG, or GIF.',
+                     ])
+                ],
             ]);
     }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
