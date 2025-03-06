@@ -4,15 +4,11 @@
   <section class="flex items-center justify-center h-screen">
     <form method="post" class="w-96 p-6 shadow-lg bg-white rounded-md">
       <h1 class="text-3xl block text-center font-semibold text-oceanTheme-navyBlue">Login</h1>
-      {% if error %}
-        <div class="alert alert-danger mt-3">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-      {% endif %}
-
-      {% if app.user %}
-        <div class="mt-3">
-          You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-        </div>
-      {% endif %}
+      {# {% if app.user %} #}
+        {# <div class="mt-3"> #}
+          {# You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a> #}
+        {# </div> #}
+      {# {% endif %} #}
 
       <hr class="mt-3">
       <div class="mt-3">
@@ -30,6 +26,9 @@
         <input class="mr-2" type="checkbox" name="_remember_me">
         <label>Remember me</label>
       </div>
+      {% if error %}
+        <div class="text-red-600">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+      {% endif %}
       <button class="blue-button mt-3" type="submit">
         Sign-in
       </button>
