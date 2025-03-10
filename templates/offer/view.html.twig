@@ -29,8 +29,8 @@
           <div class="bg-skyTheme-lightCyan rounded-lg p-4 mt-auto">
             <h3 class="text-xl font-semibold text-oceanTheme-deepBlue mb-2">Availability Status</h3>
             <div class="flex items-center">
-              <span class="w-3 h-3 rounded-full {% if offer.available %}bg-green-500{% else %}bg-red-500{% endif %} mr-2"></span>
-              <span class="font-medium">{{ offer.available ? 'Currently Available' : 'Not Available' }}</span>
+              <span class="w-3 h-3 rounded-full {% if offer.available == 'available'%}bg-green-500{% else %}bg-red-500{% endif %} mr-2"></span>
+              <span class="font-medium">{{ offer.available == 'available' ? 'Currently Available' : 'Not Available' }}</span>
             </div>
             <div class="mt-2">
               <span class="text-sm font-medium">Delivery Option:</span>

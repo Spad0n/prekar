@@ -65,6 +65,7 @@ class OfferFormType extends AbstractType
                         'Not Available' => 'not_available',
                     ],
                     'label' => 'Availability',
+
                 ])
                 ->add('car', CarType::class, [
                     'data' => $options['car'],
