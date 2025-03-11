@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Dispute;
+use App\Entity\Renting;
 use App\Entity\Report;
 use App\Form\DisputeType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,32 +14,54 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class DisputeController extends AbstractController
 {
-    #[Route('/user/dispute', name: 'app_dispute')]
-    public function createDispute(Request $request,EntityManagerInterface $entityManager): Response
+    #[Route('/user/dispute/{renting_id}', name: 'app_dispute')]
+    public function createDispute(Request $request,EntityManagerInterface $entityManager,int $renting_id): Response
     {
-        if (!$this->getUser()) {
+        if (!$this->getUser() ) {
             return $this->redirectToRoute('app_login');
+        }
+        //TODO : if the dispute already exists, redirect to the dispute page
+        $renting  = $entityManager->getRepository(Renting::class)->find($renting_id);
+
+        if(!$renting){
+            return $this->redirectToRoute('app_prekar_home_page');
+        }
+
+        $owner = $renting->getOffer()->getUserOwner();
+        $borrower = $renting->getUserBorrower();
+
+        if($this->getUser() != $owner && $this->getUser() != $borrower){
+            return $this->redirectToRoute('app_prekar_home_page');
         }
 
         $dispute = new Dispute();
         $report = new Report();
+
+
         $form = $this->createForm(DisputeType::class,$dispute);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $report->setDispute($dispute);
-            // need to get the owner and borrower from the offer
+            $report->setUserBorrower($borrower);
+            $report->setUserOwner($owner);
+            $dispute->addReport($report);
+            $dispute->setStatus("Waiting for a jurist...");
+            $entityManager->persist($report);
             $entityManager->persist($dispute);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_dispute');
+            return $this->redirectToRoute('app_user_profile');
         }
 
 
         return $this->render('dispute/create_dispute.html.twig', [
             'controller_name' => 'DisputeController',
             'form'=>$form,
+            'owner'=>$owner,
+            'borrower'=>$borrower,
+            'renting'=>$renting
         ]);
     }
 }

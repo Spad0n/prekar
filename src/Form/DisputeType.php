@@ -16,7 +16,6 @@ class DisputeType extends AbstractType
         $offer = $options['data'];
         $builder
             ->add('description')
-            ->add('status')
             ->add('reportingDate', null, [
                 'widget' => 'single_text',
             ])

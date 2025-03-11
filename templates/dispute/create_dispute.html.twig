@@ -8,7 +8,15 @@
 
 <div class="example-wrapper">
     <h1>Create Dispute</h1>
-    <p>Fill in the form below to create a dispute.</p>
+    <h2> Rental's reminder </h2>
+    {{ renting.offer.car.brand }} {{ renting.offer.car.model }} <br>
+    From {{ renting.startDate|date('d/m/Y') }} to {{ renting.endDate|date('d/m/Y') }}<br>
+    Owner : {{ owner.name }} {{ owner.lastName }}<br>
+    Borrower : {{ borrower.name }} {{ borrower.lastName }}<br>
+    Price : {{ renting.offer.price }} €<br>
+    Location : {{ renting.offer.localisationGarage }}<br>
+
+    <h2>Fill in the form below to create a dispute.</h2>
     <form method="post">
         {{ form_start(form) }}
         {{ form_widget(form) }}
@@ -16,3 +24,4 @@
         {{ form_end(form) }}
     </form>
 {% endblock %}
+</div>
