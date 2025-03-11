@@ -47,6 +47,7 @@ final class DisputeController extends AbstractController
             $report->setUserBorrower($borrower);
             $report->setUserOwner($owner);
             $dispute->addReport($report);
+            $dispute->setRenting($renting);
             $dispute->setStatus("Waiting for a jurist...");
             $entityManager->persist($report);
             $entityManager->persist($dispute);
@@ -62,6 +63,27 @@ final class DisputeController extends AbstractController
             'owner'=>$owner,
             'borrower'=>$borrower,
             'renting'=>$renting
+        ]);
+    }
+
+    #[Route('/user/dispute/page/{report_id}', name: 'app_dispute_page')]
+    public function disputePage(EntityManagerInterface $entityManager,int $report_id): Response
+    {
+        if (!$this->getUser() ) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        //TODO : ajouter renting DANS l'entité report
+        $report  = $entityManager->getRepository(Report::class)->find($report_id);
+
+        if(!$report){
+            return $this->redirectToRoute('app_prekar_home_page');
+        }
+
+        return $this->render('dispute/dispute_page.html.twig', [
+            'controller_name' => 'DisputeController',
+            'report'=>$report,
+            'renting'=>$report->getDispute()->getRenting()
         ]);
     }
 }
