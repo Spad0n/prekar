@@ -1,0 +1,32 @@
+{% extends 'base_form.html.twig' %}
+
+{% block title %}Rent : Choosing dates{% endblock %}
+
+{% block body %}
+    <section class="flex items-center justify-center min-h-screen pt-32 pb-8 bg-skyTheme-skyBlue">
+        <div class="w-3/4 p-6 shadow-lg bg-white rounded-md overflow-hidden">
+        <div class="bg-skyTheme-lightCyan rounded-lg p-4 mt-auto md:w-3/5">
+            <h1 class="text-3xl font-bold text-oceanTheme-deepBlue">Choose your dates</h1>
+            <form action="{{ path('offer_rent_delivery', {id: offer.id}) }}" method="post">
+                <div class="flex flex-col gap-4 mt-4">
+                    <div class="flex flex-col gap-2">
+                        <label for="startDate" class="text-lg font-semibold text-oceanTheme-deepBlue">Start Date</label>
+                        <input type="date" id="startDate" name="startDate" min="{{ offer.startDate|date('Y-m-d')}}" max="{{ offer.endDate|date('Y-m-d')}}" class="rounded-lg p-2 border border-gray-300" required>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label for="endDate" class="text-lg font-semibold text-oceanTheme-deepBlue">End Date</label>
+                        <input type="date" id="endDate" name="endDate" min="{{ offer.startDate|date('Y-m-d')}}" max="{{ offer.endDate|date('Y-m-d')}}" class="rounded-lg p-2 border border-gray-300" required>
+                    </div>
+                    <button type="submit" class="blue-button">Rent this car</button>
+                </div>
+            </form>
+    </div>
+        <div class="bg-skyTheme-lightCyan rounded-lg p-4 mt-auto md:w-3/5">
+
+            <h1 class="text-3xl font-bold text-oceanTheme-deepBlue">Resume</h1>
+
+        </div>
+    </div>
+    </section>
+{% endblock %}
+

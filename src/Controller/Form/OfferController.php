@@ -4,6 +4,7 @@ namespace App\Controller\Form;
 
 use App\Entity\Offer;
 use App\Entity\Car;
+use App\Entity\Renting;
 use App\Form\OfferFormType;
 use App\Form\CarType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -172,6 +173,142 @@ public function edit(Request $request, EntityManagerInterface $entityManager, in
     public function __construct(string $uploadDir)
     {
         $this->uploadDir = $uploadDir;
+    }
+
+    #[Route('/offer/{id}/rent', name: 'offer_rent_date')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function rentDate(Request $request, EntityManagerInterface $entityManager, int $id): Response {
+        $offer = $entityManager->getRepository(Offer::class)->find($id);
+
+        return $this->render('offer/rent/dates.html.twig',
+        [
+            'offer' => $offer,
+        ]); //need to be changed when the offer page is ready
+    }
+
+
+    #[Route('/offer/{id}/rent/delivery', name: 'offer_rent_delivery', methods: ['POST'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function rentDelivery(Request $request, EntityManagerInterface $entityManager, int $id): Response {
+        $offer = $entityManager->getRepository(Offer::class)->find($id);
+        $startDate = new \DateTime($request->request->get('startDate'));
+        $endDate = new \DateTime($request->request->get('endDate'));
+        $delivery = $offer->getDelivery();
+
+        if($startDate == null || $endDate == null) {
+            $this->addFlash('error', 'Please select start and end date.');
+            return $this->redirectToRoute('offer_rent_date', ['id' => $id]);
+        }
+
+        if($startDate > $endDate) {
+            $this->addFlash('error', 'End date must be after the start date.');
+            return $this->redirectToRoute('offer_rent_date', ['id' => $id]);
+        }
+
+        if ($startDate < $offer->getStartDate() || $endDate > $offer->getEndDate()) {
+            $this->addFlash('error', 'Selected dates are not available for this offer.');
+            return $this->redirectToRoute('offer_rent_date', ['id' => $id]);
+        }
+
+
+        return $this->render('offer/rent/delivery.html.twig',[
+            'offer' => $offer,
+            'startDate' => $startDate->format('Y-m-d'),
+            'endDate' => $endDate->format('Y-m-d'),
+            'delivery' => $delivery,
+        ]);
+    }
+
+    #[Route('/offer/{id}/rent/payment', name: 'offer_rent_payment', methods: ['POST'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function rentPayment(Request $request, EntityManagerInterface $entityManager, int $id): Response {
+        $offer = $entityManager->getRepository(Offer::class)->find($id);
+        $startDate = new \DateTime($request->request->get('startDate'));
+        $endDate = new \DateTime($request->request->get('endDate'));
+        $deliveryLocation = $request->request->get('deliveryLocation');
+
+        if($offer->getDelivery() == "yes" && $deliveryLocation == null) {
+            $this->addFlash('error', 'Please select a delivery location.');
+            return $this->redirectToRoute('offer_rent_delivery', ['id' => $id]);
+        }
+
+        if($startDate == null || $endDate == null) {
+            $this->addFlash('error', 'Please select start and end date.');
+            return $this->redirectToRoute('offer_rent_date', ['id' => $id]);
+        }
+
+        if($startDate > $endDate) {
+            $this->addFlash('error', 'End date must be after the start date.');
+            return $this->redirectToRoute('offer_rent_date', ['id' => $id]);
+        }
+
+        if ($startDate < $offer->getStartDate() || $endDate > $offer->getEndDate()) {
+            $this->addFlash('error', 'Selected dates are not available for this offer.');
+            return $this->redirectToRoute('offer_rent_date', ['id' => $id]);
+        }
+
+        $nbDays = $startDate->diff($endDate)->days;
+
+
+        return $this->render('offer/rent/payment.html.twig',[
+            'offer' => $offer,
+            'startDate' => $startDate->format('Y-m-d'),
+            'endDate' => $endDate->format('Y-m-d'),
+            'delivery' => $deliveryLocation,
+            'nbDays' => $nbDays,
+        ]);
+    }
+
+    #[Route('/offer/{id}/rent/confirm', name: 'offer_rent_confirm', methods: ['POST'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function confirmRent(Request $request, EntityManagerInterface $entityManager, int $id): Response {
+        $offer = $entityManager->getRepository(Offer::class)->find($id);
+        $startDate = new \DateTime($request->request->get('startDate'));
+        $endDate = new \DateTime($request->request->get('endDate'));
+        $deliveryLocation = $request->request->get('delivery');
+
+        if($offer->getAvailable() == "not_available") {
+            $this->addFlash('error', 'This offer is not available anymore.');
+            return $this->redirectToRoute('offer_list');
+        }
+
+        if($offer->getDelivery() == "yes" && $deliveryLocation == null) {
+            $this->addFlash('error', 'Please select a delivery location.');
+            return $this->redirectToRoute('offer_rent_delivery', ['id' => $id]);
+        }
+
+        if($startDate == null || $endDate == null) {
+            $this->addFlash('error', 'Please select start and end date.');
+            return $this->redirectToRoute('offer_rent_date', ['id' => $id]);
+        }
+
+        if($startDate > $endDate) {
+            $this->addFlash('error', 'End date must be after the start date.');
+            return $this->redirectToRoute('offer_rent_date', ['id' => $id]);
+        }
+
+        if ($startDate < $offer->getStartDate() || $endDate > $offer->getEndDate()) {
+            $this->addFlash('error', 'Selected dates are not available for this offer.');
+            return $this->redirectToRoute('offer_rent_date', ['id' => $id]);
+        }
+
+        $renting = new Renting();
+        $renting->setUserBorrower($this->getUser());
+        $renting->setOffer($offer);
+        $renting->setStartDate($startDate);
+        $renting->setEndDate($endDate);
+        $renting->setNbKm(122);
+        $renting->setCommentary("No comment");
+        $offer->setAvailable("not_available");
+
+        $entityManager->persist($renting);
+        $entityManager->flush();
+
+
+
+
+
+        return $this->redirectToRoute("app_user_profile");
     }
 
 }

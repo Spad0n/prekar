@@ -1,0 +1,32 @@
+{% extends 'base_form.html.twig' %}
+
+{% block title %}Rent : Choosing Payment{% endblock %}
+
+{% block body %}
+    <section class="flex items-center justify-center min-h-screen pt-32 pb-8 bg-skyTheme-skyBlue">
+        <div class="w-3/4 p-6 shadow-lg bg-white rounded-md overflow-hidden">
+            <div class="bg-skyTheme-lightCyan rounded-lg p-4 mt-auto md:w-3/5">
+                <form action="{{ path('offer_rent_confirm', {id: offer.id}) }}" method="post">
+                    <input type="hidden" name="startDate" value="{{ startDate }}">
+                    <input type="hidden" name="endDate" value="{{ endDate }}">
+                    <input type="hidden" name="delivery" value="{{ delivery }}">
+                    <h2 class="text-3xl font-bold text-oceanTheme-deepBlue">Total amount :  {{ offer.price * nbDays }}€</h2>
+                    <input type="text" name="creditCardNumber" placeholder="Enter your credit card number" class="rounded-lg p-2 border border-gray-300" required>
+                    <input type="text" name="creditCardName" placeholder="Enter the name on the card" class="rounded-lg p-2 border border-gray-300" required>
+                    <input type="text" name="creditCardExpiration" placeholder="Enter the expiration date" class="rounded-lg p-2 border border-gray-300" required>
+                    <input type="text" name="creditCardCVC" placeholder="Enter the CVC" class="rounded-lg p-2 border border-gray-300" required>
+
+                    <button type="submit" class="blue-button">Confirm rent</button>
+                </form>
+            </div>
+            <div class="bg-skyTheme-lightCyan rounded-lg p-4 mt-auto md:w-3/5">
+
+                <h1 class="text-3xl font-bold text-oceanTheme-deepBlue">Resume</h1>
+                Start Date: {{ startDate|date('Y-m-d') }}<br>
+                End Date: {{ endDate|date('Y-m-d') }}<br>
+                Delivery Location: {{ delivery }}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
