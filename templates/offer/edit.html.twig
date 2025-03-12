@@ -56,9 +56,16 @@
             </div>
             <div>
               <div>{{ form_label(form.car.image) }}</div>
-              <div>{{ form_widget(form.car.image) }}</div>
-              <div class="text-red-500">{{ form_errors(form.car.image) }}</div>
-            </div>
+                 <div>
+                   {% if offer.car.imageFilename %}
+                     <img src="{{ asset('uploads/cars/' ~ offer.car.imageFilename) }}" alt="{{ offer.car.brand }} {{ offer.car.model }}" class="w-48 h-auto mb-2">
+                   {% else %}
+                     <img src="{{ asset('static/img/cars_logo.png') }}" alt="Default car image" class="w-48 h-auto mb-2">
+                   {% endif %}
+                   {{ form_widget(form.car.image) }}
+                 </div>
+                 <div class="text-red-500">{{ form_errors(form.car.image) }}</div>
+             </div>
           </div>
         </div>
 
