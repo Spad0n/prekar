@@ -15,6 +15,15 @@
             <button type="button" onclick="toggleAllCheckboxes(true)">Select All</button>
             <button type="button" onclick="toggleAllCheckboxes(false)">Unselect All</button>
 
+            <!-- Price Range Filter -->
+            <div>
+                <label>Price Range (€)</label>
+                <div id="price-slider"></div>
+                <input type="hidden" id="min_price" name="min_price" value="{{ filters.minPrice }}">
+                <input type="hidden" id="max_price" name="max_price" value="{{ filters.maxPrice }}">
+                <p>€<span id="price-min">{{ filters.minPrice }}</span> - €<span id="price-max">{{ filters.maxPrice }}</span></p>
+            </div>
+
             <!-- Location Filter -->
             <div>
                 <label>Location</label>
@@ -148,4 +157,6 @@ function toggleAllCheckboxes(check) {
 }
 </script>
 
+
+{{ vite_entry_script_tags('slider') }}
 {% endblock %}

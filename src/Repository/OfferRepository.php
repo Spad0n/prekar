@@ -81,6 +81,17 @@ class OfferRepository extends ServiceEntityRepository
     }
 
     /**
+     * Get the lowest price from offers.
+     */
+    public function getMinPrice(): int
+    {
+        return min(0, $this->createQueryBuilder('o')
+            ->select('MIN(o.price)')
+            ->getQuery()
+            ->getSingleScalarResult() ?? 0);
+    }
+
+    /**
      * Get distinct locations.
      */
     public function getDistinctLocations(): array
