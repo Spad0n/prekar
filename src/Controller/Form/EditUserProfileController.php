@@ -13,11 +13,12 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class EditUserProfileController extends AbstractController
 {
     #[Route('/edit/profile', name: 'app_edit_user_profile')]
-    public function editProfile(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function editProfile(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, UserPasswordHasherInterface $passwordHasher): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -61,6 +62,13 @@ final class EditUserProfileController extends AbstractController
             }
 
             if ($form->isValid()) {
+                if ($form->get('plainPassword')->getData()) {
+                    $hashedPassword = $passwordHasher->hashPassword(
+                        $currentUser,
+                        $form->get('plainPassword')->getData()
+                    );
+                    $currentUser->setPassword($hashedPassword);
+                }
                 $entityManager->persist($currentUser);
                 $entityManager->flush();
                 return $this->redirectToRoute('app_user_profile');
