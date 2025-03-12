@@ -275,20 +275,6 @@ final class OfferController extends AbstractController
         $expirationDate = $request->request->get('expirationDate');
         $name = $request->request->get('name');
 
-        if($creditCard == null || $cvv == null || $expirationDate == null || $name == null) {
-            $this->addFlash('error', 'Please fill all the fields.');
-            return $this->redirectToRoute('offer_rent_payment', ['id' => $id]);
-        }
-
-        if($creditCard < 1000000000000000 || $creditCard > 9999999999999999) {
-            $this->addFlash('error', 'Invalid credit card number.');
-            return $this->redirectToRoute('offer_rent_payment', ['id' => $id]);
-        }
-
-        if($cvv < 100 || $cvv > 999) {
-            $this->addFlash('error', 'Invalid CVV.');
-            return $this->redirectToRoute('offer_rent_payment', ['id' => $id]);
-        }
 
 
         if($offer->getAvailable() == "not_available") {
