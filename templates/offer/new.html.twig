@@ -1,66 +1,150 @@
-{% extends 'base.html.twig' %}
-
-
-
+{% extends 'base_form.html.twig' %}
 
 {% block title %}Create New Offer{% endblock %}
 
 {% block body %}
-    <h1>Create a New Car Offer</h1>
-
-    {% for label, messages in app.flashes %}
-        <div class="flash-{{ label }}">
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
+  <section class="flex items-center justify-center min-h-screen py-24">
+    <div class="w-3/4 p-6 shadow-lg bg-white rounded-md">
+      <h1 class="text-4xl font-bold text-oceanTheme-deepBlue mb-6">Create a New Car Offer</h1>
+      
+      {% for label, messages in app.flashes %}
+        <div class="mb-4 p-3 rounded-md {% if label == 'success' %}bg-green-100 text-green-700{% elseif label == 'error' %}bg-red-100 text-red-700{% else %}bg-skyTheme-lightCyan text-oceanTheme-navyBlue{% endif %}">
+          {% for message in messages %}
+            <p class="{% if not loop.last %}mb-2{% endif %}">{{ message }}</p>
+          {% endfor %}
         </div>
-    {% endfor %}
-
-    {{ form_start(form) }}
-
-
-        <br>
-
-        <button id= "carOption" type="button" onClick="toggleNewCar()">Create a new Car</button>
-
-
-            <div id="existingCarRow" style="display:block;">
-                {{ form_row(form.existingCar) }}
+      {% endfor %}
+      
+      {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+        
+        <div class="mb-6" x-data="{ showNewCar: true }">
+          <button 
+            type="button" 
+            @click="showNewCar = !showNewCar" 
+            class="transparent-button bg-skyTheme-lightCyan rounded-full mb-4"
+            x-text="showNewCar ? 'Use existing Car' : 'Create a new Car'"
+          >Create a new Car</button>
+          
+          <div 
+            id="existingCarRow" 
+            class="p-4 bg-skyTheme-cream rounded-md transition-all duration-300"
+            x-show="!showNewCar"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform scale-95"
+            x-transition:enter-end="opacity-100 transform scale-100"
+          >
+            <div class="mb-2 font-medium text-oceanTheme-deepBlue">Select Existing Car</div>
+            {{ form_widget(form.existingCar, {'attr': {'class': 'input-field w-full'}}) }}
+            <div class="text-red-500">{{ form_errors(form.existingCar) }}</div>
+          </div>
+          
+          <div 
+            id="newCarRow" 
+            class="p-4 bg-sunsetTheme-paleYellow rounded-md transition-all duration-300"
+            x-show="showNewCar"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform scale-95"
+            x-transition:enter-end="opacity-100 transform scale-100"
+          >
+            <div class="mb-2 font-medium text-oceanTheme-deepBlue">Add New Car Details</div>
+            <div class="mb-2">
+              <div>
+                {{ form_label(form.newCar.brand) }}
+                {{ form_widget(form.newCar.brand) }}
+              </div>
+              <div class="text-red-500">{{ form_errors(form.newCar.brand) }}</div>
             </div>
-            <div id="newCarRow" style="display:none;">
-                {{ form_row(form.newCar) }}
+            <div class="mb-2">
+              <div>
+                {{ form_label(form.newCar.model) }}
+                {{ form_widget(form.newCar.model) }}
+              </div>
+              <div class="text-red-500">{{ form_errors(form.newCar.model) }}</div>
             </div>
-
-        <br>
-        {{ form_row(form.startDate) }}
-        {{ form_row(form.endDate) }}
-        {{ form_row(form.localisationGarage) }}
-        {{ form_row(form.price) }}
-        {{ form_row(form.delivery) }}
-        {{ form_row(form.available) }}
-
-        <button type="submit">Create Offer</button>
-    {{ form_end(form) }}
-
-    <script>
-        function toggleNewCar(){
-            const carOption = document.getElementById('carOption');
-            const newCar = document.getElementById('newCarRow');
-            const existingCar = document.getElementById('existingCarRow');
-            console.log(newCar);
-            if(newCar.style.display === 'none') {
-                newCar.style.display = 'block';
-                existingCar.style.display = 'none';
-                carOption.innerText = "Use existing Car";
-
-            } else {
-                newCar.style.display = 'none';
-                existingCar.style.display = 'block';
-                carOption.innerText = "Create a new Car";
-
-            }
-        }
-
-    </script>
-
+            <div class="mb-2">
+              <div>
+                {{ form_label(form.newCar.registration) }}
+                {{ form_widget(form.newCar.registration) }}
+              </div>
+              <div class="text-red-500">{{ form_errors(form.newCar.registration) }}</div>
+            </div>
+            <div class="mb-2">
+              <div>
+                {{ form_label(form.newCar.fuelType) }}
+                {{ form_widget(form.newCar.fuelType) }}
+              </div>
+              <div class="text-red-500">{{ form_errors(form.newCar.fuelType) }}</div>
+            </div>
+            <div class="mb-2">
+              <div>
+                {{ form_label(form.newCar.nbSeat) }}
+                {{ form_widget(form.newCar.nbSeat) }}
+              </div>
+              <div class="text-red-500">{{ form_errors(form.newCar.nbSeat) }}</div>
+            </div>
+            <div class="mb-2">
+              <div>
+                {{ form_label(form.newCar.bootCapacity) }}
+                {{ form_widget(form.newCar.bootCapacity) }}
+              </div>
+              <div class="text-red-500">{{ form_errors(form.newCar.bootCapacity) }}</div>
+            </div>
+            <div class="mb-2">
+              <div>
+                {{ form_label(form.newCar.image) }}
+                {{ form_widget(form.newCar.image) }}
+              </div>
+              <div class="text-red-500">{{ form_errors(form.newCar.image) }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label class="block font-medium text-oceanTheme-deepBlue">{{ form_label(form.startDate) }}</label>
+            {{ form_widget(form.startDate, {'attr': {'class': 'input-field w-full'}}) }}
+            <div class="text-red-500">{{ form_errors(form.startDate) }}</div>
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block font-medium text-oceanTheme-deepBlue">{{ form_label(form.endDate) }}</label>
+            {{ form_widget(form.endDate, {'attr': {'class': 'input-field w-full'}}) }}
+            <div class="text-red-500">{{ form_errors(form.endDate) }}</div>
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block font-medium text-oceanTheme-deepBlue">{{ form_label(form.localisationGarage) }}</label>
+            {{ form_widget(form.localisationGarage, {'attr': {'class': 'input-field w-full'}}) }}
+            <div class="text-red-500">{{ form_errors(form.localisationGarage) }}</div>
+          </div>
+          
+          <div class="space-y-2">
+            <label class="block font-medium text-oceanTheme-deepBlue">{{ form_label(form.price) }}</label>
+            {{ form_widget(form.price, {'attr': {'class': 'input-field w-full'}}) }}
+            <div class="text-red-500">{{ form_errors(form.price) }}</div>
+            <span class="text-sm text-gray-500">Price per day in euros</span>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <div class="flex items-center">
+            {{ form_widget(form.delivery, {'attr': {'class': 'mr-2'}}) }}
+            <label class="font-medium text-oceanTheme-deepBlue">{{ form_label(form.delivery) }}</label>
+            <div class="text-red-500">{{ form_errors(form.delivery) }}</div>
+          </div>
+          
+          <div class="flex items-center">
+            {{ form_widget(form.available, {'attr': {'class': 'mr-2'}}) }}
+            <label class="font-medium text-oceanTheme-deepBlue">{{ form_label(form.available) }}</label>
+            <div class="text-red-500">{{ form_errors(form.available) }}</div>
+          </div>
+        </div>
+        
+        <div class="flex justify-between mt-8">
+          <a href="{{ path('offer_list') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">Cancel</a>
+          <button type="submit" class="orange-button">Create Offer</button>
+        </div>
+      {{ form_end(form) }}
+    </div>
+  </section>
 {% endblock %}
