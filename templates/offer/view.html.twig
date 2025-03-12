@@ -12,6 +12,15 @@
             <a href="{{ path('offer_edit', {id: offer.id}) }}" class="blue-button">Edit Offer</a>
             <a href="{{ path('offer_list') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">Back to List</a>
           </div>
+        {% else %}
+          <div class="flex gap-2">
+            <a href="{{ path('offer_list') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">Back to List</a>
+            {% if offer.available == "available" %}
+              <a href="{{ path('offer_rent_date', {id: offer.id}) }}" class="transparent-button bg-skyTheme-skyBlue rounded-full">Rent this car</a>
+            {% else %}
+              <a href="#" class="transparent-button bg-skyTheme-lightCyan rounded-full cursor-not-allowed" disabled>Not Available</a>
+            {% endif %}
+          </div>
         {% endif %}
       </div>
 
