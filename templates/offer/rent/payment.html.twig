@@ -11,11 +11,11 @@
                     <input type="hidden" name="endDate" value="{{ endDate }}">
                     <input type="hidden" name="delivery" value="{{ delivery }}">
                     <h2 class="text-3xl font-bold text-oceanTheme-deepBlue">Total amount :  {{ offer.price * nbDays }}€</h2>
-                    <input type="text" name="creditCardNumber" placeholder="Enter your credit card number" class="rounded-lg p-2 border border-gray-300" required>
+                    <input type="number" name="creditCardNumber" placeholder="Enter your credit card number" min="1000000000000000" max="9999999999999999" class="rounded-lg p-2 border border-gray-300" required>
                     <input type="text" name="creditCardName" placeholder="Enter the name on the card" class="rounded-lg p-2 border border-gray-300" required>
-                    <input type="text" name="creditCardExpiration" placeholder="Enter the expiration date" class="rounded-lg p-2 border border-gray-300" required>
-                    <input type="text" name="creditCardCVC" placeholder="Enter the CVC" class="rounded-lg p-2 border border-gray-300" required>
-
+                    <input type="month" name="creditCardExpiration" placeholder="Enter the expiration date" class="rounded-lg p-2 border border-gray-300" required>
+                    <input type="number" name="creditCardCVC" min="100" max="999" placeholder="Enter the CVC" class="rounded-lg p-2 border border-gray-300" required>
+                    <br>
                     <button type="submit" class="blue-button">Confirm rent</button>
                 </form>
             </div>
@@ -24,7 +24,9 @@
                 <h1 class="text-3xl font-bold text-oceanTheme-deepBlue">Resume</h1>
                 Start Date: {{ startDate|date('Y-m-d') }}<br>
                 End Date: {{ endDate|date('Y-m-d') }}<br>
+                {% if delivery %}
                 Delivery Location: {{ delivery }}
+                {% endif %}
             </div>
         </div>
     </section>

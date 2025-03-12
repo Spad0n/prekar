@@ -39,6 +39,12 @@ class Renting
     #[ORM\ManyToOne(inversedBy: 'rentings')]
     private ?User $userBorrower = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $deliveryLocation = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $totalAmount = null;
+
 
 
     public function getId(): ?int
@@ -117,6 +123,30 @@ class Renting
     public function setUserBorrower(?User $userBorrower): static
     {
         $this->userBorrower = $userBorrower;
+
+        return $this;
+    }
+
+    public function getDeliveryLocation(): ?string
+    {
+        return $this->deliveryLocation;
+    }
+
+    public function setDeliveryLocation(?string $deliveryLocation): static
+    {
+        $this->deliveryLocation = $deliveryLocation;
+
+        return $this;
+    }
+
+    public function getTotalAmount(): ?float
+    {
+        return $this->totalAmount;
+    }
+
+    public function setTotalAmount(?float $totalAmount): static
+    {
+        $this->totalAmount = $totalAmount;
 
         return $this;
     }

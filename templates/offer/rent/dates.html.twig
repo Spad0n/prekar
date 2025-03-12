@@ -11,11 +11,11 @@
                 <div class="flex flex-col gap-4 mt-4">
                     <div class="flex flex-col gap-2">
                         <label for="startDate" class="text-lg font-semibold text-oceanTheme-deepBlue">Start Date</label>
-                        <input type="date" id="startDate" name="startDate" min="{{ offer.startDate|date('Y-m-d')}}" max="{{ offer.endDate|date('Y-m-d')}}" class="rounded-lg p-2 border border-gray-300" required>
+                        <input type="date" id="startDate" name="startDate" min="{{ offer.startDate|date('Y-m-d')}}" max="{{ offer.endDate|date('Y-m-d')}}" value="{{ offer.startDate|date('Y-m-d')}}" class="rounded-lg p-2 border border-gray-300" required>
                     </div>
                     <div class="flex flex-col gap-2">
                         <label for="endDate" class="text-lg font-semibold text-oceanTheme-deepBlue">End Date</label>
-                        <input type="date" id="endDate" name="endDate" min="{{ offer.startDate|date('Y-m-d')}}" max="{{ offer.endDate|date('Y-m-d')}}" class="rounded-lg p-2 border border-gray-300" required>
+                        <input type="date" id="endDate" name="endDate" min="{{ offer.startDate|date('Y-m-d')}}" max="{{ offer.endDate|date('Y-m-d')}}" value="{{ offer.endDate|date('Y-m-d')}}" class="rounded-lg p-2 border border-gray-300" required>
                     </div>
                     <button type="submit" class="blue-button">Rent this car</button>
                 </div>
