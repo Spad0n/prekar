@@ -22,7 +22,7 @@
             {% if offer.car.imageFilename %}
               <img src="{{ asset('uploads/cars/' ~ offer.car.imageFilename) }}" alt="{{ offer.car.brand }} {{ offer.car.model }}" class="w-full h-auto object-cover">
             {% else %}
-              <img src="{{ asset('static/img/car-pana.png') }}" alt="Photo de profil par dÃ©faut" class="w-full h-auto object-cover">
+              <img src="{{ asset('static/img/car-pana.png') }}" alt="Default picture" class="w-full h-auto object-cover">
             {% endif %}
           </div>
           
