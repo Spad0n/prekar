@@ -20,12 +20,20 @@ final class DisputeController extends AbstractController
         if (!$this->getUser() ) {
             return $this->redirectToRoute('app_login');
         }
-        //TODO : if the dispute already exists, redirect to the dispute page
+
         $renting  = $entityManager->getRepository(Renting::class)->find($renting_id);
 
         if(!$renting){
             return $this->redirectToRoute('app_prekar_home_page');
         }
+
+        //if the dispute already exists :
+        $existingDispute = $entityManager->getRepository(Dispute::class)->findOneBy(['renting'=>$renting]);
+        if($existingDispute){
+            return $this->redirectToRoute('app_dispute_page',['report_id'=>$existingDispute->getReports()[0]->getId()]);
+        }
+
+
 
         $owner = $renting->getOffer()->getUserOwner();
         $borrower = $renting->getUserBorrower();
