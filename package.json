@@ -15,6 +15,6 @@
     "dependencies": {
         "alpinejs": "^3.14.8",
         "htmx.org": "^1.9.12",
-        "nouislider": "^15.8.1"
+        //"nouislider": "^15.8.1"
     }
 }
