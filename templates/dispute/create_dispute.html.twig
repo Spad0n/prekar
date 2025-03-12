@@ -1,27 +1,28 @@
+{% extends 'base_form.html.twig' %}
 
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <section class="flex items-center justify-center h-screen">
+        <div  class="w-3/4 p-6 shadow-lg bg-skyTheme-lightCyan rounded-md">
+            <h1 class="text-3xl block text-center font-semibold text-oceanTheme-navyBlue">Create Dispute</h1>
+            <h2 class="text-xl block  font-semibold"> Rental's reminder </h2>
+            {{ renting.offer.car.brand }} {{ renting.offer.car.model }} <br>
+            From {{ renting.startDate|date('d/m/Y') }} to {{ renting.endDate|date('d/m/Y') }}<br>
+            Owner : {{ owner.name }} {{ owner.lastName }}<br>
+            Borrower : {{ borrower.name }} {{ borrower.lastName }}<br>
+            Price : {{ renting.offer.price }} €<br>
+            Location : {{ renting.offer.localisationGarage }}<br>
 
-<div class="example-wrapper">
-    <h1>Create Dispute</h1>
-    <h2> Rental's reminder </h2>
-    {{ renting.offer.car.brand }} {{ renting.offer.car.model }} <br>
-    From {{ renting.startDate|date('d/m/Y') }} to {{ renting.endDate|date('d/m/Y') }}<br>
-    Owner : {{ owner.name }} {{ owner.lastName }}<br>
-    Borrower : {{ borrower.name }} {{ borrower.lastName }}<br>
-    Price : {{ renting.offer.price }} €<br>
-    Location : {{ renting.offer.localisationGarage }}<br>
+            <h2 class="text-xl block  font-semibold" >Fill in the form below to create a dispute.</h2>
+            <form method="post">
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                note : reporting date must be the date of the incident. <br>
+                <input type="submit" value="Create Dispute" class="blue-button mt-3" />
+                {{ form_end(form) }}
+            </form>
 
-    <h2>Fill in the form below to create a dispute.</h2>
-    <form method="post">
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <input type="submit" value="Create Dispute" class="btn btn-primary" />
-        {{ form_end(form) }}
-    </form>
+        </div>
+    </section>
+
 {% endblock %}
-</div>

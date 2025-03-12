@@ -53,7 +53,7 @@ final class DisputeController extends AbstractController
             $entityManager->persist($dispute);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_user_profile');
+            return $this->redirectToRoute('app_dispute_page',['report_id'=>$report->getId()]);
         }
 
 
@@ -73,7 +73,6 @@ final class DisputeController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        //TODO : ajouter renting DANS l'entité report
         $report  = $entityManager->getRepository(Report::class)->find($report_id);
 
         if(!$report){
