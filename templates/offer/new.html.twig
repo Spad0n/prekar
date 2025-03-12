@@ -3,7 +3,7 @@
 {% block title %}Create New Offer{% endblock %}
 
 {% block body %}
-  <section class="flex items-center justify-center min-h-screen py-8">
+  <section class="flex items-center justify-center min-h-screen py-24">
     <div class="w-3/4 p-6 shadow-lg bg-white rounded-md">
       <h1 class="text-4xl font-bold text-oceanTheme-deepBlue mb-6">Create a New Car Offer</h1>
       
@@ -17,7 +17,7 @@
       
       {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
         
-        <div class="mb-6" x-data="{ showNewCar: false }">
+        <div class="mb-6" x-data="{ showNewCar: true }">
           <button 
             type="button" 
             @click="showNewCar = !showNewCar" 
@@ -35,7 +35,7 @@
           >
             <div class="mb-2 font-medium text-oceanTheme-deepBlue">Select Existing Car</div>
             {{ form_widget(form.existingCar, {'attr': {'class': 'input-field w-full'}}) }}
-            {{ form_errors(form.existingCar, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+            <div class="text-red-500">{{ form_errors(form.existingCar) }}</div>
           </div>
           
           <div 
@@ -47,8 +47,55 @@
             x-transition:enter-end="opacity-100 transform scale-100"
           >
             <div class="mb-2 font-medium text-oceanTheme-deepBlue">Add New Car Details</div>
-            {{ form_widget(form.newCar, {'attr': {'class': 'space-y-3'}}) }}
-            {{ form_errors(form.newCar, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+            <div class="mb-2">
+              <div>
+                {{ form_label(form.newCar.brand) }}
+                {{ form_widget(form.newCar.brand) }}
+              </div>
+              <div class="text-red-500">{{ form_errors(form.newCar.brand) }}</div>
+            </div>
+            <div class="mb-2">
+              <div>
+                {{ form_label(form.newCar.model) }}
+                {{ form_widget(form.newCar.model) }}
+              </div>
+              <div class="text-red-500">{{ form_errors(form.newCar.model) }}</div>
+            </div>
+            <div class="mb-2">
+              <div>
+                {{ form_label(form.newCar.registration) }}
+                {{ form_widget(form.newCar.registration) }}
+              </div>
+              <div class="text-red-500">{{ form_errors(form.newCar.registration) }}</div>
+            </div>
+            <div class="mb-2">
+              <div>
+                {{ form_label(form.newCar.fuelType) }}
+                {{ form_widget(form.newCar.fuelType) }}
+              </div>
+              <div class="text-red-500">{{ form_errors(form.newCar.fuelType) }}</div>
+            </div>
+            <div class="mb-2">
+              <div>
+                {{ form_label(form.newCar.nbSeat) }}
+                {{ form_widget(form.newCar.nbSeat) }}
+              </div>
+              <div class="text-red-500">{{ form_errors(form.newCar.nbSeat) }}</div>
+            </div>
+            <div class="mb-2">
+              <div>
+                {{ form_label(form.newCar.bootCapacity) }}
+                {{ form_widget(form.newCar.bootCapacity) }}
+              </div>
+              <div class="text-red-500">{{ form_errors(form.newCar.bootCapacity) }}</div>
+            </div>
+            <div class="mb-2">
+              <div>
+                {{ form_label(form.newCar.image) }}
+                {{ form_widget(form.newCar.image) }}
+              </div>
+              <div class="text-red-500">{{ form_errors(form.newCar.image) }}</div>
+            </div>
           </div>
         </div>
         
@@ -56,25 +103,25 @@
           <div class="space-y-2">
             <label class="block font-medium text-oceanTheme-deepBlue">{{ form_label(form.startDate) }}</label>
             {{ form_widget(form.startDate, {'attr': {'class': 'input-field w-full'}}) }}
-            {{ form_errors(form.startDate, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+            <div class="text-red-500">{{ form_errors(form.startDate) }}</div>
           </div>
           
           <div class="space-y-2">
             <label class="block font-medium text-oceanTheme-deepBlue">{{ form_label(form.endDate) }}</label>
             {{ form_widget(form.endDate, {'attr': {'class': 'input-field w-full'}}) }}
-            {{ form_errors(form.endDate, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+            <div class="text-red-500">{{ form_errors(form.endDate) }}</div>
           </div>
           
           <div class="space-y-2">
             <label class="block font-medium text-oceanTheme-deepBlue">{{ form_label(form.localisationGarage) }}</label>
             {{ form_widget(form.localisationGarage, {'attr': {'class': 'input-field w-full'}}) }}
-            {{ form_errors(form.localisationGarage, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+            <div class="text-red-500">{{ form_errors(form.localisationGarage) }}</div>
           </div>
           
           <div class="space-y-2">
             <label class="block font-medium text-oceanTheme-deepBlue">{{ form_label(form.price) }}</label>
             {{ form_widget(form.price, {'attr': {'class': 'input-field w-full'}}) }}
-            {{ form_errors(form.price, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+            <div class="text-red-500">{{ form_errors(form.price) }}</div>
             <span class="text-sm text-gray-500">Price per day in euros</span>
           </div>
         </div>
@@ -83,13 +130,13 @@
           <div class="flex items-center">
             {{ form_widget(form.delivery, {'attr': {'class': 'mr-2'}}) }}
             <label class="font-medium text-oceanTheme-deepBlue">{{ form_label(form.delivery) }}</label>
-            {{ form_errors(form.delivery, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+            <div class="text-red-500">{{ form_errors(form.delivery) }}</div>
           </div>
           
           <div class="flex items-center">
             {{ form_widget(form.available, {'attr': {'class': 'mr-2'}}) }}
             <label class="font-medium text-oceanTheme-deepBlue">{{ form_label(form.available) }}</label>
-            {{ form_errors(form.available, {'attr': {'class': 'text-red-500 mt-1'}}) }}
+            <div class="text-red-500">{{ form_errors(form.available) }}</div>
           </div>
         </div>
         

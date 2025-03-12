@@ -8,7 +8,11 @@
       <div class="flex justify-between gap-10 flex-1 overflow-hidden">
         {# photo part #}
         <div class="profile-header flex-2" >
-          <img src="https://placehold.co/200x200/png" alt="Photo de profil par dÃ©faut" class="profile-image">
+          {% if app.user.profileImage %}
+            <img src="{{ asset('uploads/profile_images/' ~ app.user.profileImage) }}" alt="Photo de profil" class="profile-image" width="200px">
+          {% else %}
+            <img src="https://placehold.co/200x200/png" alt="Photo de profil par dÃ©faut" class="profile-image">
+          {% endif %}
           <h2 class="mt-2 text-xl text-center">{{ app.user.name }} {{ app.user.lastName }}</h2>
         </div>
         {# information #}
