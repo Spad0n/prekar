@@ -25,6 +25,11 @@
     {{ form_widget(form.name, {'attr': {'class': 'form-control mt-2 w-full input-field'}}) }}
     <div class="text-red-500">{{ form_errors(form.name) }}</div>
   </div>
+  <div class="mt-3">
+    {{ form_label(form.driverLicense) }}
+    {{ form_widget(form.driverLicense, {'attr': {'class': 'form-control mt-2 w-full input-field'}}) }}
+    <div class="text-red-500">{{ form_errors(form.driverLicense) }}</div>
+</div>
   {% for choice in form.userType %}
     <div class="mt-3">
       {{ form_widget(choice, {'attr': {'class': 'mr-2'}}) }}

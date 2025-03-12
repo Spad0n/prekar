@@ -61,6 +61,10 @@ final class EditUserProfileController extends AbstractController
             }
 
             if ($form->isValid()) {
+                if ($form->get('driverLicense')->getData() !== $currentUser->getDriverLicense()) {
+                    $validateUser = $currentUser->getValidateUser();
+                    $validateUser->setState('Pending');
+                }
                 $entityManager->persist($currentUser);
                 $entityManager->flush();
                 return $this->redirectToRoute('app_user_profile');
