@@ -626,4 +626,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->isBanned = $isBanned;
         return $this;
     }
+    /*
+     * Setting the drinving license
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $driverLicense = null;
+
+    public function getDriverLicense(): ?string
+    {
+        return $this->driverLicense;
+    }
+
+    public function setDriverLicense(?string $driverLicense): static
+    {
+        $this->driverLicense = $driverLicense;
+        return $this;
+    }
+
 }

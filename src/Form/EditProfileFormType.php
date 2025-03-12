@@ -15,6 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class EditProfileFormType extends AbstractType
 {
@@ -47,6 +49,22 @@ class EditProfileFormType extends AbstractType
                         'message' => 'You must select one or more roles.',
                     ])
                 ],*/
+            ])
+            ->add('driverLicense', TextType::class, [
+                'label' => 'Driver License Number',
+                'required' => false,
+                'constraints' => [
+                    new Length([
+                        'min' => 9,
+                        'max' => 20,
+                        'minMessage' => 'Your driver license number must be at least {{ limit }} characters',
+                        'maxMessage' => 'Your driver license number cannot be longer than {{ limit }} characters'
+                    ]),
+                    new Regex([
+                        'pattern' => '/^[A-Z0-9]+$/',
+                        'message' => 'Your driver license number can only contain uppercase letters and numbers'
+                    ])
+                ]
             ])
             ->add('profileImage', FileType::class, [
                 'label' => 'Profile picture',

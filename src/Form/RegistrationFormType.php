@@ -85,6 +85,25 @@ class RegistrationFormType extends AbstractType
                     ])
                 ],
             ])
+            
+            ->add('driverLicense', TextType::class, [
+                'label' => 'Driver License Number',
+                'required' => true,
+                'constraints' => [
+                    new NotBlank(['message' => 'Please enter your driver license number']),
+                    new Length([
+                        'min' => 9,
+                        'max' => 20,
+                        'minMessage' => 'Your driver license number must be at least {{ limit }} characters',
+                        'maxMessage' => 'Your driver license number cannot be longer than {{ limit }} characters'
+                    ]),
+                    new Regex([
+                        'pattern' => '/^[A-Z0-9]+$/',
+                        'message' => 'Your driver license number can only contain uppercase letters and numbers'
+                    ])
+                ]
+            ])
+
             ->add('userType', ChoiceType::class, [
                 'mapped' => false,
                 'choices' => [
