@@ -30,6 +30,7 @@ final class ListOffersController extends AbstractController
         $seats = $carRepo->getDistinctCarSeats();
         $bootCapacities = $carRepo->getDistinctCarBootCapacities();
         $maxPrice = $offerRepo->getMaxPrice();
+        $minPrice = $offerRepo->getMinPrice();
     
         $filters = [
             'locations' => $request->query->all('locations') ?: [],
@@ -38,7 +39,7 @@ final class ListOffersController extends AbstractController
             'nbSeat' => $request->query->all('nbSeat') ?: [],
             'bootCapacity' => $request->query->all('bootCapacity') ?: [],
             'delivery' => $request->query->all('delivery') ?: [],
-            'minPrice' => $request->query->getInt('min_price', 0),
+            'minPrice' => $request->query->getInt('min_price', 90),
             'maxPrice' => $request->query->getInt('max_price', $maxPrice),
         ];
     
@@ -47,6 +48,7 @@ final class ListOffersController extends AbstractController
     
         return $this->render('offer/list.html.twig', [
             'offers' => $offers,
+            'minPrice' => $minPrice,
             'maxPrice' => $maxPrice,
             'locations' => $locations,
             'brands' => $brands,

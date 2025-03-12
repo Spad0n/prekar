@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
             ],
             connect: true,
             range: {
-                'min': 0,
+                'min': 90,
                 'max': maxPrice
             },
             step: 10,
