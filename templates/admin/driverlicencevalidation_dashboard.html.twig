@@ -1,84 +1,154 @@
 {% extends 'base_form.html.twig' %}
-{% block title %}Driver licence Dashboard{% endblock %}
+
+{% block title %}Driver License Dashboard{% endblock %}
 
 {% block body %}
-    <div class="pt-16">
-    <h1>Driver licence dashboard</h1>
+  <section class="flex items-center justify-center min-h-screen py-12">
+    <div class="w-11/12 lg:w-5/6 p-6 shadow-lg bg-white rounded-md flex flex-col overflow-hidden">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-oceanTheme-navyBlue">Driver License Verification</h1>
+        <a href="{{ path('admin_panel') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">Back to Dashboard</a>
+      </div>
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">{{ message }}</div>
-    {% endfor %}
+      {% for message in app.flashes('success') %}
+        <div class="mb-6 p-4 bg-green-100 text-green-700 rounded-md">
+          {{ message }}
+        </div>
+      {% endfor %}
 
-    <div class="p-6">
-        <form method="post">
-
-            <input type="checkbox" name="filters[]" value="Pending" {% if "Pending" in state %}checked{% endif %}> Pending
-            <input type="checkbox" name="filters[]" value="Accepted" {% if "Accepted" in state %}checked{% endif %}> Accepted
-            <input type="checkbox" name="filters[]" value="Denied" {% if "Denied" in state %}checked{% endif %}> Denied
-            <button type="submit" name="apply" class="btn btn-primary mt-2" value="apply">Apply Filter</button>
-        </form>
-
-    </div>
-
-    <div class="p-6">
-        <form method="post">
-            <div class="overflow-x-auto">
-                <table class="table-auto w-full border border-gray-300 rounded-lg shadow-md">
-                    <thead>
-                    <tr class="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
-                        <th class="py-3 px-6 text-left">Name</th>
-                        <th class="py-3 px-6 text-left">Last Name</th>
-                        <th class="py-3 px-6 text-center">NEPH</th>
-                        <th class="py-3 px-6 text-center">Validation status</th>
-                        <th class="py-3 px-6 text-center">Validation date</th>
-                        <th class="py-3 px-6 text-center">Validation by</th>
-                        <th class="py-3 px-6 text-center">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody class="text-gray-600 text-sm font-light">
-                    {% for driver in drivers %}
-                        <tr class="border-b border-gray-200 hover:bg-gray-100 even:bg-gray-50">
-                            <td class="py-3 px-6 text-left">{{ driver.user.name }}</td>
-                            <td class="py-3 px-6 text-left">{{ driver.user.lastname }}</td>
-                            <td class="py-3 px-6 text-center">
-                                {% if driver.getDriverLicenceNb() %}
-                                    {{ driver.driver_lience_nb }}
-                                {% endif %}
-                            </td>
-                            <td class="py-3 px-6 text-center">
-                                {{ driver.state }}
-                            </td>
-                            <td class="py-3 px-6 text-center">
-                                {% if driver.getValidationDate() %}
-                                    {{ driver.getValidationDate|date('Y-m-d') }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td class="py-3 px-6 text-center">
-                                {% if driver.admin %}
-                                    {{ driver.admin.name }} {{ driver.admin.lastname }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td class="py-3 px-6 text-center">
-                                {% if driver.state == 'Pending' %}
-                                    <button type="submit"  name="action" value="accept_{{ driver.id }}" class="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600 transition">
-                                        Accept
-                                </button>
-                                <button type="submit" name="action" value="deny_{{ driver.id }}" class="bg-red-500 text-black px-4 py-2 rounded hover:bg-red-600 transition ml-2">
-                                    Deny
-                                </button>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+      <!-- Filter Section -->
+      <div class="bg-skyTheme-lightCyan p-4 rounded-lg mb-6">
+        <h2 class="text-xl font-semibold text-oceanTheme-deepBlue mb-3">Filter Licenses</h2>
+        <form method="post" class="flex flex-wrap gap-4 items-center">
+          <div class="flex items-center space-x-6">
+            <div class="flex items-center">
+              <input type="checkbox" id="pending" name="filters[]" value="Pending" 
+                {% if "Pending" in state %}checked{% endif %}
+                class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+              <label for="pending" class="ml-2 text-sm font-medium text-oceanTheme-deepBlue">Pending</label>
             </div>
+            
+            <div class="flex items-center">
+              <input type="checkbox" id="accepted" name="filters[]" value="Accepted" 
+                {% if "Accepted" in state %}checked{% endif %}
+                class="w-4 h-4 text-green-600 rounded focus:ring-green-500">
+              <label for="accepted" class="ml-2 text-sm font-medium text-oceanTheme-deepBlue">Accepted</label>
+            </div>
+            
+            <div class="flex items-center">
+              <input type="checkbox" id="denied" name="filters[]" value="Denied" 
+                {% if "Denied" in state %}checked{% endif %}
+                class="w-4 h-4 text-red-600 rounded focus:ring-red-500">
+              <label for="denied" class="ml-2 text-sm font-medium text-oceanTheme-deepBlue">Denied</label>
+            </div>
+          </div>
+          
+          <button type="submit" name="apply" value="apply" class="blue-button">
+            Apply Filters
+          </button>
         </form>
-    </div>
-    </div>
+      </div>
 
+      <!-- License Table -->
+      <div class="flex-1 overflow-auto">
+        <form method="post">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-skyTheme-lightCyan text-oceanTheme-navyBlue border-b-2 border-skyTheme-skyBlue">
+                <th class="p-3 text-left font-semibold">First Name</th>
+                <th class="p-3 text-left font-semibold">Last Name</th>
+                <th class="p-3 text-center font-semibold">License Number</th>
+                <th class="p-3 text-center font-semibold">Status</th>
+                <th class="p-3 text-center font-semibold">Validation Date</th>
+                <th class="p-3 text-center font-semibold">Verified By</th>
+                <th class="p-3 text-center font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for driver in drivers %}
+                <tr class="border-b border-skyTheme-lightCyan hover:bg-sunsetTheme-paleYellow transition-colors duration-150">
+                  <td class="p-3 font-medium">{{ driver.user.name }}</td>
+                  <td class="p-3">{{ driver.user.lastname }}</td>
+                  <td class="p-3 text-center">
+                    {% if driver.getDriverLicenceNb() %}
+                      <span class="font-mono">{{ driver.getDriverLicenceNb() }}</span>
+                    {% else %}
+                      <span class="text-gray-400 italic">Not provided</span>
+                    {% endif %}
+                  </td>
+                  <td class="p-3 text-center">
+                    <span class="px-2 py-1 rounded-full text-xs font-medium
+                      {% if driver.state == 'Accepted' %}
+                        bg-green-100 text-green-800
+                      {% elseif driver.state == 'Pending' %}
+                        bg-yellow-100 text-yellow-800
+                      {% else %}
+                        bg-red-100 text-red-800
+                      {% endif %}
+                    ">
+                      {{ driver.state }}
+                    </span>
+                  </td>
+                  <td class="p-3 text-center">
+                    {% if driver.getValidationDate() %}
+                      {{ driver.getValidationDate|date('Y-m-d') }}
+                    {% else %}
+                      <span class="text-gray-400 italic">N/A</span>
+                    {% endif %}
+                  </td>
+                  <td class="p-3 text-center">
+                    {% if driver.admin %}
+                      <span class="font-medium">{{ driver.admin.name }} {{ driver.admin.lastname }}</span>
+                    {% else %}
+                      <span class="text-gray-400 italic">N/A</span>
+                    {% endif %}
+                  </td>
+                  <td class="p-3 text-center">
+                    {% if driver.state == 'Pending' %}
+                      <div class="flex justify-center gap-2">
+                        <button type="submit" name="action" value="accept_{{ driver.id }}" class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-full transition-colors duration-200">
+                          Accept
+                        </button>
+                        <button type="submit" name="action" value="deny_{{ driver.id }}" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-full transition-colors duration-200">
+                          Deny
+                        </button>
+                      </div>
+                    {% elseif driver.state == 'Accepted' %}
+                      <span class="text-green-600 font-medium">Verified</span>
+                    {% else %}
+                      <span class="text-red-600 font-medium">Rejected</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="7" class="p-6 text-center text-gray-500 italic">No driver licenses found matching your criteria</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </form>
+      </div>
+      
+      <!-- Summary Stats -->
+      <div class="mt-6 p-4 bg-skyTheme-cream rounded-lg">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+          <div>
+            <span class="text-sm text-gray-600">Total Licenses</span>
+            <div class="font-bold text-oceanTheme-deepBlue text-xl">{{ drivers|length }}</div>
+          </div>
+          <div>
+            <span class="text-sm text-gray-600">Pending Verification</span>
+            <div class="font-bold text-yellow-600 text-xl">
+              {{ drivers|filter(d => d.state == 'Pending')|length }}
+            </div>
+          </div>
+          <div>
+            <span class="text-sm text-gray-600">Processed Today</span>
+            <div class="font-bold text-oceanTheme-deepBlue text-xl">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 {% endblock %}

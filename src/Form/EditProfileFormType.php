@@ -30,8 +30,8 @@ class EditProfileFormType extends AbstractType
             ->add('name', TextType::class)
             ->add('userType', ChoiceType::class, [
                 'choices' => [
-                    'Emprunteur' => 'ROLE_BORROWER',
-                    'Propriétaire' => 'ROLE_OWNER',
+                    'Borrower' => 'ROLE_BORROWER',
+                    'Owner' => 'ROLE_OWNER',
                 ],
                 'label' => 'Account Type',
                 'multiple' => true,

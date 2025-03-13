@@ -1,0 +1,19 @@
+{% extends 'base_form.html.twig' %}
+
+{% block title %}
+    Dispute n° {{ report.dispute.id }}
+{% endblock %}
+
+{% block body %}
+    <section class="flex items-center justify-center min-h-screen pt-18 pb-8">
+
+        <div class="w-3/4 p-6 shadow-lg bg-white rounded-md">
+            <h2 class="text-4xl font-bold text-oceanTheme-deepBlue mb-6" > Report reminder </h2>
+                Owner : {{ report.userOwner.name }} {{ report.userOwner.lastName }} <br>
+                Borrower : {{ report.userBorrower.name }} {{ report.userBorrower.lastName }} <br>
+                Report date : {{ report.dispute.reportingDate|date('d/m/Y') }} <br>
+                Report status : {{ report.dispute.status }} <br>
+                Description : {{ report.dispute.description }} <br>
+    </section>
+</div>
+{% endblock %}
