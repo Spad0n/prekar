@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Your Chats{% endblock %}
+
+{% block body %}
+    <h2>Your Chats</h2>
+
+    <ul>
+        {% for chatUser in chatUsers %}
+            <li>
+                <a href="{{ path('get_messages', {'userId': chatUser.id}) }}">
+                    {{ chatUser.name }} ({{ chatUser.email }})
+                </a>
+            </li>
+        {% else %}
+            <p>No conversations yet.</p>
+        {% endfor %}
+    </ul>
+{% endblock %}

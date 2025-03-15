@@ -15,7 +15,19 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/messages')]
 final class MessengerController extends AbstractController
 {
-    #[Route('/{userId}', name: 'get_messages', methods: ['GET'])]
+    #[Route('/chats', name: 'chat_list', methods: ['GET'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function chatList(MessageRepository $messageRepo): Response
+    {
+        $user = $this->getUser();
+        $chatUsers = $messageRepo->findChatUsers($user);
+
+        return $this->render('messenger/list.html.twig', [
+            'chatUsers' => $chatUsers,
+        ]);
+    }
+
+    #[Route('/{userId<\d+>}', name: 'get_messages', methods: ['GET'])]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function getMessages(int $userId, MessageRepository $messageRepo, UserRepository $userRepo): Response
     {
