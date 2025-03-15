@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Message;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\User;
 
 /**
  * @extends ServiceEntityRepository<Message>
@@ -26,6 +27,21 @@ class MessageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findChatUsers(User $user): array
+    {
+        return $this->createQueryBuilder('m')
+            ->select('DISTINCT u.id, u.name, u.email') // Get unique users
+            ->join('m.sender', 'u_sender')
+            ->join('m.receiver', 'u_receiver')
+            ->leftJoin('App\Entity\User', 'u', 'WITH', 'u.id = u_sender.id OR u.id = u_receiver.id')
+            ->where('m.sender = :user OR m.receiver = :user')
+            ->andWhere('u.id != :user') // Exclude self
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
 
     //    /**
     //     * @return Message[] Returns an array of Message objects
