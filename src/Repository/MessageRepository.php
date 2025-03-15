@@ -16,6 +16,17 @@ class MessageRepository extends ServiceEntityRepository
         parent::__construct($registry, Message::class);
     }
 
+    public function findMessagesBetweenUsers($user1, $user2)
+    {
+        return $this->createQueryBuilder('m')
+            ->where('(m.sender = :user1 AND m.receiver = :user2) OR (m.sender = :user2 AND m.receiver = :user1)')
+            ->setParameter('user1', $user1)
+            ->setParameter('user2', $user2)
+            ->orderBy('m.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Message[] Returns an array of Message objects
     //     */

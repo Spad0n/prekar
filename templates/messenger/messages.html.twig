@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chat with {{ otherUser.name }}{% endblock %}
+
+{% block body %}
+    <h2>Chat with {{ otherUser.name }}</h2>
+
+    <div class="chat-box">
+        {% for message in messages %}
+            <div class="message {% if message.sender.id == currentUser.id %}sent{% else %}received{% endif %}">
+                <p>{{ message.text }}</p>
+                <span>{{ message.timeMessage|date('H:i') }}</span> {# Shows only time #}
+            </div>
+        {% endfor %}
+    </div>
+
+    <form action="{{ path('send_message') }}" method="post">
+        <input type="hidden" name="receiver_id" value="{{ otherUser.id }}">
+        <input type="text" name="text" placeholder="Type a message..." required>
+        <button type="submit">Send</button>
+    </form>
+
+    <style>
+        .chat-box { border: 1px solid #ddd; padding: 10px; max-width: 400px; height: 300px; overflow-y: auto; }
+        .message { padding: 5px; margin-bottom: 10px; border-radius: 5px; max-width: 75%; }
+        .sent { background: #DCF8C6; align-self: flex-end; text-align: right; }
+        .received { background: #FFF; align-self: flex-start; text-align: left; }
+        form { margin-top: 10px; }
+        input { width: 80%; padding: 5px; }
+        button { padding: 5px; }
+    </style>
+{% endblock %}
