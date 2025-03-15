@@ -76,6 +76,8 @@ class OfferRepository extends ServiceEntityRepository
     {
         return max(0, $this->createQueryBuilder('o')
             ->select('MAX(o.price)')
+            ->andWhere('o.available = :available')
+            ->setParameter('available', 'available')
             ->getQuery()
             ->getSingleScalarResult() ?? 0);
     }
@@ -87,6 +89,8 @@ class OfferRepository extends ServiceEntityRepository
     {
         return min(0, $this->createQueryBuilder('o')
             ->select('MIN(o.price)')
+            ->andWhere('o.available = :available')
+            ->setParameter('available', 'available')
             ->getQuery()
             ->getSingleScalarResult() ?? 0);
     }
