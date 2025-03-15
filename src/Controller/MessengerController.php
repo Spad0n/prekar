@@ -20,10 +20,11 @@ final class MessengerController extends AbstractController
     public function chatList(MessageRepository $messageRepo): Response
     {
         $user = $this->getUser();
-        $chatUsers = $messageRepo->findChatUsers($user);
+        $chatUsers = $messageRepo->findChatUsersWithLastMessage($user);
 
         return $this->render('messenger/list.html.twig', [
             'chatUsers' => $chatUsers,
+            'currentUser' => $user
         ]);
     }
 
