@@ -5,15 +5,53 @@
 {% block body %}
     <h2>Your Chats</h2>
 
-    <ul>
+    <ul class="chat-list">
         {% for chatUser in chatUsers %}
             <li>
                 <a href="{{ path('get_messages', {'userId': chatUser.id}) }}">
-                    {{ chatUser.name }} ({{ chatUser.email }})
+                    <div class="chat-item">
+                        <div class="chat-name">{{ chatUser.name }}</div>
+                        <div class="chat-preview">
+                            {% if chatUser.lastSenderId is defined and chatUser.lastSenderId == currentUser.id %}
+                                <strong>You:</strong> 
+                            {% else %}
+                                <strong>{{ chatUser.name }}:</strong>
+                            {% endif %}
+                            {{ chatUser.lastMessage|default('No messages yet')|slice(0, 30) }}
+                        </div>
+                    </div>
                 </a>
             </li>
         {% else %}
             <p>No conversations yet.</p>
         {% endfor %}
     </ul>
+
+    <style>
+        .chat-list {
+            list-style: none;
+            padding: 0;
+            max-width: 400px;
+        }
+        .chat-list li {
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+            transition: background 0.3s;
+        }
+        .chat-list li:hover {
+            background: #f8f8f8;
+        }
+        .chat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-name {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        .chat-preview {
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
 {% endblock %}
