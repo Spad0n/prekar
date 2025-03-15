@@ -20,6 +20,7 @@
             {% else %}
               <a href="#" class="transparent-button bg-skyTheme-lightCyan rounded-full cursor-not-allowed" disabled>Not Available</a>
             {% endif %}
+            <a href="{{ path('get_messages', {'userId': offer.userOwner.id}) }}" class="transparent-button bg-orange-300 rounded-full">Contact the owner</a>
           </div>
         {% endif %}
       </div>
