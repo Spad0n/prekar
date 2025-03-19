@@ -35,10 +35,18 @@ class CarType extends AbstractType
             ->add('nbSeat', IntegerType::class, [
                 'label' => 'Number of Seats',
                 'attr' => ['min' => 1, 'max' => 20],
+                'required' => true,
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Number of seats is required']),
+                ],
             ])
             ->add('bootCapacity', IntegerType::class, [
                 'label' => 'Boot Capacity (in liters)',
                 'attr' => ['min' => 0],
+                'required' => true,
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Boot capacity is required']),
+                ],
             ])
             ->add('fuelType', ChoiceType::class, [
                 'label' => 'Fuel Type',
