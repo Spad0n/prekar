@@ -11,7 +11,7 @@
           {% if app.user.profileImage %}
             <img src="{{ asset('uploads/profile_images/' ~ app.user.profileImage) }}" alt="Photo de profil" class="profile-image" width="200px">
           {% else %}
-            <img src="https://placehold.co/200x200/png" alt="Photo de profil par dÃ©faut" class="profile-image">
+            <img src="https://placehold.co/200x200/png" alt="Default picture" class="profile-image">
           {% endif %}
           <h2 class="mt-2 text-xl text-center">{{ app.user.name }} {{ app.user.lastName }}</h2>
         </div>
@@ -39,7 +39,7 @@
                 <div>Rentings:</div>
                 <ul class="overflow-y-auto max-h-36">
                   {% for renting in app.user.rentings %}
-                    <li> {{ renting.car.brand }} {{ renting.car.model }}</li>
+                      <li class="bg-skyTheme-lightCyan rounded-lg"> {{ renting.offer.car.brand }} {{ renting.offer.car.model }} {{ renting.startDate|date('d-m-Y') }} {{ renting.endDate|date('d-m-Y') }} {{ renting.deliveryLocation}} {{ renting.totalAmount }}€ <a class="bg-skyTheme-skyBlue rounded-full"  href="{{ path('app_dispute', {renting_id: renting.id}) }}">Declare an accident</a></li>
                   {% endfor %}
                 </ul>
               {% endif %}
