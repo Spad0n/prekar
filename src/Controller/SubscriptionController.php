@@ -27,7 +27,7 @@ class SubscriptionController extends AbstractController
             $startDate = $subscription->getStartDate();
             $endDate = $subscription->getEndDate();
             $days = $startDate->diff($endDate)->days;
-            $cost = $days * 5;
+            $cost = ($days + 1) * 5;
 
             $subscription->setCost($cost);
 
