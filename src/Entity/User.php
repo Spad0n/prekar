@@ -123,6 +123,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?ValidateUser $validateUser = null;
 
+    /**
+     * @var Collection<int, Subscription>
+     */
+    #[ORM\OneToMany(targetEntity: Subscription::class, mappedBy: 'user')]
+    private Collection $subscriptions;
 
     public function __construct()
     {
@@ -134,6 +139,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->cars = new ArrayCollection();
         $this->offers = new ArrayCollection();
         $this->payments = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -593,5 +599,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->roles = $filteredRoles;
     }
 
+    /**
+     * @return Collection<int, Subscription>
+     */
+    public function getSubscriptions(): Collection
+    {
+        return $this->subscriptions;
+    }
 
 }

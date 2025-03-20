@@ -1,0 +1,15 @@
+{% extends 'base_form.html.twig' %}
+
+{% block title %}Create Subscription{% endblock %}
+
+{% block body %}
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+        <div>
+            <h1>Create Subscription</h1>
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <button type="submit">Create</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
