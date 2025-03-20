@@ -7,7 +7,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class SubscriptionType extends AbstractType
 {
@@ -21,12 +20,11 @@ class SubscriptionType extends AbstractType
                     'min' => (new \DateTime())->format('Y-m-d'), // Set the minimum date to today
                 ],
             ])
-            ->add('type', ChoiceType::class, [
-                'label' => 'Subscription Type',
-                'choices' => [
-                    'Annual' => 'annual',
-                    'Monthly' => 'monthly',
-                    'Weekly' => 'weekly',
+            ->add('endDate', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'End Date',
+                'attr' => [
+                    'min' => (new \DateTime())->format('Y-m-d'), // Set the minimum date to today
                 ],
             ]);
     }

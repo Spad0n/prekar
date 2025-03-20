@@ -24,22 +24,16 @@ class SubscriptionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $cost = 0;
-            switch ($subscription->getType()) {
-                case 'annual':
-                    $cost = 500;
-                    break;
-                case 'monthly':
-                    $cost = 50;
-                    break;
-                case 'weekly':
-                    $cost = 20;
-                    break;
-            }
+            $startDate = $subscription->getStartDate();
+            $endDate = $subscription->getEndDate();
+            $days = $startDate->diff($endDate)->days;
+            $cost = $days * 5;
+
+            $subscription->setCost($cost);
 
             return $this->redirectToRoute('subscription_payment', [
                 'startDate' => $subscription->getStartDate()->format('Y-m-d'),
-                'type' => $subscription->getType(),
+                'endDate' => $subscription->getEndDate()->format('Y-m-d'),
                 'cost' => $cost,
             ]);
         }
@@ -54,12 +48,12 @@ class SubscriptionController extends AbstractController
     public function payment(Request $request): Response
     {
         $startDate = $request->query->get('startDate');
-        $type = $request->query->get('type');
+        $endDate = $request->query->get('endDate');
         $cost = $request->query->get('cost');
 
         return $this->render('subscription/payment.html.twig', [
             'startDate' => $startDate,
-            'type' => $type,
+            'endDate' => $endDate,
             'cost' => $cost,
         ]);
     }
@@ -69,7 +63,7 @@ class SubscriptionController extends AbstractController
     public function confirmPayment(Request $request, EntityManagerInterface $entityManager): Response
     {
         $startDate = $request->request->get('startDate');
-        $type = $request->request->get('type');
+        $endDate = $request->request->get('endDate');
         $cost = $request->request->get('cost');
 
         // Handle payment logic here...
@@ -79,7 +73,8 @@ class SubscriptionController extends AbstractController
             $subscription = new Subscription();
             $subscription->setUser($this->getUser());
             $subscription->setStartDate(new \DateTime($startDate));
-            $subscription->setType($type);
+            $subscription->setEndDate(new \DateTime($endDate));
+            $subscription->setCost($cost);
 
             $entityManager->persist($subscription);
             $entityManager->flush();
@@ -92,7 +87,7 @@ class SubscriptionController extends AbstractController
 
             return $this->redirectToRoute('subscription_payment', [
                 'startDate' => $startDate,
-                'type' => $type,
+                'endDate' => $endDate,
                 'cost' => $cost,
             ]);
         }

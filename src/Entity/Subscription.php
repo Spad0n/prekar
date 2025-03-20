@@ -17,10 +17,12 @@ class Subscription
     #[Assert\NotBlank]
     private $startDate;
 
-    #[ORM\Column(type: "string", length: 255)]
-    #[Assert\Choice(choices: ["annual", "monthly", "weekly"])]
+    #[ORM\Column(type: "datetime")]
     #[Assert\NotBlank]
-    private $type;
+    private $endDate;
+
+    #[ORM\Column(type: "integer")]
+    private $cost;
 
     #[ORM\ManyToOne(targetEntity: "App\Entity\User", inversedBy: "subscriptions")]
     #[ORM\JoinColumn(nullable: false)]
@@ -45,14 +47,26 @@ class Subscription
         return $this;
     }
 
-    public function getType(): ?string
+    public function getEndDate(): ?\DateTimeInterface
     {
-        return $this->type;
+        return $this->endDate;
     }
 
-    public function setType(string $type): self
+    public function setEndDate(\DateTimeInterface $endDate): self
     {
-        $this->type = $type;
+        $this->endDate = $endDate;
+
+        return $this;
+    }
+
+    public function getCost(): ?int
+    {
+        return $this->cost;
+    }
+
+    public function setCost(int $cost): self
+    {
+        $this->cost = $cost;
 
         return $this;
     }

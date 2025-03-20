@@ -8,7 +8,7 @@
             <div class="bg-skyTheme-lightCyan rounded-lg p-4 mt-auto md:w-3/5">
                 <form action="{{ path('subscription_confirm_payment') }}" method="post">
                     <input type="hidden" name="startDate" value="{{ startDate }}">
-                    <input type="hidden" name="type" value="{{ type }}">
+                    <input type="hidden" name="endDate" value="{{ endDate }}">
                     <input type="hidden" name="cost" value="{{ cost }}">
                     <h2 class="text-3xl font-bold text-oceanTheme-deepBlue">Total amount: {{ cost }}€</h2>
                     <input type="number" name="creditCardNumber" placeholder="Enter your credit card number" min="1000000000000000" max="9999999999999999" class="rounded-lg p-2 border border-gray-300" required>
