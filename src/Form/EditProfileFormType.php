@@ -43,11 +43,11 @@ class EditProfileFormType extends AbstractType
                 'type' => PasswordType::class,
                 'mapped' => false,
                 'required' => false,
-                'first_options' => ['label' => 'Nouveau mot de passe'],
-                'second_options' => ['label' => 'Confirmer le mot de passe'],
+                'first_options' => ['label' => 'New password'],
+                'second_options' => ['label' => 'Confirm password'],
             ])
             ->add('profileImage', FileType::class, [
-                'label' => 'Photo de profil',
+                'label' => 'Profile Image',
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
