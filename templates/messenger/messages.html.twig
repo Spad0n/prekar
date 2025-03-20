@@ -1,8 +1,9 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_form.html.twig' %}
 
 {% block title %}Chat with {{ otherUser.name }}{% endblock %}
 
 {% block body %}
+    <section class="pt-32 pb-8">
     <h2>Chat with {{ otherUser.name }}</h2>
 
     <div class="chat-box">
@@ -29,4 +30,5 @@
         input { width: 80%; padding: 5px; }
         button { padding: 5px; }
     </style>
+    </section>
 {% endblock %}
