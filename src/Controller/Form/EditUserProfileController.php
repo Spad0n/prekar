@@ -62,6 +62,8 @@ final class EditUserProfileController extends AbstractController
 
             if ($form->isValid()) {
                 $entityManager->persist($currentUser);
+                $currentUser->setRoles(array_unique(array_merge($currentUser->getRoles(), $form->get('userType')->getData())));
+
                 $entityManager->flush();
                 return $this->redirectToRoute('app_user_profile');
             }
