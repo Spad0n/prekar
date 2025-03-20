@@ -42,11 +42,11 @@ class EditProfileFormType extends AbstractType
                 'choice_attr' => function ($choice, $key, $value) use ($disabledChoices) {
                     return isset($disabledChoices[$value]) ? ['disabled' => 'disabled'] : [];
                 },
-                'constraints' => [
+                /*'constraints' => [
                     new NotBlank([
                         'message' => 'You must select one or more roles.',
-                    ]),
-                ],
+                    ])
+                ],*/
             ])
             ->add('profileImage', FileType::class, [
                 'label' => 'Profile picture',
