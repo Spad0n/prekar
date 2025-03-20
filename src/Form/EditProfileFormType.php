@@ -13,6 +13,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class EditProfileFormType extends AbstractType
@@ -45,6 +48,28 @@ class EditProfileFormType extends AbstractType
                 'required' => false,
                 'first_options' => ['label' => 'New password'],
                 'second_options' => ['label' => 'Confirm password'],
+                'constraints' => [
+                    new Length([
+                        'min' => 8,
+                        'minMessage' => 'Your password should be at least {{ limit }} characters',
+                    ]),
+                    new Regex([
+                        'pattern' => '/[A-Z]/',
+                        'message' => 'Your password must contain at least one uppercase letter',
+                    ]),
+                    new Regex([
+                        'pattern' => '/[a-z]/',
+                        'message' => 'Your password must contain at least one lowercase letter',
+                    ]),
+                    new Regex([
+                        'pattern' => '/\d/',
+                        'message' => 'Your password must contain at least one number',
+                    ]),
+                    new Regex([
+                        'pattern' => '/[^a-zA-Z\d]/',
+                        'message' => 'Your password must contain at least one special character',
+                    ]),
+                ],
             ])
             ->add('profileImage', FileType::class, [
                 'label' => 'Profile Image',
