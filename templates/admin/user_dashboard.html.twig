@@ -1,52 +1,118 @@
 {% extends 'base_form.html.twig' %}
+
 {% block title %}Users Dashboard{% endblock %}
 
 {% block body %}
-    <div class="pt-16">
-    <div>
-        <form method="post">
-            <input type="text" name="search_email" value="" class="form-control" placeholder="Mail">
-            <input type="text" name="search_name" value="" class="form-control" placeholder="Name">
-            <input type="text" name="search_lastname" value="" class="form-control" placeholder="Last Name">
-            <button type="submit" class="btn btn-primary mt-2">Search</button>
+  <section class="flex items-center justify-center min-h-screen py-12">
+    <div class="w-11/12 lg:w-5/6 p-6 shadow-lg bg-white rounded-md flex flex-col overflow-hidden">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-oceanTheme-navyBlue">Users Management</h1>
+        <a href="{{ path('admin_panel') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">Back to Dashboard</a>
+      </div>
+
+      <!-- Search Form -->
+      <div class="bg-skyTheme-lightCyan p-4 rounded-lg mb-6">
+        <h2 class="text-xl font-semibold text-oceanTheme-deepBlue mb-3">Search Users</h2>
+        <form method="post" class="space-y-4 md:space-y-0 md:flex md:flex-wrap md:gap-4 items-end">
+          <div class="md:w-60">
+            <label for="search_email" class="block text-sm font-medium text-oceanTheme-deepBlue mb-1">Email</label>
+            <input type="text" id="search_email" name="search_email" class="input-field w-full" placeholder="Search by email">
+          </div>
+          <div class="md:w-48">
+            <label for="search_name" class="block text-sm font-medium text-oceanTheme-deepBlue mb-1">First Name</label>
+            <input type="text" id="search_name" name="search_name" class="input-field w-full" placeholder="Search by name">
+          </div>
+          <div class="md:w-48">
+            <label for="search_lastname" class="block text-sm font-medium text-oceanTheme-deepBlue mb-1">Last Name</label>
+            <input type="text" id="search_lastname" name="search_lastname" class="input-field w-full" placeholder="Search by last name">
+          </div>
+          <div>
+            <button type="submit" class="blue-button">
+              <i class="fas fa-search mr-2"></i>Search
+            </button>
+          </div>
         </form>
-    </div>
-    <h2>Users list</h2>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Mail</th>
-            <th>Name</th>
-            <th>Last Name</th>
-            <th>Role</th>
-            <th>is Validated</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.name }}</td>
-                <td>{{ user.lastname }}</td>
-                <td>{{ user.roles[0] }}</td>
-                <td>
-                    {% if user.validateUser is not null %}
-                        {{ user.validateUser.state }}
-                    {% else %}
-                        undefined
-                    {% endif %}
-                </td>
+      </div>
 
-                <td>
-                    <a href="{{ path('admin_user_profilpage', {'id': user.id}) }}" class="btn btn-danger">Profil</a>
-                </td>
-
+      <!-- Results Table -->
+      <div class="flex-1 overflow-auto">
+        <h2 class="text-2xl font-semibold text-oceanTheme-deepBlue mb-3">Users List</h2>
+        <div class="text-sm text-gray-500 mb-3">Showing {{ users|length }} users</div>
+        
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-skyTheme-lightCyan text-oceanTheme-navyBlue border-b-2 border-skyTheme-skyBlue">
+              <th class="p-3 text-left font-semibold">ID</th>
+              <th class="p-3 text-left font-semibold">Email</th>
+              <th class="p-3 text-left font-semibold">First Name</th>
+              <th class="p-3 text-left font-semibold">Last Name</th>
+              <th class="p-3 text-left font-semibold">Role</th>
+              <th class="p-3 text-left font-semibold">Status</th>
+              <th class="p-3 text-center font-semibold">Actions</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+          </thead>
+          <tbody>
+            {% for user in users %}
+              <tr class="border-b border-skyTheme-lightCyan hover:bg-sunsetTheme-paleYellow transition-colors duration-150">
+                <td class="p-3">{{ user.id }}</td>
+                <td class="p-3 font-medium">{{ user.email }}</td>
+                <td class="p-3">{{ user.name }}</td>
+                <td class="p-3">{{ user.lastname }}</td>
+                <td class="p-3">
+                  <span class="px-2 py-1 rounded-full text-xs font-medium
+                    {% if 'ADMIN' in user.roles[0] %}
+                      bg-red-100 text-red-800
+                    {% elseif 'OWNER' in user.roles[0] %}
+                      bg-blue-100 text-blue-800
+                    {% elseif 'BORROWER' in user.roles[0] %}
+                      bg-green-100 text-green-800
+                    {% else %}
+                      bg-gray-100 text-gray-800
+                    {% endif %}
+                  ">
+                    {{ user.roles[0]|replace({'ROLE_': ''}) }}
+                  </span>
+                </td>
+                <td class="p-3">
+                  {% if user.validateUser is not null %}
+                    <span class="px-2 py-1 rounded-full text-xs font-medium
+                      {% if user.validateUser.state == 'validated' %}
+                        bg-green-100 text-green-800
+                      {% elseif user.validateUser.state == 'pending' %}
+                        bg-yellow-100 text-yellow-800
+                      {% else %}
+                        bg-red-100 text-red-800
+                      {% endif %}
+                    ">
+                      {{ user.validateUser.state }}
+                    </span>
+                  {% else %}
+                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">undefined</span>
+                  {% endif %}
+                </td>
+                <td class="p-3 text-center">
+                  <a href="{{ path('admin_user_profilpage', {'id': user.id}) }}" class="blue-button">
+                    View Profile
+                  </a>
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="7" class="p-6 text-center text-gray-500 italic">No users found matching your criteria</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="mt-6 flex justify-between items-center">
+        <div class="text-sm text-gray-600">
+          <!-- Pagination could go here -->
+        </div>
+        <div class="flex gap-2">
+          <a href="#" class="transparent-button bg-skyTheme-lightCyan rounded-full">Export Users</a>
+        </div>
+      </div>
+    </div>
+  </section>
 {% endblock %}

@@ -1,130 +1,156 @@
 {% extends 'base_form.html.twig' %}
 
-{% block title %}Hello UserProfileController!{% endblock %}
+{% block title %}Profil{% endblock %}
 
 {% block body %}
-<style>
-    .wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .wrapper code { background: #F5F5F5; padding: 2px 6px; }
+  <section class="flex items-center justify-center min-h-screen py-12">
+    <div class="w-3/4 p-6 shadow-lg bg-white rounded-md flex flex-col">
+      <h1 class="text-4xl font-bold text-oceanTheme-navyBlue mb-6">User Profile</h1>
 
-    .profile-header { display : flex; align-items: end;}
-    .profile-header img{ margin-left: 20px;}
-    .test{ background-color: #bebeff;}
-    .title{
-        font-size: 28px;
-        letter-spacing: -2px;
-        word-spacing: 2px;
-        font-weight: 700;
-        text-decoration: underline rgb(68, 68, 68);
-        font-style: normal;
-        font-variant: small-caps;
-        text-transform: capitalize;}
+      <div class="flex flex-col md:flex-row justify-between gap-8 flex-1 overflow-hidden">
+        {# photo part #}
+        <div class="md:w-1/3 profile-header flex flex-col items-center" >
+          <div class="mt-12 rounded-lg overflow-hidden shadow-md mb-4">
+            {% if user.profileImage %}
+              <img src="{{ asset('uploads/profile_images/' ~ profile_image) }}" alt="Profile photo" class="profile-image w-48 h-48 object-cover">
+            {% else %}
+              <img src="https://placehold.co/200x200/png" alt="Default picture" class="profile-image w-48 h-48 object-cover">
+            {% endif %}
+          </div>
+          <h2 class="mt-2 text-xl font-semibold text-center">{{ user.name }} {{ user.lastName }}</h2>
+          <div class="mt-4 w-full bg-skyTheme-lightCyan rounded-lg p-4">
+            <div class="text-xl font-medium text-oceanTheme-deepBlue mb-2">Driver Licence</div>
+            <div class="flex flex-col space-y-2">
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-600">Status:</span>
+                <span class="font-medium">{{driverLicence.state}}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-600">Number:</span>
+                <span class="font-medium">{% if driverLicence.driverLicenceNb %} {{ driverLicence.driverLicenceNb }} {% else %} N/A {% endif %}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-gray-600">Validation Date:</span>
+                <span class="font-medium">{% if driverLicence.getValidationDate %} {{ driverLicence.getValidationDate|date('Y-m-d') }} {% else %} Still not validated {% endif %}</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    .titleRole{
-        font-size: 25px;
-        letter-spacing: -2px;
-        word-spacing: 2px;
-        color: #956E72;
-        font-weight: 700;
-        text-decoration: rgb(68, 68, 68);
-        font-style: normal;
-        font-variant: small-caps;
-        text-transform: capitalize;
-    }
+        {# information #}
+        <div class="md:w-2/3 flex flex-col overflow-hidden">
+          <h2 class="text-2xl font-bold text-oceanTheme-navyBlue mb-4">User Information</h2>
+          <div class="flex flex-col space-y-6 overflow-auto">
+            {# BORROWER INFORMATION #}
+            {% if is_granted('ROLE_BORROWER') %}
+              <div class="bg-skyTheme-cream p-4 rounded-lg">
+                <h3 class="text-xl font-semibold text-oceanTheme-deepBlue mb-2">Borrower Details</h3>
+                {% if user.startSub is not null %}
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <span class="text-sm text-gray-600">Subscription Start:</span>
+                      <div class="font-medium">{{ startSub|date('Y-m-d') }}</div>
+                    </div>
+                    <div>
+                      <span class="text-sm text-gray-600">Subscription End:</span>
+                      <div class="font-medium">{{ startSub|date('Y-m-d') }}</div>
+                    </div>
+                  </div>
+                {% else %}
+                  <div class="text-oceanTheme-deepBlue italic">No active subscription</div>
+                {% endif %}
+                
+                <div class="mt-4">
+                  <h4 class="font-medium text-oceanTheme-deepBlue mb-2">Rentings</h4>
+                  {% if user.rentings is empty %}
+                    <div class="text-gray-500 italic">No rentings found</div>
+                  {% else %}
+                    <ul class="overflow-y-auto max-h-36 bg-white p-2 rounded-md space-y-1">
+                      {% for renting in user.rentings %}
+                        <li class="py-1 px-2 hover:bg-gray-100 rounded"> {{ renting.car.brand }} {{ renting.car.model }}</li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
 
-</style>
+            {# OWNER INFORMATION #}
+            {% if is_granted('ROLE_OWNER') %}
+              <div class="bg-skyTheme-lightCyan p-4 rounded-lg">
+                <h3 class="text-xl font-semibold text-oceanTheme-deepBlue mb-2">Owner Details</h3>
+                
+                <div class="mb-4">
+                  <h4 class="font-medium text-oceanTheme-deepBlue mb-2">Cars</h4>
+                  {% if user.cars is empty %}
+                    <div class="text-gray-500 italic">No cars registered</div>
+                  {% else %}
+                    <ul class="overflow-y-auto max-h-36 bg-white p-2 rounded-md space-y-1">
+                      {% for car in user.cars %}
+                        <li class="py-1 px-2 hover:bg-gray-100 rounded">{{ car.brand }} {{ car.model }}</li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </div>
+                
+                <div>
+                  <h4 class="font-medium text-oceanTheme-deepBlue mb-2">Offers</h4>
+                  {% if user.offers is empty %}
+                    <div class="text-gray-500 italic">No offers available</div>
+                  {% else %}
+                    <ul class="overflow-y-auto max-h-36 bg-white p-2 rounded-md space-y-1">
+                      {% for offer in user.offers %}
+                        <li class="py-1 px-2 hover:bg-gray-100 rounded">{{ offer.car.brand }} {{ offer.car.model }}</li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
 
-<div class="wrapper">
-    <div class="profile-header" >
-        <img src="https://placehold.co/200x200/png" alt="Default profile picture" class="profile-image">
+            {# Last Payments #}
+            <div class="bg-sunsetTheme-paleYellow p-4 rounded-lg">
+              <h3 class="text-xl font-semibold text-oceanTheme-deepBlue mb-2">Payment History</h3>
+              {% if user.payments is empty %}
+                <div class="text-gray-500 italic">No payment history available</div>
+              {% else %}
+                <div class="overflow-y-auto max-h-36">
+                  <table class="w-full border-collapse">
+                    <thead>
+                      <tr class="bg-white text-oceanTheme-navyBlue border-b border-gray-200">
+                        <th class="p-2 text-left font-medium">Status</th>
+                        <th class="p-2 text-left font-medium">Amount</th>
+                        <th class="p-2 text-left font-medium">Service Fee</th>
+                        <th class="p-2 text-left font-medium">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for payment in user.payments %}
+                        <tr class="border-b border-gray-100 hover:bg-white transition-colors duration-150">
+                          <td class="p-2">{{payment.status}}</td>
+                          <td class="p-2 font-medium">{{ payment.total }}€</td>
+                          <td class="p-2">{{ payment.apply.serviceFee }}€</td>
+                          <td class="p-2">{% if payment.payDate%}
+                              {{ payment.payDate|date('Y-m-d') }}
+                            {% else %}
+                              N/A
+                            {% endif %}
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="flex justify-between mt-auto pt-6">
+            <a href="{{ path('admin_panel') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">Back to Admin Dashboard</a>
+            <a class="blue-button" href="{{ path('admin_user_profilpage', {'id': user.id}) }}">Ban User</a>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div>
-        <h1> Action on account : </h1>
-        <ul>
-        </ul>
-    </div>
-
-    <div>
-        <h1 class="title"> Private informations : </h1>
-        <ul>
-            <li> Name : {{ user.name }} </li>
-            <li> Lastname : {{ user.lastname }} </li>
-            <li> Email : {{ user.email }} </li>
-            <li> Roles : {% for role in user.roles %} {{ role }} {% endfor %} </li>
-        </ul>
-    </div>
-
-    <br>
-    <ul>
-
-
-    {% if is_granted('ROLE_BORROWER') %}
-        {# ----------------- BORROWER INFORMATIONS ----------------- #}
-         <li class="titleRole">  Borrower </li>
-        {# checking if the user have a sub on #}
-
-        {% if user.startSub is not null %}
-            <br>
-            Subscription start date : {{ startSub|date('Y-m-d') }}
-            <br>
-            Subscription end date : {{ endSub|date('Y-m-d') }}
-        {% else %}
-            <br>
-            No subscription
-        {% endif %}
-        {# Renting made by the borrower#}
-
-        {% if user.rentings is empty  %}
-            <br>
-            No renting
-        {% else %}
-            <br>
-            Rentings :
-            <ul>
-                {% for renting in user.rentings %}
-                    <li> {{ renting.car.brand }} {{ renting.car.model }} </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
-    {% endif %}
-
-    {% if is_granted('ROLE_OWNER') %}
-        <br>
-
-        {# ----------------- OWNER INFORMATIONS ----------------- #}
-        <li class="titleRole"> Owner </li>
-        {# car owned by the owner#}
-
-        {% if user.cars is empty  %}
-            <br>
-            No car
-        {% else %}
-            Cars :
-            <ul>
-                {% for car in user.cars %}
-                    <li> {{ car.brand }} {{ car.model }} </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-        {# Offer made by the owner#}
-
-        {%  if user.offers is empty  %}
-            <br>
-            No offer
-        {% else %}
-            Offers :
-            <ul>
-                {% for offer in user.offers %}
-                    <li> {{ offer.car.brand }} {{ offer.car.model }} </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endif %}
-
-    </ul>
-
-
-</div>
+  </section>
 {% endblock %}

@@ -10,14 +10,17 @@
   <div class="mt-3">
     {{ form_label(form.email) }}
     {{ form_widget(form.email, {'attr': {'class': 'form-control mt-2 w-full input-field','readonly' : 'readonly','style' : 'background-color: gray;'}}) }}
+    <div class="text-red-500">{{ form_errors(form.email) }}</div>
   </div>
   <div class="mt-3">
     {{ form_label(form.lastName) }}
     {{ form_widget(form.lastName, {'attr': {'class': 'form-control mt-2 w-full input-field'}}) }}
+    <div class="text-red-500">{{ form_errors(form.lastName) }}</div>
   </div>
   <div class="mt-3">
     {{ form_label(form.name) }}
     {{ form_widget(form.name, {'attr': {'class': 'form-control mt-2 w-full input-field'}}) }}
+    <div class="text-red-500">{{ form_errors(form.name) }}</div>
   </div>
   {% for choice in form.userType %}
     <div class="mt-3">
@@ -25,10 +28,15 @@
       {{ form_label(choice) }}
     </div>
   {% endfor %}
+  <div class="text-red-500">{{ form_errors(form.userType) }}</div>
+  <div class="my-2">
+    {{ form_label(form.profileImage) }}
+    {{ form_widget(form.profileImage, {'attr': {'class': 'mt-2'}}) }}
+  </div>
   {# {{ form_row(form.profileImage) }} #}
 
   <button class="blue-button mt-3" type="submit" name="submit">Submit</button>
-  <button class="ml-3 orange-button" href="{{ path('app_user_profile') }}">Cancel</a>
+  <button class="ml-3 orange-button" href="{{ path('app_user_profile') }}">Cancel</button>
 {{ form_end(form) }}
 </section>
 {% endblock %}

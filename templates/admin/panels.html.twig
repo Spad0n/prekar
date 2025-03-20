@@ -1,20 +1,86 @@
 {% extends 'base_form.html.twig' %}
+
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block body %}
-    <div class="pt-16">
-    <h1>Panneau de contrôle Admin</h1>
-
-    <div class="btn-primary w-64 h-24 flex items-center justify-center">
-        <a href={{path('services_dashboard')}}>Services</a>
-    </div>
-        <div class="btn-primary w-64 h-24 flex items-center justify-center">
-            <a href={{path('users_dashboard')}}>Users</a>
+  <section class="flex items-center justify-center min-h-screen py-12 bg-skyTheme-skyBlue">
+    <div class="w-3/4 p-6 shadow-lg bg-white rounded-md">
+      <h1 class="text-4xl font-bold text-oceanTheme-navyBlue text-center mb-8">Admin Dashboard</h1>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <!-- Services Card -->
+        <div class="bg-skyTheme-lightCyan rounded-lg shadow-md overflow-hidden">
+          <div class="p-4">
+            <h2 class="text-2xl font-semibold text-oceanTheme-deepBlue mb-2">Services</h2>
+            <p class="text-oceanTheme-navyBlue mb-4">Manage application services and configurations</p>
+            <div class="flex justify-end">
+              <a href="{{ path('services_dashboard') }}" class="blue-button">
+                Access Services
+              </a>
+            </div>
+          </div>
         </div>
-        <div class="btn-primary w-64 h-24 flex items-center justify-center">
-            <a href={{path('drivers_dashboard')}}>Driver's licence</a>
+        
+        <!-- Users Card -->
+        <div class="bg-sunsetTheme-paleYellow rounded-lg shadow-md overflow-hidden">
+          <div class="p-4">
+            <h2 class="text-2xl font-semibold text-oceanTheme-deepBlue mb-2">Users</h2>
+            <p class="text-oceanTheme-navyBlue mb-4">Manage user accounts, roles and permissions</p>
+            <div class="flex justify-end">
+              <a href="{{ path('users_dashboard') }}" class="orange-button">
+                Access Users
+              </a>
+            </div>
+          </div>
         </div>
-
+        
+        <!-- Driver's License Card -->
+        <div class="bg-skyTheme-cream rounded-lg shadow-md overflow-hidden">
+          <div class="p-4">
+            <h2 class="text-2xl font-semibold text-oceanTheme-deepBlue mb-2">Driver's License</h2>
+            <p class="text-oceanTheme-navyBlue mb-4">Verify and manage driver license submissions</p>
+            <div class="flex justify-end">
+              <a href="{{ path('drivers_dashboard') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">
+                Access Licenses
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Stats Summary -->
+      <!-- div class="mt-12 max-w-4xl mx-auto" -->
+        <!-- h2 class="text-2xl font-semibold text-oceanTheme-deepBlue mb-4">System Overview</h2 -->
+        <!-- div class="grid grid-cols-1 md:grid-cols-3 gap-4" -->
+          <!-- div class="bg-white p-4 rounded-lg border border-skyTheme-lightCyan shadow-sm flex flex-col items-center justify-center" -->
+            <!-- div class="text-4xl font-bold text-oceanTheme-deepBlue mb-2" -->
+              <!-- !-- Stats would be dynamically inserted here -- -->
+              <!-- i class="fas fa-users mr-2"></i -->
+            <!-- /div -->
+            <!-- div class="text-gray-600">Active Users</div -->
+          <!-- /div -->
+          <!-- div class="bg-white p-4 rounded-lg border border-skyTheme-lightCyan shadow-sm flex flex-col items-center justify-center" -->
+            <!-- div class="text-4xl font-bold text-oceanTheme-deepBlue mb-2" -->
+              <!-- !-- Stats would be dynamically inserted here -- -->
+              <!-- i class="fas fa-car mr-2"></i -->
+            <!-- /div -->
+            <!-- div class="text-gray-600">Active Rentals</div -->
+          <!-- /div -->
+          <!-- div class="bg-white p-4 rounded-lg border border-skyTheme-lightCyan shadow-sm flex flex-col items-center justify-center" -->
+            <!-- div class="text-4xl font-bold text-oceanTheme-deepBlue mb-2" -->
+              <!-- !-- Stats would be dynamically inserted here -- -->
+              <!-- i class="fas fa-clipboard-check mr-2"></i -->
+            <!-- /div -->
+            <!-- div class="text-gray-600">Pending Verifications</div -->
+          <!-- /div -->
+        <!-- /div -->
+      <!-- /div -->
+      
+      <div class="flex justify-center mt-8">
+        <a href="#" class="transparent-button bg-skyTheme-lightCyan rounded-full">
+          System Status
+        </a>
+      </div>
     </div>
-
+  </section>
 {% endblock %}

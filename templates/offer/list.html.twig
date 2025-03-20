@@ -1,67 +1,271 @@
 {% extends 'base_form.html.twig' %}
 
-{% block title %}Offers List{% endblock %}
+{% block title %}Car Rental Offers{% endblock %}
 
 {% block body %}
-  <section class="flex items-center justify-center h-screen">
-    <div class="w-3/4 h-3/4 p-6 shadow-lg bg-white rounded-md flex flex-col overflow-hidden">
-      <div class="flex justify-between items-center mb-6">
-        <h1 class="text-4xl font-bold text-oceanTheme-navyBlue">Car Offers</h1>
-        <a href="{{ path('offer_new') }}" class="orange-button">Add New Offer</a>
-      </div>
+  <section class="flex flex-col lg:flex-row min-h-screen py-24 px-4 sm:px-6 lg:px-8 bg-skyTheme-skyBlue"
+           x-data="filterHandler">
+    <!-- Sidebar Filters -->
+    <aside class="w-full lg:w-1/4 mb-6 lg:mb-0 lg:pr-6">
+      <div class="bg-white p-5 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold text-oceanTheme-navyBlue mb-4">Filters</h2>
+        
+        <form method="get" action="{{ path('offer_list') }}" class="space-y-6">
+          <!-- Global Select/Unselect All -->
+          <div class="flex space-x-2">
+            <button type="button" @click="toggleAll(true)" 
+                    class="transparent-button bg-skyTheme-lightCyan rounded-full text-sm">
+              Select All
+            </button>
+            <button type="button" @click="toggleAll(false)" 
+                    class="transparent-button bg-skyTheme-lightCyan rounded-full text-sm">
+              Unselect All
+            </button>
+          </div>
 
-      {% for label, messages in app.flashes %}
-        <div class="flash-{{ label }}">
-          {% for message in messages %}
-            <p>{{ message }}</p>
-          {% endfor %}
-        </div>
-      {% endfor %}
-      
-      <div class="overflow-auto flex-1">
-        <table class="w-full border-collapse">
-          <thead>
-            <tr class="bg-skyTheme-lightCyan text-oceanTheme-navyBlue border-b-2 border-skyTheme-skyBlue">
-              <th class="p-3 text-left font-semibold">Car</th>
-              <th class="p-3 text-left font-semibold">Start Date</th>
-              <th class="p-3 text-left font-semibold">End Date</th>
-              <th class="p-3 text-left font-semibold">Price</th>
-              <th class="p-3 text-center font-semibold">Actions</th>
-              <th class="p-3 text-center font-semibold">Images</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for offer in offers %}
-              <tr class="border-b border-skyTheme-lightCyan hover:bg-sunsetTheme-paleYellow transition-colors duration-150">
-                <td class="p-3 font-medium">{{ offer.car.brand }} {{ offer.car.model }}</td>
-                <td class="p-3">{{ offer.startDate|date('Y-m-d') }}</td>
-                <td class="p-3">{{ offer.endDate ? offer.endDate|date('Y-m-d') : 'N/A' }}</td>
-                <td class="p-3 font-semibold text-oceanTheme-deepBlue">{{ offer.price }} €</td>
-                <td class="p-3 text-center">
-                  <div class="flex justify-center gap-2">
-                    <a href="{{ path('offer_view', {id: offer.id}) }}" class="blue-button">View</a>
-                    <a href="{{ path('offer_edit', {id: offer.id}) }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">Edit</a>
+          <!-- Location Filter -->
+          <div class="bg-skyTheme-lightCyan p-3 rounded-md">
+            <div class="flex justify-between items-center mb-2">
+              <label class="font-medium text-oceanTheme-deepBlue">Location</label>
+              <div class="flex space-x-1">
+                <button type="button" @click="toggleGroup('location', true)" 
+                        class="text-xs px-2 py-1 bg-white rounded-full hover:bg-gray-100 text-oceanTheme-deepBlue">
+                  Select All
+                </button>
+                <button type="button" @click="toggleGroup('location', false)" 
+                        class="text-xs px-2 py-1 bg-white rounded-full hover:bg-gray-100 text-oceanTheme-deepBlue">
+                  Clear
+                </button>
+              </div>
+            </div>
+            <div class="max-h-40 overflow-y-auto space-y-1 bg-white rounded p-2">
+              {% for location in locations %}
+                <div class="flex items-center">
+                  <input type="checkbox" class="location mr-2" id="location-{{ loop.index }}" name="locations[]" value="{{ location }}"
+                         {% if filters.locations is not defined or location in filters.locations %}checked{% endif %}>
+                  <label for="location-{{ loop.index }}" class="text-sm">{{ location }}</label>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Brand Filter -->
+          <div class="bg-sunsetTheme-paleYellow p-3 rounded-md">
+            <div class="flex justify-between items-center mb-2">
+              <label class="font-medium text-oceanTheme-deepBlue">Brand</label>
+              <div class="flex space-x-1">
+                <button type="button" @click="toggleGroup('brand', true)" 
+                        class="text-xs px-2 py-1 bg-white rounded-full hover:bg-gray-100 text-oceanTheme-deepBlue">
+                  Select All
+                </button>
+                <button type="button" @click="toggleGroup('brand', false)" 
+                        class="text-xs px-2 py-1 bg-white rounded-full hover:bg-gray-100 text-oceanTheme-deepBlue">
+                  Clear
+                </button>
+              </div>
+            </div>
+            <div class="max-h-40 overflow-y-auto space-y-1 bg-white rounded p-2">
+              {% for brand in brands %}
+                <div class="flex items-center">
+                  <input type="checkbox" class="brand mr-2" id="brand-{{ loop.index }}" name="brand[]" value="{{ brand }}"
+                         {% if filters.brand is not defined or brand in filters.brand %}checked{% endif %}>
+                  <label for="brand-{{ loop.index }}" class="text-sm">{{ brand }}</label>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Fuel Type Filter -->
+          <div class="bg-skyTheme-cream p-3 rounded-md">
+            <div class="flex justify-between items-center mb-2">
+              <label class="font-medium text-oceanTheme-deepBlue">Fuel Type</label>
+              <div class="flex space-x-1">
+                <button type="button" @click="toggleGroup('fuelType', true)" 
+                        class="text-xs px-2 py-1 bg-white rounded-full hover:bg-gray-100 text-oceanTheme-deepBlue">
+                  Select All
+                </button>
+                <button type="button" @click="toggleGroup('fuelType', false)" 
+                        class="text-xs px-2 py-1 bg-white rounded-full hover:bg-gray-100 text-oceanTheme-deepBlue">
+                  Clear
+                </button>
+              </div>
+            </div>
+            <div class="max-h-40 overflow-y-auto space-y-1 bg-white rounded p-2">
+              {% for fuelType in fuelTypes %}
+                <div class="flex items-center">
+                  <input type="checkbox" class="fuelType mr-2" id="fuel-{{ loop.index }}" name="fuelType[]" value="{{ fuelType }}"
+                         {% if filters.fuelType is not defined or fuelType in filters.fuelType %}checked{% endif %}>
+                  <label for="fuel-{{ loop.index }}" class="text-sm">{{ fuelType }}</label>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Seats Filter -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-skyTheme-lightCyan p-3 rounded-md">
+              <div class="flex justify-between items-center mb-2">
+                <label class="font-medium text-oceanTheme-deepBlue">Seats</label>
+                <div class="flex space-x-1">
+                  <button type="button" @click="toggleGroup('nbSeat', true)" 
+                          class="text-xs px-2 py-1 bg-white rounded-full hover:bg-gray-100 text-oceanTheme-deepBlue">
+                    All
+                  </button>
+                  <button type="button" @click="toggleGroup('nbSeat', false)" 
+                          class="text-xs px-2 py-1 bg-white rounded-full hover:bg-gray-100 text-oceanTheme-deepBlue">
+                    None
+                  </button>
+                </div>
+              </div>
+              <div class="max-h-32 overflow-y-auto space-y-1 bg-white rounded p-2">
+                {% for seat in seats %}
+                  <div class="flex items-center">
+                    <input type="checkbox" class="nbSeat mr-2" id="seats-{{ loop.index }}" name="nbSeat[]" value="{{ seat }}"
+                           {% if filters.nbSeat is not defined or seat in filters.nbSeat %}checked{% endif %}>
+                    <label for="seats-{{ loop.index }}" class="text-sm">{{ seat }} seat{% if seat > 1 %}s{% endif %}</label>
                   </div>
-                </td>
-                <td>
-                  {% if offer.car.imageFilename %}
-                    <img src="{{ asset('uploads/cars/' ~ offer.car.imageFilename) }}" alt="Car image" width="100">
-                  {% endif %}
-                </td>
-              </tr>
-            {% else %}
-              <tr>
-                <td colspan="6" class="p-6 text-center text-gray-500 italic">No offers available at the moment</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Boot Capacity Filter -->
+            <div class="bg-skyTheme-lightCyan p-3 rounded-md">
+              <div class="flex justify-between items-center mb-2">
+                <label class="font-medium text-oceanTheme-deepBlue">Boot</label>
+                <div class="flex space-x-1">
+                  <button type="button" @click="toggleGroup('bootCapacity', true)" 
+                          class="text-xs px-2 py-1 bg-white rounded-full hover:bg-gray-100 text-oceanTheme-deepBlue">
+                    All
+                  </button>
+                  <button type="button" @click="toggleGroup('bootCapacity', false)" 
+                          class="text-xs px-2 py-1 bg-white rounded-full hover:bg-gray-100 text-oceanTheme-deepBlue">
+                    None
+                  </button>
+                </div>
+              </div>
+              <div class="max-h-32 overflow-y-auto space-y-1 bg-white rounded p-2">
+                {% for capacity in bootCapacities %}
+                  <div class="flex items-center">
+                    <input type="checkbox" class="bootCapacity mr-2" id="bootCapacity-{{ loop.index }}" name="bootCapacity[]" value="{{ capacity }}"
+                           {% if filters.bootCapacity is not defined or capacity in filters.bootCapacity %}checked{% endif %}>
+                    <label for="bootCapacity-{{ loop.index }}" class="text-sm">{{ capacity }} L</label>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Delivery Filter -->
+          <div class="bg-sunsetTheme-paleYellow p-3 rounded-md">
+            <label class="font-medium text-oceanTheme-deepBlue block mb-2">Delivery Option</label>
+            <div class="flex space-x-6 bg-white rounded p-2">
+              {% for option in ['yes', 'no'] %}
+                <div class="flex items-center">
+                  <input type="checkbox" class="delivery mr-2" id="delivery-{{ option }}" name="delivery[]" value="{{ option }}"
+                         {% if filters.delivery is not defined or option in filters.delivery %}checked{% endif %}>
+                  <label for="delivery-{{ option }}" class="text-sm">{{ option | capitalize }}</label>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex justify-center">
+            <button type="submit" class="blue-button w-full">
+              <i class="fas fa-filter mr-2"></i>Apply Filters
+            </button>
+          </div>
+        </form>
       </div>
-      
-      <div class="mt-auto pt-4 flex justify-between items-center">
-        <div class="text-sm text-gray-600">Showing {{ offers|length }} offers</div>
-        <a href="#" class="blue-button">Back to Dashboard</a>
+    </aside>
+
+    <!-- Offers List -->
+    <main class="w-full lg:w-3/4">
+      <div class="bg-white p-6 rounded-lg shadow-md h-full flex flex-col">
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-3xl font-bold text-oceanTheme-navyBlue">Available Car Offers</h1>
+        </div>
+
+        {% if offers is empty %}
+          <div class="flex-1 flex items-center justify-center">
+            <div class="text-center p-8 bg-gray-50 rounded-lg">
+              <i class="fas fa-car text-4xl text-gray-400 mb-4"></i>
+              <p class="text-gray-500">No offers found matching your criteria.</p>
+              <button @click="toggleAll(true)" class="mt-4 transparent-button bg-skyTheme-lightCyan rounded-full">
+                Clear Filters
+              </button>
+            </div>
+          </div>
+        {% else %}
+          <div class="flex-1 overflow-auto">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+              {% for offer in offers %}
+                <div class="bg-skyTheme-lightCyan rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                  <div class="flex">
+                    <div class="w-1/3 bg-oceanTheme-lightBlue flex items-center justify-center p-4">
+                      {% if offer.car.imageFilename %}
+                        <img src="{{ asset('uploads/cars/' ~ offer.car.imageFilename) }}" alt="{{ offer.car.brand }} {{ offer.car.model }}" class="max-h-32 object-contain">
+                      {% else %}
+                        <img src="{{ asset('static/img/car-pana.png') }}" alt="Photo de profil par dÃ©faut" class="w-full h-auto object-cover">
+                      {% endif %}
+                    </div>
+                    <div class="w-2/3 p-4">
+                      <h3 class="text-xl font-bold text-oceanTheme-deepBlue">{{ offer.car.brand }} {{ offer.car.model }}</h3>
+                      
+                      <div class="grid grid-cols-2 gap-x-4 gap-y-2 mt-2 text-sm">
+                        <div>
+                          <span class="text-gray-600">Start Date:</span>
+                          <span class="font-medium">{{ offer.startDate|date('Y-m-d') }}</span>
+                        </div>
+                        <div>
+                          <span class="text-gray-600">End Date:</span>
+                          <span class="font-medium">{{ offer.endDate ? offer.endDate|date('Y-m-d') : 'N/A' }}</span>
+                        </div>
+                        <div>
+                          <span class="text-gray-600">Delivery:</span>
+                          <span class="font-medium">{{ offer.delivery ? 'Available' : 'Not Available' }}</span>
+                        </div>
+                        <div class="text-right">
+                          <span class="text-2xl font-bold text-oceanTheme-deepBlue">{{ offer.price }} €</span>
+                          <span class="text-xs text-gray-600">/day</span>
+                        </div>
+                      </div>
+                      
+                      <div class="mt-4 flex justify-end">
+                        <a href="{{ path('offer_view', {id: offer.id}) }}" class="blue-button">
+                          View Details
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          
+          <div class="mt-6 flex justify-between items-center">
+            <div class="text-sm text-gray-600">Showing {{ offers|length }} offers</div>
+            <!-- Pagination could go here -->
+          </div>
+        {% endif %}
       </div>
-    </div>
+    </main>
   </section>
+
+  <script>
+   document.addEventListener('alpine:init', () => {
+       Alpine.data('filterHandler', () => ({
+           toggleAll(check) {
+               document.querySelectorAll('input[type=\'checkbox\']').forEach(checkbox => {
+                   checkbox.checked = check;
+               });
+           },
+           toggleGroup(className, check) {
+               document.querySelectorAll('.' + className).forEach(checkbox => {
+                   checkbox.checked = check;
+               });
+           }
+       }));
+   });
+  </script>
 {% endblock %}
