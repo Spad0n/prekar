@@ -17,7 +17,6 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class EditProfileFormType extends AbstractType
 {
@@ -48,35 +47,6 @@ class EditProfileFormType extends AbstractType
                 'constraints' => [
                     new NotBlank([
                         'message' => 'You must select one or more roles.',
-                    ]),
-                ],
-            ])
-            ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'mapped' => false,
-                'required' => false,
-                'first_options' => ['label' => 'New password'],
-                'second_options' => ['label' => 'Confirm password'],
-                'constraints' => [
-                    new Length([
-                        'min' => 8,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
-                    ]),
-                    new Regex([
-                        'pattern' => '/[A-Z]/',
-                        'message' => 'Your password must contain at least one uppercase letter',
-                    ]),
-                    new Regex([
-                        'pattern' => '/[a-z]/',
-                        'message' => 'Your password must contain at least one lowercase letter',
-                    ]),
-                    new Regex([
-                        'pattern' => '/\d/',
-                        'message' => 'Your password must contain at least one number',
-                    ]),
-                    new Regex([
-                        'pattern' => '/[^a-zA-Z\d]/',
-                        'message' => 'Your password must contain at least one special character',
                     ]),
                 ],
             ])
