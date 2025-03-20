@@ -35,6 +35,7 @@ class SubscriptionController extends AbstractController
                 'startDate' => $subscription->getStartDate()->format('Y-m-d'),
                 'endDate' => $subscription->getEndDate()->format('Y-m-d'),
                 'cost' => $cost,
+                'returnUrl' => $request->query->get('returnUrl'),
             ]);
         }
 
@@ -50,11 +51,13 @@ class SubscriptionController extends AbstractController
         $startDate = $request->query->get('startDate');
         $endDate = $request->query->get('endDate');
         $cost = $request->query->get('cost');
+        $returnUrl = $request->query->get('returnUrl');
 
         return $this->render('subscription/payment.html.twig', [
             'startDate' => $startDate,
             'endDate' => $endDate,
             'cost' => $cost,
+            'returnUrl' => $returnUrl,
         ]);
     }
 
@@ -65,6 +68,7 @@ class SubscriptionController extends AbstractController
         $startDate = $request->request->get('startDate');
         $endDate = $request->request->get('endDate');
         $cost = $request->request->get('cost');
+        $returnUrl = $request->request->get('returnUrl');
 
         // Handle payment logic here...
         $paymentSuccessful = true; // Replace with actual payment logic
@@ -81,6 +85,10 @@ class SubscriptionController extends AbstractController
 
             $this->addFlash('success', 'Subscription created successfully.');
 
+            if ($returnUrl) {
+                return $this->redirect($returnUrl);
+            }
+
             return $this->redirectToRoute('app_user_profile');
         } else {
             $this->addFlash('error', 'Payment failed. Please try again.');
@@ -89,6 +97,7 @@ class SubscriptionController extends AbstractController
                 'startDate' => $startDate,
                 'endDate' => $endDate,
                 'cost' => $cost,
+                'returnUrl' => $returnUrl,
             ]);
         }
     }

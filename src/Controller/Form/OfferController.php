@@ -5,6 +5,7 @@ namespace App\Controller\Form;
 use App\Entity\Offer;
 use App\Entity\Car;
 use App\Entity\Renting;
+use App\Entity\Subscription;
 use App\Form\OfferFormType;
 use App\Form\CarType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -183,12 +184,22 @@ final class OfferController extends AbstractController
     public function rentDate(Request $request, EntityManagerInterface $entityManager, int $id): Response {
         $offer = $entityManager->getRepository(Offer::class)->find($id);
 
-        return $this->render('offer/rent/dates.html.twig',
-        [
-            'offer' => $offer,
-        ]); //need to be changed when the offer page is ready
-    }
+        // Check for active subscription
+        $user = $this->getUser();
+        $subscription = $entityManager->getRepository(Subscription::class)->findOneBy(['user' => $user]);
 
+        $currentDate = new \DateTime();
+        if (!$subscription || $subscription->getEndDate() < $currentDate || $subscription->getStartDate() > $currentDate) {
+            $this->addFlash('error', 'You need an active subscription to rent a car.');
+            return $this->redirectToRoute('subscription_new', [
+                'returnUrl' => $this->generateUrl('offer_rent_date', ['id' => $id]),
+            ]);
+        }
+
+        return $this->render('offer/rent/dates.html.twig', [
+            'offer' => $offer,
+        ]);
+    }
 
     #[Route('/offer/{id}/rent/delivery', name: 'offer_rent_delivery', methods: ['POST'])]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -275,7 +286,15 @@ final class OfferController extends AbstractController
         $expirationDate = $request->request->get('expirationDate');
         $name = $request->request->get('name');
 
+        // Check for active subscription
+        $user = $this->getUser();
+        $subscription = $entityManager->getRepository(Subscription::class)->findOneBy(['user' => $user]);
 
+        $currentDate = new \DateTime();
+        if (!$subscription || $subscription->getEndDate() < $currentDate || $subscription->getStartDate() > $currentDate) {
+            $this->addFlash('error', 'You need an active subscription to rent a car.');
+            return $this->redirectToRoute('subscription_new');
+        }
 
         if($offer->getAvailable() == "not_available") {
             $this->addFlash('error', 'This offer is not available anymore.');
@@ -316,10 +335,6 @@ final class OfferController extends AbstractController
 
         $entityManager->persist($renting);
         $entityManager->flush();
-
-
-
-
 
         return $this->redirectToRoute("app_user_profile");
     }
