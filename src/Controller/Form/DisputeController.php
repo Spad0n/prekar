@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Form;
 
 use App\Entity\Dispute;
 use App\Entity\Renting;
