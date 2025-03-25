@@ -46,7 +46,9 @@ final class DisputeController extends AbstractController
         $report = new Report();
 
 
-        $form = $this->createForm(DisputeType::class,$dispute);
+        $form = $this->createForm(DisputeType::class,$dispute,[
+            'renting'=>$renting
+        ]);
 
         $form->handleRequest($request);
 
