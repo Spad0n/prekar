@@ -34,6 +34,10 @@ class Dispute
     #[ORM\ManyToOne(inversedBy: 'disputes')]
     private ?Jurist $jurist = null;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Renting $renting = null;
+
 
     public function __construct()
     {
@@ -62,7 +66,7 @@ class Dispute
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(?string $status): static
     {
         $this->status = $status;
 
@@ -121,6 +125,18 @@ class Dispute
     public function setJurist(?Jurist $jurist): static
     {
         $this->jurist = $jurist;
+
+        return $this;
+    }
+
+    public function getRenting(): ?Renting
+    {
+        return $this->renting;
+    }
+
+    public function setRenting(Renting $renting): static
+    {
+        $this->renting = $renting;
 
         return $this;
     }

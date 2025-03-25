@@ -66,6 +66,8 @@ final class EditUserProfileController extends AbstractController
                     $validateUser->setState('Pending');
                 }
                 $entityManager->persist($currentUser);
+                $currentUser->setRoles(array_unique(array_merge($currentUser->getRoles(), $form->get('userType')->getData())));
+
                 $entityManager->flush();
                 return $this->redirectToRoute('app_user_profile');
             }
