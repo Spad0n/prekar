@@ -30,6 +30,8 @@ class EditProfileFormType extends AbstractType
             'Owner' => 'ROLE_OWNER',
         ];
         $disabledChoices = array_fill_keys($currentRoles, true);
+        $driverLicenseValue = $user->getDriverLicense();
+        $isDriverLicenseEmpty = empty($driverLicenseValue);
         $builder
             ->add('email', EmailType::class)
             ->add('lastName', TextType::class)
@@ -50,10 +52,16 @@ class EditProfileFormType extends AbstractType
                     ])
                 ],*/
             ])
+        
             ->add('driverLicense', TextType::class, [
                 'label' => 'Driver License Number',
                 'required' => false,
-                'constraints' => [
+                'disabled' => !$isDriverLicenseEmpty, 
+                'attr' => [
+                    'readonly' => !$isDriverLicenseEmpty, 
+                ],
+                'help' => !$isDriverLicenseEmpty ? 'Driver license cannot be modified once set.' : '',
+                'constraints' => $isDriverLicenseEmpty ? [
                     new Length([
                         'min' => 9,
                         'max' => 20,
@@ -64,8 +72,9 @@ class EditProfileFormType extends AbstractType
                         'pattern' => '/^[A-Z0-9]+$/',
                         'message' => 'Your driver license number can only contain uppercase letters and numbers'
                     ])
-                ]
+                ] : []
             ])
+            
             ->add('profileImage', FileType::class, [
                 'label' => 'Profile picture',
                 'mapped' => false,
