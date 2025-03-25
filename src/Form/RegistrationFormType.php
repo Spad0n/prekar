@@ -42,31 +42,31 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('lastName', TextType::class, [
                 'constraints' => [
-                    new NotBlank(['message' => 'Veuillez entrer votre nom']),
+                    new NotBlank(['message' => 'Please enter a last name']),
                     new Length([
                         'min' => 2,
                         'max' => 50,
-                        'minMessage' => 'Votre nom doit contenir au moins {{ limit }} caractères',
-                        'maxMessage' => 'Votre nom ne peut pas dépasser {{ limit }} caractères'
+                        'minMessage' => 'Your last name should be at least {{ limit }} characters',
+                        'maxMessage' => 'Your last name should not exceed {{ limit }} characters'
                     ]),
                     new Regex([
                         'pattern' => '/^[a-zA-ZÀ-ÿ\\s\'-]+$/',
-                        'message' => 'Votre nom ne peut contenir que des lettres, espaces, tirets et apostrophes'
+                        'message' => 'Your last name can only contain letters, spaces, hyphens and apostrophes'
                     ])
                 ]
             ])
             ->add('name', TextType::class, [
                 'constraints' => [
-                    new NotBlank(['message' => 'Veuillez entrer votre prénom']),
+                    new NotBlank(['message' => 'Enter your name']),
                     new Length([
                         'min' => 2,
                         'max' => 50,
-                        'minMessage' => 'Votre prénom doit contenir au moins {{ limit }} caractères',
-                        'maxMessage' => 'Votre prénom ne peut pas dépasser {{ limit }} caractères'
+                        'minMessage' => 'Your name should be at least {{ limit }} characters',
+                        'maxMessage' => 'Your name cannot be longer than {{ limit }} characters'
                     ]),
                     new Regex([
                         'pattern' => '/^[a-zA-ZÀ-ÿ\\s\'-]+$/',
-                        'message' => 'Votre prénom ne peut contenir que des lettres, espaces, tirets et apostrophes'
+                        'message' => 'Your name can only contain letters, spaces, hyphens and apostrophes'
                     ])
                 ]
             ])
@@ -88,9 +88,8 @@ class RegistrationFormType extends AbstractType
             
             ->add('driverLicense', TextType::class, [
                 'label' => 'Driver License Number',
-                'required' => true,
+                'required' => false,
                 'constraints' => [
-                    new NotBlank(['message' => 'Please enter your driver license number']),
                     new Length([
                         'min' => 9,
                         'max' => 20,
@@ -104,18 +103,19 @@ class RegistrationFormType extends AbstractType
                 ]
             ])
 
+
             ->add('userType', ChoiceType::class, [
                 'mapped' => false,
                 'choices' => [
                     'Emprunteur' => 'ROLE_BORROWER',
                     'Propriétaire' => 'ROLE_OWNER',
                 ],
-                'label' => 'Type de compte',
+                'label' => 'Choose your user type',
                 'multiple' => true,
                 'expanded' => true,
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(['message' => 'Veuillez choisir un type de compte'])
+                    new NotBlank(['message' => 'Choose at least one user type']),
                 ]
             ]);
     }
