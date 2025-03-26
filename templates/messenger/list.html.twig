@@ -3,57 +3,88 @@
 {% block title %}Your Chats{% endblock %}
 
 {% block body %}
-    <section class="pt-32 pb-8">
-    <h2>Your Chats</h2>
+  <section class="flex items-center justify-center min-h-screen py-12">
+    <div class="w-full md:w-3/4 lg:w-2/3 p-6 shadow-lg bg-white rounded-md flex flex-col">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-oceanTheme-navyBlue">Your Conversations</h1>
+        <!-- <a href="{{ path('app_prekar_home_page') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">Back to Home</a> -->
+      </div>
 
-    <ul class="chat-list">
-        {% for chatUser in chatUsers %}
-            <li>
-                <a href="{{ path('get_messages', {'userId': chatUser.id}) }}">
-                    <div class="chat-item">
-                        <div class="chat-name">{{ chatUser.name }}</div>
-                        <div class="chat-preview">
-                            {% if chatUser.lastSenderId is defined and chatUser.lastSenderId == currentUser.id %}
-                                <strong>You:</strong> 
-                            {% else %}
-                                <strong>{{ chatUser.name }}:</strong>
-                            {% endif %}
-                            {{ chatUser.lastMessage|default('No messages yet')|slice(0, 30) }}
+      {% if chatUsers is empty %}
+        <div class="flex-1 flex items-center justify-center py-16">
+          <div class="text-center p-8 bg-gray-50 rounded-lg max-w-md">
+            <div class="text-6xl text-gray-300 mb-4">
+              <i class="fas fa-comments"></i>
+            </div>
+            <h3 class="text-xl font-medium text-gray-700 mb-2">No conversations yet</h3>
+            <p class="text-gray-500 mb-6">When you start chatting with other users, your conversations will appear here.</p>
+          </div>
+        </div>
+      {% else %}
+        <div class="bg-skyTheme-lightCyan p-4 rounded-lg mb-4">
+          <p class="text-oceanTheme-deepBlue">
+            <i class="fas fa-info-circle mr-2"></i>
+            Select a conversation to view and send messages.
+          </p>
+        </div>
+
+        <div class="flex-1 overflow-auto">
+          <ul class="divide-y divide-gray-200">
+            {% for chatUser in chatUsers %}
+              <li class="group">
+                <a href="{{ path('get_messages', {'userId': chatUser.id}) }}" 
+                   class="block hover:bg-sunsetTheme-paleYellow transition-colors duration-200 rounded-md">
+                  <div class="p-4 flex items-start gap-4">
+                    <div class="flex-shrink-0">
+                      {% if chatUser.profileImage is defined and chatUser.profileImage %}
+                        <img src="{{ asset('uploads/profile_images/' ~ chatUser.profileImage) }}" 
+                             alt="{{ chatUser.name }}" 
+                             class="w-12 h-12 rounded-full object-cover">
+                      {% else %}
+                        <div class="w-12 h-12 rounded-full bg-oceanTheme-lightBlue flex items-center justify-center text-white">
+                          <span class="text-lg font-medium">{{ chatUser.name|slice(0, 1)|upper }}</span>
                         </div>
+                      {% endif %}
                     </div>
+                    
+                    <div class="flex-1 min-w-0">
+                      <div class="flex justify-between items-baseline">
+                        <h3 class="text-lg font-semibold text-oceanTheme-deepBlue truncate">
+                          {{ chatUser.name }}
+                        </h3>
+                        {% if chatUser.lastMessageTime is defined %}
+                          <span class="text-xs text-gray-500">
+                            {{ chatUser.lastMessageTime|date('H:i') }}
+                          </span>
+                        {% endif %}
+                      </div>
+                      
+                      <p class="text-sm text-gray-600 truncate mt-1">
+                        {% if chatUser.lastSenderId is defined and chatUser.lastSenderId == currentUser.id %}
+                          <span class="font-medium">You:</span> 
+                        {% else %}
+                          <span class="font-medium">{{ chatUser.name }}:</span>
+                        {% endif %}
+                        {{ chatUser.lastMessage|default('No messages yet')|slice(0, 50) }}{% if chatUser.lastMessage|length > 50 %}...{% endif %}
+                      </p>
+                      
+                      {% if chatUser.unreadCount is defined and chatUser.unreadCount > 0 %}
+                        <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-oceanTheme-deepBlue rounded-full mt-2">
+                          {{ chatUser.unreadCount }}
+                        </span>
+                      {% endif %}
+                    </div>
+                    
+                    <div class="flex-shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <i class="fas fa-chevron-right text-oceanTheme-deepBlue"></i>
+                    </div>
+                  </div>
                 </a>
-            </li>
-        {% else %}
-            <p>No conversations yet.</p>
-        {% endfor %}
-    </ul>
-
-    <style>
-        .chat-list {
-            list-style: none;
-            padding: 0;
-            max-width: 400px;
-        }
-        .chat-list li {
-            border-bottom: 1px solid #ddd;
-            padding: 10px;
-            transition: background 0.3s;
-        }
-        .chat-list li:hover {
-            background: #f8f8f8;
-        }
-        .chat-item {
-            display: flex;
-            flex-direction: column;
-        }
-        .chat-name {
-            font-weight: bold;
-            margin-bottom: 3px;
-        }
-        .chat-preview {
-            font-size: 14px;
-            color: #555;
-        }
-    </style>
-    </section>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  </section>
 {% endblock %}
