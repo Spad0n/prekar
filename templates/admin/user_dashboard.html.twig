@@ -89,12 +89,32 @@
                   {% else %}
                     <span class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">undefined</span>
                   {% endif %}
-                </td>
-                <td class="p-3 text-center">
-                  <a href="{{ path('admin_user_profilpage', {'id': user.id}) }}" class="blue-button">
-                    View Profile
-                  </a>
-                </td>
+                  </td>
+                  <td class="p-3 text-center">
+                  <div class="flex flex-col sm:flex-row gap-2 justify-center">
+                    <a href="{{ path('admin_user_profilpage', {'id': user.id}) }}" class="blue-button">
+                      View Profile
+                    </a>
+
+                    {% if user.isBanned is defined %}
+                      <a href="{{ path('admin_toggle_ban_user', {'id': user.id}) }}" 
+                         class="{% if user.isBanned %}green-button{% else %}red-button{% endif %}"
+                         onclick="return confirm('Are you sure you want to {% if user.isBanned %}unban{% else %}ban{% endif %} this user?')">
+                        {% if user.isBanned %}
+                          Unban User
+                        {% else %}
+                          Ban User
+                        {% endif %}
+                      </a>
+                    {% else %}
+                      <a href="{{ path('admin_toggle_ban_user', {'id': user.id}) }}" 
+                         class="red-button"
+                         onclick="return confirm('Are you sure you want to ban this user?')">
+                        Ban User
+                      </a>
+                    {% endif %}
+                  </div>
+                </td>    
               </tr>
             {% else %}
               <tr>
