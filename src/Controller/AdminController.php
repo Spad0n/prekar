@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Offer;
 
 class AdminController extends AbstractController
 {
@@ -302,29 +303,42 @@ class AdminController extends AbstractController
         ]);
     }
 
-     /**
+/**
  * @Route("/admin/user/{id}/toggle-ban", name="admin_toggle_ban_user")
  */
 #[Route('/admin/user/{id}/toggle-ban', name: 'admin_toggle_ban_user')]
-    public function toggleBanUser(User $user, EntityManagerInterface $entityManager): Response
-    {
-        $user->setIsBanned(!$user->isBanned());
+public function toggleBanUser(User $user, EntityManagerInterface $entityManager): Response
+{
+    $user->setIsBanned(!$user->isBanned());
+    
+    if ($user->isBanned()) {
+        $offers = $user->getOffers();
         
-        $entityManager->persist($user);
-        $entityManager->flush();
+        foreach ($offers as $offer) {
+            $offer->setAvailable("not_available");
+            $entityManager->persist($offer);
+        }
         
-        $this->addFlash(
-            'success',
-            $user->isBanned() 
-                ? sprintf('User %s has been successfully banned.', $user->getEmail())
-                : sprintf('User %s has been successfully unbanned', $user->getEmail())
-        );
+        $cars = $user->getCars();
         
-        return $this->redirectToRoute('users_dashboard');
+        foreach ($cars as $car) {
+            if (method_exists($car, 'setAvailable')) {
+                $car->setAvailable(false);
+                $entityManager->persist($car);
+            }
+        }
     }
 
-
-
-
-
+    $entityManager->persist($user);
+    $entityManager->flush();
+    
+    $this->addFlash(
+        'success',
+        $user->isBanned() 
+            ? sprintf('User %s has been successfully banned.', $user->getEmail())
+            : sprintf('User %s has been successfully unbanned', $user->getEmail())
+    );
+    
+    return $this->redirectToRoute('users_dashboard');
+}
 }
