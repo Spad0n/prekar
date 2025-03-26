@@ -5,6 +5,7 @@ namespace App\Controller\Form;
 use App\Entity\Offer;
 use App\Entity\Car;
 use App\Entity\Renting;
+use App\Form\FinishRentType;
 use App\Form\OfferFormType;
 use App\Form\CarType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -324,4 +325,31 @@ final class OfferController extends AbstractController
         return $this->redirectToRoute("app_user_profile");
     }
 
+
+    #[Route('/offer/{id}/rent/rate', name: 'offer_rent_rate')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function rentRate(Request $request, EntityManagerInterface $entityManager, int $id): Response
+    {
+        $renting = $entityManager->getRepository(Renting::class)->find($id);
+
+        $form = $this->createForm(FinishRentType::class);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+            $renting->setCommentary($form->get('commentary')->getData());
+            $renting->setDone(true);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_user_profile');
+        }
+
+
+        $entityManager->flush();
+
+        return $this->render('offer/rent/rate.html.twig', [
+            'form' => $form,
+            'renting' => $renting,
+            'owner' => $renting->getOffer()->getUserOwner(),
+            'borrower' => $renting->getUserBorrower(),
+        ]);
+
+    }
 }

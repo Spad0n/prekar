@@ -45,6 +45,9 @@ class Renting
     #[ORM\Column(nullable: true)]
     private ?float $totalAmount = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $done = null;
+
 
 
     public function getId(): ?int
@@ -147,6 +150,18 @@ class Renting
     public function setTotalAmount(?float $totalAmount): static
     {
         $this->totalAmount = $totalAmount;
+
+        return $this;
+    }
+
+    public function isDone(): ?bool
+    {
+        return $this->done;
+    }
+
+    public function setDone(bool $done): static
+    {
+        $this->done = $done;
 
         return $this;
     }
