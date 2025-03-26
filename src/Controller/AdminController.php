@@ -302,7 +302,26 @@ class AdminController extends AbstractController
         ]);
     }
 
-
+     /**
+ * @Route("/admin/user/{id}/toggle-ban", name="admin_toggle_ban_user")
+ */
+#[Route('/admin/user/{id}/toggle-ban', name: 'admin_toggle_ban_user')]
+    public function toggleBanUser(User $user, EntityManagerInterface $entityManager): Response
+    {
+        $user->setIsBanned(!$user->isBanned());
+        
+        $entityManager->persist($user);
+        $entityManager->flush();
+        
+        $this->addFlash(
+            'success',
+            $user->isBanned() 
+                ? sprintf('User %s has been successfully banned.', $user->getEmail())
+                : sprintf('User %s has been successfully unbanned', $user->getEmail())
+        );
+        
+        return $this->redirectToRoute('users_dashboard');
+    }
 
 
 
