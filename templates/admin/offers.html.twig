@@ -1,0 +1,51 @@
+{% extends 'base_form.html.twig' %}
+
+{% block title %}Admin - Manage Offers{% endblock %}
+
+{% block body %}
+    <section class="container mt-5">
+        <h1 class="text-3xl font-bold mb-4">Manage Offers</h1>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Car</th>
+                    <th>Owner</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for offer in offers %}
+                    <tr>
+                        <td>{{ offer.id }}</td>
+                        <td>{{ offer.car.brand }} {{ offer.car.model }}</td>
+                        <td>{{ offer.userOwner.email }}</td>
+                        <td>{{ offer.startDate|date('Y-m-d') }}</td>
+                        <td>{{ offer.endDate|date('Y-m-d') }}</td>
+                        <td>{{ offer.price }} €</td>
+                        <td>
+                            <form action="{{ path('admin_offers') }}" method="post" style="display:inline;">
+                                <input type="hidden" name="offer_id" value="{{ offer.id }}">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center">No offers found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endblock %}

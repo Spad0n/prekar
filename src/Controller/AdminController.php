@@ -7,6 +7,7 @@ use App\Entity\Payment;
 use App\Entity\Service;
 use App\Entity\User;
 use App\Entity\ValidateUser;
+use App\Entity\Offer; // Import the Offer entity
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -302,10 +303,29 @@ class AdminController extends AbstractController
         ]);
     }
 
+    #[Route('/admin/offers', name: 'admin_offers')]
+    public function manageOffers(EntityManagerInterface $entityManager, Request $request): Response
+    {
+        $offers = $entityManager->getRepository(Offer::class)->findAll();
 
+        if ($request->isMethod('POST')) {
+            $offerId = $request->request->get('offer_id');
+            $offer = $entityManager->getRepository(Offer::class)->find($offerId);
 
+            if ($offer) {
+                $entityManager->remove($offer);
+                $entityManager->flush();
+                $this->addFlash('success', 'Offer deleted successfully.');
+            } else {
+                $this->addFlash('error', 'Offer not found.');
+            }
 
+            return $this->redirectToRoute('admin_offers');
+        }
 
-
+        return $this->render('admin/offers.html.twig', [
+            'offers' => $offers,
+        ]);
+    }
 
 }

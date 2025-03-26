@@ -3,18 +3,19 @@
 
 {% block body %}
     <div class="pt-16">
-    <h1>Panneau de contrôle Admin</h1>
+        <h1>Panneau de contrôle Admin</h1>
 
-    <div class="btn-primary w-64 h-24 flex items-center justify-center">
-        <a href={{path('services_dashboard')}}>Services</a>
-    </div>
         <div class="btn-primary w-64 h-24 flex items-center justify-center">
-            <a href={{path('users_dashboard')}}>Users</a>
+            <a href="{{ path('services_dashboard') }}">Services</a>
         </div>
         <div class="btn-primary w-64 h-24 flex items-center justify-center">
-            <a href={{path('drivers_dashboard')}}>Driver's licence</a>
+            <a href="{{ path('users_dashboard') }}">Users</a>
         </div>
-
+        <div class="btn-primary w-64 h-24 flex items-center justify-center">
+            <a href="{{ path('drivers_dashboard') }}">Driver's licence</a>
+        </div>
+        <div class="btn-primary w-64 h-24 flex items-center justify-center">
+            <a href="{{ path('admin_offers') }}">Manage Offers</a>
+        </div>
     </div>
-
 {% endblock %}
