@@ -1,0 +1,132 @@
+{% extends 'base_form.html.twig' %}
+
+{% block title %}Chat with {{ otherUser.name }}{% endblock %}
+
+{% block body %}
+  <section class="flex items-center justify-center min-h-screen py-12">
+    <div class="w-full md:w-3/4 lg:w-2/3 p-6 shadow-lg bg-white rounded-md flex flex-col h-[80vh]">
+      <!-- Chat Header -->
+      <div class="flex justify-between items-center pb-4 border-b border-gray-200 mb-4">
+        <div class="flex items-center">
+          <a href="{{ path('chat_list') }}" class="mr-3 text-oceanTheme-navyBlue hover:text-oceanTheme-deepBlue">
+            <i class="fas fa-arrow-left"></i>
+          </a>
+          <div class="flex items-center">
+            {% if otherUser.profileImage is defined and otherUser.profileImage %}
+              <img src="{{ asset('uploads/profile_images/' ~ otherUser.profileImage) }}" 
+                   alt="{{ otherUser.name }}" 
+                   class="w-10 h-10 rounded-full object-cover mr-3">
+            {% else %}
+              <div class="w-10 h-10 rounded-full bg-oceanTheme-lightBlue flex items-center justify-center text-white mr-3">
+                <span class="text-lg font-medium">{{ otherUser.name|slice(0, 1)|upper }}</span>
+              </div>
+            {% endif %}
+            <div>
+              <h1 class="text-xl font-bold text-oceanTheme-navyBlue">{{ otherUser.name }}</h1>
+              {% if otherUser.status is defined %}
+                <span class="text-xs text-gray-500">
+                  {% if otherUser.status == 'online' %}
+                    <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-1"></span> Online
+                  {% else %}
+                    Last seen {% if otherUser.lastActive is defined %}{{ otherUser.lastActive|date('H:i') }}{% else %}recently{% endif %}
+                  {% endif %}
+                </span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <!-- <a href="{{ path('app_user_profile', {'id': otherUser.id}) }}" class="transparent-button bg-skyTheme-lightCyan rounded-full text-sm"> -->
+            <!-- <i class="fas fa-user mr-1"></i> View Profile -->
+          <!-- </a> -->
+        </div>
+      </div>
+      
+      <!-- Chat Messages -->
+      <div class="flex-1 overflow-y-auto mb-4 px-2 space-y-3" id="chatContainer">
+        {% if messages is empty %}
+          <div class="flex justify-center items-center h-full">
+            <div class="text-center p-6 bg-gray-50 rounded-lg">
+              <div class="text-4xl text-gray-300 mb-3">
+                <i class="fas fa-comments"></i>
+              </div>
+              <p class="text-gray-500">No messages yet</p>
+            </div>
+          </div>
+        {% else %}
+          {% set currentDate = null %}
+          {% for message in messages %}
+            {% set messageDate = message.timeMessage|date('Y-m-d') %}
+            
+            {% if messageDate != currentDate %}
+              <div class="flex justify-center my-4">
+                <span class="text-xs bg-gray-100 text-gray-500 px-3 py-1 rounded-full">
+                  {% if messageDate == "now"|date('Y-m-d') %}
+                    Today
+                  {% elseif messageDate == "now"|date_modify("-1 day")|date('Y-m-d') %}
+                    Yesterday
+                  {% elseif message.timeMessage|date('Y') == "1970" %}
+                    <!-- Cas où la date est incorrecte (epoch Unix) -->
+                    Recently
+                  {% else %}
+                    {{ message.timeMessage|date('d M Y') }}
+                  {% endif %}
+                </span>
+              </div>
+              {% set currentDate = messageDate %}
+            {% endif %}
+            
+            <div class="flex {% if message.sender.id == currentUser.id %}justify-end{% endif %}">
+              <div class="{% if message.sender.id == currentUser.id %}
+                      bg-skyTheme-lightCyan text-oceanTheme-deepBlue
+                    {% else %}
+                      bg-gray-100 text-gray-800
+                    {% endif %}
+                    rounded-lg p-3 max-w-[80%] break-words shadow-sm">
+                <p class="text-sm">{{ message.text }}</p>
+                <div class="flex justify-end items-center mt-1 space-x-1">
+                  <span class="text-xs text-gray-500">{{ message.timeMessage|date('H:i') }}</span>
+                  {% if message.sender.id == currentUser.id %}
+                    {% if message.isRead is defined and message.isRead %}
+                      <i class="fas fa-check-double text-xs text-blue-500"></i>
+                    {% else %}
+                      <i class="fas fa-check text-xs text-gray-400"></i>
+                    {% endif %}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+      
+      <!-- Message Input Form -->
+      <div class="border-t border-gray-200 pt-4">
+        <form action="{{ path('send_message') }}" method="post" class="flex items-center space-x-2">
+          <input type="hidden" name="receiver_id" value="{{ otherUser.id }}">
+          <div class="relative flex-1">
+            <input type="text" name="text" placeholder="Type a message..." required
+                   class="w-full py-2 px-4 pr-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-oceanTheme-lightBlue focus:border-transparent">
+            <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-oceanTheme-navyBlue">
+              <i class="far fa-smile"></i>
+            </button>
+          </div>
+          <button type="submit" class="blue-button rounded-full w-10 h-10 flex items-center justify-center p-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 19V5M12 5l-7 7M12 5l7 7"/>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Scroll to bottom of chat on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      const chatContainer = document.getElementById('chatContainer');
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    });
+  </script>
+{% endblock %}

@@ -147,6 +147,7 @@
 
           <div class="flex justify-between mt-auto pt-6">
             <a href="{{ path('admin_panel') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">Back to Admin Dashboard</a>
+            <a href="{{ path('get_messages', {'userId': user.id}) }}" class="transparent-button bg-orange-300 rounded-full">Contact the user</a>
             <a class="blue-button" href="{{ path('admin_user_profilpage', {'id': user.id}) }}">Ban User</a>
           </div>
         </div>
