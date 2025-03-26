@@ -39,7 +39,13 @@
                 <div>Rentings:</div>
                 <ul class="overflow-y-auto max-h-36">
                   {% for renting in app.user.rentings %}
-                      <li class="bg-skyTheme-lightCyan rounded-lg"> {{ renting.offer.car.brand }} {{ renting.offer.car.model }} {{ renting.startDate|date('d-m-Y') }} {{ renting.endDate|date('d-m-Y') }} {{ renting.deliveryLocation}} {{ renting.totalAmount }}€ <a class="bg-skyTheme-skyBlue rounded-full"  href="{{ path('app_dispute', {renting_id: renting.id}) }}">Declare an accident</a></li>
+                      <li class="bg-skyTheme-lightCyan rounded-lg"> {{ renting.offer.car.brand }} {{ renting.offer.car.model }} {{ renting.startDate|date('d-m-Y') }} {{ renting.endDate|date('d-m-Y') }} {{ renting.deliveryLocation}} {{ renting.totalAmount }}€
+                          <a class="bg-skyTheme-skyBlue rounded-full"  href="{{ path('app_dispute', {renting_id: renting.id}) }}">Declare an accident</a>
+                          {% if renting.done %}
+                              <a class="bg-skyTheme-darkOrange rounded-full"  href="{{ path('offer_rent_rate', {id: renting.id}) }}">Rent's over</a></li>
+                            {% else %}
+                                <a class="bg-gray-500 rounded-full" >Thanks for the review !</a></li>
+                            {% endif %}
                   {% endfor %}
                 </ul>
               {% endif %}
