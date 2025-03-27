@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -13,7 +14,8 @@ use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class EditProfileFormType extends AbstractType
 {
@@ -27,6 +29,8 @@ class EditProfileFormType extends AbstractType
             'Owner' => 'ROLE_OWNER',
         ];
         $disabledChoices = array_fill_keys($currentRoles, true);
+        $driverLicenseValue = $user->getDriverLicense();
+        $isDriverLicenseEmpty = empty($driverLicenseValue);
         $builder
             ->add('email', EmailType::class)
             ->add('lastName', TextType::class)
@@ -47,6 +51,36 @@ class EditProfileFormType extends AbstractType
                     ])
                 ],*/
             ])
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'mapped' => false,
+                'required' => false,
+                'first_options' => ['label' => 'Nouveau mot de passe'],
+                'second_options' => ['label' => 'Confirmer le mot de passe'],
+            ])
+        
+            ->add('driverLicense', TextType::class, [
+                'label' => 'Driver License Number',
+                'required' => false,
+                'disabled' => !$isDriverLicenseEmpty, 
+                'attr' => [
+                    'readonly' => !$isDriverLicenseEmpty, 
+                ],
+                'help' => !$isDriverLicenseEmpty ? 'Driver license cannot be modified once set.' : '',
+                'constraints' => $isDriverLicenseEmpty ? [
+                    new Length([
+                        'min' => 9,
+                        'max' => 20,
+                        'minMessage' => 'Your driver license number must be at least {{ limit }} characters',
+                        'maxMessage' => 'Your driver license number cannot be longer than {{ limit }} characters'
+                    ]),
+                    new Regex([
+                        'pattern' => '/^[A-Z0-9]+$/',
+                        'message' => 'Your driver license number can only contain uppercase letters and numbers'
+                    ])
+                ] : []
+            ])
+            
             ->add('profileImage', FileType::class, [
                 'label' => 'Profile picture',
                 'mapped' => false,

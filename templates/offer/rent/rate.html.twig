@@ -1,0 +1,28 @@
+{% extends 'base_form.html.twig' %}
+
+
+{% block body %}
+    <section class="flex items-center justify-center h-screen">
+        <div  class="w-3/4 p-6 shadow-lg bg-skyTheme-lightCyan rounded-md">
+            <h1 class="text-3xl block text-center font-semibold text-oceanTheme-navyBlue">Create Dispute</h1>
+            <h2 class="text-xl block  font-semibold"> Rental's reminder </h2>
+            {{ renting.offer.car.brand }} {{ renting.offer.car.model }} <br>
+            From {{ renting.startDate|date('d/m/Y') }} to {{ renting.endDate|date('d/m/Y') }}<br>
+            Owner : {{ owner.name }} {{ owner.lastName }}<br>
+            Borrower : {{ borrower.name }} {{ borrower.lastName }}<br>
+            Price : {{ renting.offer.price }} €<br>
+            Location : {{ renting.offer.localisationGarage }}<br>
+
+            <h2 class="text-xl block  font-semibold" > How was your experience with this car ? ⚡ </h2>
+            <form method="post">
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+
+                <input type="submit" value="Rent's done !" class="blue-button mt-3" />
+                {{ form_end(form) }}
+            </form>
+
+        </div>
+    </section>
+
+{% endblock %}
