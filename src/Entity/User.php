@@ -59,6 +59,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Message::class,mappedBy: 'receiver')]
     private Collection $message_rcv;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $isBanned = false;
 
     /**
      * Borrower informations
@@ -639,5 +641,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
         return $rentingsDone;
     }
+    public function isBanned(): bool
+    {   
+        return $this->isBanned;
+    }
 
+    public function setIsBanned(bool $isBanned): static
+    {
+        $this->isBanned = $isBanned;
+        return $this;
+    }
 }
