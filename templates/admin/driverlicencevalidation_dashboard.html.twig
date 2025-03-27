@@ -70,11 +70,11 @@
                   <td class="p-3 font-medium">{{ driver.user.name }}</td>
                   <td class="p-3">{{ driver.user.lastname }}</td>
                   <td class="p-3 text-center">
-                    {% if driver.getDriverLicenceNb() %}
-                      <span class="font-mono">{{ driver.getDriverLicenceNb() }}</span>
+                    {% if driver.user.getDriverLicense() %}
+                      <span class="font-mono">{{ driver.user.getDriverLicense() }}</span>
                     {% else %}
                       <span class="text-gray-400 italic">Not provided</span>
-                    {% endif %}
+                    {% endif %} 
                   </td>
                   <td class="p-3 text-center">
                     <span class="px-2 py-1 rounded-full text-xs font-medium

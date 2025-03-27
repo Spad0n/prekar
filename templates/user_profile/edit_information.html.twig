@@ -38,6 +38,11 @@
       {{ form_label(choice) }}
     </div>
   {% endfor %}
+  <div class="mt-3">
+  {{ form_label(form.driverLicense) }}
+  {{ form_widget(form.driverLicense, {'attr': {'class': 'form-control mt-2 w-full input-field'}}) }}
+  <div class="text-red-500">{{ form_errors(form.driverLicense) }}</div>
+  </div>
   <div class="text-red-500">{{ form_errors(form.userType) }}</div>
   <div class="my-2">
     {{ form_label(form.profileImage) }}
