@@ -41,10 +41,10 @@
                   {% for renting in app.user.rentings %}
                       <li class="bg-skyTheme-lightCyan rounded-lg"> {{ renting.offer.car.brand }} {{ renting.offer.car.model }} {{ renting.startDate|date('d-m-Y') }} {{ renting.endDate|date('d-m-Y') }} {{ renting.deliveryLocation}} {{ renting.totalAmount }}€
                           <a class="bg-skyTheme-skyBlue rounded-full"  href="{{ path('app_dispute', {renting_id: renting.id}) }}">Declare an accident</a>
-                          {% if renting.done %}
+                          {% if renting.done == 0 %}
                               <a class="bg-skyTheme-darkOrange rounded-full"  href="{{ path('offer_rent_rate', {id: renting.id}) }}">Rent's over</a></li>
                             {% else %}
-                                <a class="bg-gray-500 rounded-full" >Thanks for the review !</a></li>
+                                <p class="bg-gray-500 rounded-full" >Thanks for the review !</p></li>
                             {% endif %}
                   {% endfor %}
                 </ul>
@@ -80,6 +80,9 @@
             {% endif %}
           </div>
           <div class="flex justify-end mt-auto pt-4">
+              {% if is_granted('ROLE_OWNER') %}
+            <a class="blue-button " href="{{ path('app_user_profile_claim_payment_maybe')}}">Payment Claim</a>
+                {% endif %}
             <a class="blue-button" href="{{ path('app_edit_user_profile') }}">Modify informations</a>
           </div>
         </div>

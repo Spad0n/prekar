@@ -602,4 +602,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 
+    public function getPendingPayments(): array
+    {
+        $pendingPayments = [];
+        foreach ($this->payments as $payment) {
+            if ($payment->getStatus() === 'pending') {
+                $pendingPayments[] = $payment;
+            }
+        }
+        return $pendingPayments;
+    }
+
+    public function getRentingsDone(): array
+    {
+        $rentingsDone = [];
+        foreach ($this->rentings as $renting) {
+            if ($renting->isDone() === True and $renting->isProceeded() === False) {
+                $rentingsDone[] = $renting;
+            }
+        }
+        return $rentingsDone;
+    }
+
 }
