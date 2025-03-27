@@ -323,6 +323,7 @@ final class OfferController extends AbstractController
         }
 
         $renting = new Renting();
+        $renting->setProceeded(false);
         $renting->setUserBorrower($this->getUser());
         $renting->setOffer($offer);
         $renting->setTotalAmount($offer->getPrice() * $startDate->diff($endDate)->days);
@@ -331,7 +332,9 @@ final class OfferController extends AbstractController
         $renting->setNbKm(122);
         $renting->setCommentary("No comment");
         $renting->setDeliveryLocation($deliveryLocation);
+        $renting->setDone(false);
         $offer->setAvailable("not_available");
+
 
 
         $entityManager->persist($renting);

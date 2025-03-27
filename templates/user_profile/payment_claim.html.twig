@@ -1,0 +1,54 @@
+{% extends 'base_form.html.twig' %}
+
+{% block title %}Rent : Choosing delivery{% endblock %}
+
+{% block body %}
+    <section class="flex items-center justify-center min-h-screen pt-32 pb-8 bg-skyTheme-skyBlue">
+        <div class="w-3/4 p-6 shadow-lg bg-white rounded-md overflow-hidden">
+            <h1 class="text-4xl font-bold text-oceanTheme-navyBlue">Payment claim</h1>
+            <hr class="my-4">
+            <div class="flex flex-col">
+                <div class="text-2xl">List of pending rentings</div>
+                <div>
+                    <ul class="overflow-y-auto max-h-36">
+                        {% if rentings_done%}
+                        {% for renting in rentings_done %}
+                                <li class="bg-skyTheme-lightCyan rounded-lg"> {{ renting.offer.car.brand }} {{ renting.offer.car.model }} {{ renting.startDate|date('d-m-Y') }} {{ renting.endDate|date('d-m-Y') }}{{ renting.totalAmount }}€
+                                    <a class="bg-skyTheme-darkOrange rounded-full"  href="{{ path('app_dispute', {renting_id: renting.id}) }}">Declare an accident</a>
+                                </li>
+
+                        {% endfor %}
+                        {% else %}
+                            <li class="bg-gray-500 rounded-lg">No pending rentings</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% if rentings_done %}
+                <div>
+                    <form action="{{ path('app_user_profile_claim_payment') }}" method="post">
+                        <div class="flex justify-center">
+                            <button type="submit" class="bg-skyTheme-darkOrange text-white rounded-lg px-4 py-2">Claim</button>
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+                <hr class="my-4">
+                <h2>Payments Historic</h2>
+                <div>
+                    <ul class="overflow-y-auto max-h-36">
+                        {% if app.user.payments %}
+                        {% for payment in app.user.payments %}
+                            <li class="bg-skyTheme-lightCyan rounded-lg"> Status : {{ payment.status }} | Total : {{ payment.total }}€ {% if payment.getPayDate%} | Payment Date :  {{ payment.getPayDate|date('d-m-Y') }} {% endif %} | Service fees : {{payment.getApply.getServiceFee }}%
+                            </li>
+                        {% endfor %}
+                        {% else %}
+                            <li class="bg-gray-500 rounded-lg">No payments</li>
+                        {% endif %}
+                    </ul>
+
+
+
+        </div>
+    </section>
+{% endblock %}
+
