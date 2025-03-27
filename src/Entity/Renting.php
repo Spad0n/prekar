@@ -48,6 +48,9 @@ class Renting
     #[ORM\Column(nullable: true)]
     private ?bool $done = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $proceeded = null;
+
 
 
     public function getId(): ?int
@@ -154,6 +157,8 @@ class Renting
         return $this;
     }
 
+
+
     public function isDone(): ?bool
     {
         return $this->done;
@@ -162,6 +167,18 @@ class Renting
     public function setDone(bool $done): static
     {
         $this->done = $done;
+
+        return $this;
+    }
+
+    public function isProceeded(): ?bool
+    {
+        return $this->proceeded;
+    }
+
+    public function setProceeded(?bool $proceeded): static
+    {
+        $this->proceeded = $proceeded;
 
         return $this;
     }

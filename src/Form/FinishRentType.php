@@ -19,7 +19,7 @@ class FinishRentType extends AbstractType
         $builder
             ->add('commentary',TextareaType::class,[
                 'label'=>'Commentary',
-                'required'=>false
+                'required'=>true
             ])
         ;
     }
