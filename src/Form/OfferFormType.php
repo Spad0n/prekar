@@ -43,11 +43,15 @@ class OfferFormType extends AbstractType
                 ->add('price', MoneyType::class, [
                     'currency' => 'EUR',
                     'label' => 'Price',
-                    'attr' => ['min' => 99],
+                    'attr' => ['min' => 90, 'max' => 2500],
                     'constraints' => [
                         new Assert\GreaterThan([
-                            'value' => 99,
-                            'message' => 'The price must be greater than 99.',
+                            'value' => 90,
+                            'message' => 'The price must be greater than 90.',
+                        ]),
+                        new Assert\LessThanOrEqual([
+                            'value' => 2500,
+                            'message' => 'The price must not exceed 2500.',
                         ]),
                     ],
                 ])
@@ -111,11 +115,15 @@ class OfferFormType extends AbstractType
                 ->add('price', MoneyType::class, [
                     'currency' => 'EUR',
                     'label' => 'Price',
-                    'attr' => ['min' => 99],
+                    'attr' => ['min' => 90, 'max' => 2500],
                     'constraints' => [
                         new Assert\GreaterThan([
-                            'value' => 99,
-                            'message' => 'The price must be greater than 99.',
+                            'value' => 90,
+                            'message' => 'The price must be greater than 90.',
+                        ]),
+                        new Assert\LessThanOrEqual([
+                            'value' => 2500,
+                            'message' => 'The price must not exceed 2500.',
                         ]),
                     ],
                 ])
