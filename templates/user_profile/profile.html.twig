@@ -55,7 +55,7 @@
                           {% if renting.done == 0 %}
                               <a class="bg-skyTheme-darkOrange rounded-full"  href="{{ path('offer_rent_rate', {id: renting.id}) }}">Rent's over</a></li>
                             {% else %}
-                                <p class="bg-gray-500 rounded-full" >Thanks for the review !</p></li>
+                                <a class="bg-gray-500 rounded-full" >Thanks for the review !</a></li>
                             {% endif %}
                   {% endfor %}
                 </ul>

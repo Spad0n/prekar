@@ -97,7 +97,7 @@
                     </a>
 
                     {% if user.isBanned is defined %}
-                      <a href="{{ path('admin_toggle_ban_user', {'id': user.id}) }}" 
+                      <a class="orange-button" href="{{ path('admin_toggle_ban_user', {'id': user.id}) }}"
                          class="{% if user.isBanned %}green-button{% else %}red-button{% endif %}"
                          onclick="return confirm('Are you sure you want to {% if user.isBanned %}unban{% else %}ban{% endif %} this user?')">
                         {% if user.isBanned %}
