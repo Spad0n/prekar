@@ -607,7 +607,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $driverLicense = null;
 
-    public function getDriverLicenceNb(): ?string
+    public function getDriverLicense(): ?string
     {
         return $this->driverLicense;
     }
