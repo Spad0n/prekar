@@ -22,6 +22,16 @@
     {{ form_widget(form.name, {'attr': {'class': 'form-control mt-2 w-full input-field'}}) }}
     <div class="text-red-500">{{ form_errors(form.name) }}</div>
   </div>
+  <div class="mt-3">
+    {{ form_label(form.plainPassword.first) }}
+    {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control mt-2 w-full input-field'}}) }}
+    <div class="text-red-500">{{ form_errors(form.plainPassword.first) }}</div>
+  </div>
+  <div class="mt-3">
+    {{ form_label(form.plainPassword.second) }}
+    {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control mt-2 w-full input-field'}}) }}
+    <div class="text-red-500">{{ form_errors(form.plainPassword.second) }}</div>
+  </div>
   {% for choice in form.userType %}
     <div class="mt-3">
       {{ form_widget(choice, {'attr': {'class': 'mr-2'}}) }}

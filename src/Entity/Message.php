@@ -20,6 +20,9 @@ class Message
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateMessage = null;
 
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    private ?\DateTimeInterface $timeMessage = null;
+
     #[ORM\ManyToOne(inversedBy: 'message_snd')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $sender = null;
@@ -53,31 +56,40 @@ class Message
     public function setDateMessage(\DateTimeInterface $dateMessage): static
     {
         $this->dateMessage = $dateMessage;
-
         return $this;
     }
 
-    public function getIdSender(): ?User
+    public function getTimeMessage(): ?\DateTimeInterface
     {
-        return $this->id_sender;
+        return $this->timeMessage;
     }
 
-    public function setIdSender(?User $id_sender): static
+    public function setTimeMessage(\DateTimeInterface $timeMessage): static
     {
-        $this->id_sender = $id_sender;
-
+        $this->timeMessage = $timeMessage;
         return $this;
     }
 
-    public function getIdReceiver(): ?User
+    public function getSender(): ?User
     {
-        return $this->id_receiver;
+        return $this->sender;
     }
-
-    public function setIdReceiver(?User $id_receiver): static
+    
+    public function setSender(?User $sender): static
     {
-        $this->id_receiver = $id_receiver;
-
+        $this->sender = $sender;
         return $this;
     }
+    
+    public function getReceiver(): ?User
+    {
+        return $this->receiver;
+    }
+    
+    public function setReceiver(?User $receiver): static
+    {
+        $this->receiver = $receiver;
+        return $this;
+    }
+    
 }

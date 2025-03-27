@@ -267,7 +267,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->message_snd->contains($message)) {
             $this->message_snd->add($message);
-            $message->setIdSender($this);
+            $message->setSender($this);
         }
 
         return $this;
@@ -276,8 +276,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeMessageSnd(Message $message): static
     {
         if ($this->message_snd->removeElement($message)) {
-            if ($message->getIdSender() === $this) {
-                $message->setIdSender(null);
+            if ($message->getSender() === $this) {
+                $message->setSender(null);
             }
         }
 
@@ -296,7 +296,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->message_rcv->contains($message)) {
             $this->message_rcv->add($message);
-            $message->setIdReceiver($this);
+            $message->setReceiver($this);
         }
 
         return $this;
@@ -305,8 +305,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeMessageRcv(Message $message): static
     {
         if ($this->message_rcv->removeElement($message)) {
-            if ($message->getIdReceiver() === $this) {
-                $message->setIdReceiver(null);
+            if ($message->getReceiver() === $this) {
+                $message->setReceiver(null);
             }
         }
 
@@ -616,6 +616,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->driverLicense = $driverLicense;
         return $this;
+    }
+
+    public function getPendingPayments(): array
+    {
+        $pendingPayments = [];
+        foreach ($this->payments as $payment) {
+            if ($payment->getStatus() === 'pending') {
+                $pendingPayments[] = $payment;
+            }
+        }
+        return $pendingPayments;
+    }
+
+    public function getRentingsDone(): array
+    {
+        $rentingsDone = [];
+        foreach ($this->rentings as $renting) {
+            if ($renting->isDone() === True and $renting->isProceeded() === False) {
+                $rentingsDone[] = $renting;
+            }
+        }
+        return $rentingsDone;
     }
 
 }
