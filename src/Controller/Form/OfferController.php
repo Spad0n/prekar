@@ -270,7 +270,7 @@ final class OfferController extends AbstractController
             return $this->redirectToRoute('offer_rent_date', ['id' => $id]);
         }
 
-        $nbDays = $startDate->diff($endDate)->days;
+        $nbDays = $startDate->diff($endDate)->days + 1;
 
 
         return $this->render('offer/rent/payment.html.twig',[
