@@ -33,8 +33,13 @@ class OfferRepository extends ServiceEntityRepository
 
         // Apply location filter
         if (!empty($filters['locations']) && !in_array('Any', $filters['locations'], true)) {
-            $qb->andWhere('o.localisationGarage IN (:locations)')
-            ->setParameter('locations', $filters['locations']);
+            $orX = $qb->expr()->orX();
+            foreach ($filters['locations'] as $index => $location) {
+                $paramName = 'location' . $index;
+                $orX->add($qb->expr()->like('o.localisationGarage', ':' . $paramName));
+                $qb->setParameter($paramName, '%' . $location . '%');
+            }
+            $qb->andWhere($orX);
         }
 
         // Apply delivery filter
