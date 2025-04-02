@@ -1,53 +1,185 @@
 {% extends 'base_form.html.twig' %}
 
-{% block title %}Rent : Choosing delivery{% endblock %}
+{% block title %}Payment Claims{% endblock %}
 
 {% block body %}
     <section class="flex items-center justify-center min-h-screen pt-32 pb-8 bg-skyTheme-skyBlue">
         <div class="w-3/4 p-6 shadow-lg bg-white rounded-md overflow-hidden">
-            <h1 class="text-4xl font-bold text-oceanTheme-navyBlue">Payment claim</h1>
-            <hr class="my-4">
-            <div class="flex flex-col">
-                <div class="text-2xl">List of pending rentings</div>
-                <div>
-                    <ul class="overflow-y-auto max-h-36">
-                        {% if rentings_done%}
-                        {% for renting in rentings_done %}
-                                <li class="bg-skyTheme-lightCyan rounded-lg"> {{ renting.offer.car.brand }} {{ renting.offer.car.model }} {{ renting.startDate|date('d-m-Y') }} {{ renting.endDate|date('d-m-Y') }}{{ renting.totalAmount }}€
-                                    <a class="bg-skyTheme-darkOrange rounded-full"  href="{{ path('app_dispute', {renting_id: renting.id}) }}">Declare an accident</a>
-                                </li>
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-oceanTheme-navyBlue">Payment Claims</h1>
+                <a href="{{ path('app_user_profile') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Profile
+                </a>
+            </div>
 
-                        {% endfor %}
-                        {% else %}
-                            <li class="bg-gray-500 rounded-lg">No pending rentings</li>
-                        {% endif %}
-                    </ul>
+            <!-- Pending Rentals Section -->
+            <div class="mb-8">
+                <div class="flex items-center mb-4">
+                    <h2 class="text-2xl font-semibold text-oceanTheme-deepBlue">Pending Rentals</h2>
+                    {% if rentings_done %}
+                        <span class="ml-3 px-3 py-1 bg-sunsetTheme-orange text-white text-sm font-medium rounded-full">{{ rentings_done|length }}</span>
+                    {% endif %}
                 </div>
+                
                 {% if rentings_done %}
-                <div>
-                    <form action="{{ path('app_user_profile_claim_payment') }}" method="post">
-                        <div class="flex justify-center">
-                            <button type="submit" class="bg-skyTheme-darkOrange text-white rounded-lg px-4 py-2">Claim</button>
+                    <div class="bg-white rounded-lg shadow-sm border border-skyTheme-lightCyan mb-4">
+                        <div class="overflow-hidden">
+                            <table class="min-w-full divide-y divide-skyTheme-lightCyan">
+                                <thead class="bg-skyTheme-lightCyan">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-oceanTheme-deepBlue uppercase tracking-wider">Car</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-oceanTheme-deepBlue uppercase tracking-wider">Rental Period</th>
+                                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-oceanTheme-deepBlue uppercase tracking-wider">Amount</th>
+                                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-oceanTheme-deepBlue uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    {% for renting in rentings_done %}
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="font-medium text-gray-900">{{ renting.offer.car.brand }} {{ renting.offer.car.model }}</div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-600">
+                                                    {{ renting.startDate|date('d M Y') }} - {{ renting.endDate|date('d M Y') }}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                                                <div class="text-lg font-bold text-oceanTheme-deepBlue">{{ renting.totalAmount }}€</div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                <a href="{{ path('app_dispute', {renting_id: renting.id}) }}" class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-sunsetTheme-orange hover:bg-sunsetTheme-darkOrange transition-colors duration-150">
+                                                    <i class="fas fa-exclamation-triangle mr-1"></i> Report Issue
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
-                    </form>
-                </div>
+                        
+                        <div class="bg-gray-50 px-6 py-4 border-t border-skyTheme-lightCyan">
+                            <div class="flex items-center justify-between">
+                                <div class="text-sm text-gray-600">
+                                    <i class="fas fa-info-circle mr-1"></i> 
+                                    These completed rentals are ready to be claimed for payment.
+                                </div>
+                                <form action="{{ path('app_user_profile_claim_payment') }}" method="post">
+                                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-oceanTheme-deepBlue hover:bg-oceanTheme-navyBlue text-white text-sm font-medium rounded-lg transition-colors duration-150">
+                                        <i class="fas fa-money-bill-wave mr-2"></i> Claim Payment
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="p-8 bg-gray-50 rounded-lg text-center">
+                        <div class="text-5xl text-gray-300 mb-3">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <p class="text-gray-500">You don't have any completed rentals to claim payment for.</p>
+                    </div>
                 {% endif %}
-                <hr class="my-4">
-                <h2>Payments Historic</h2>
-                <div>
-                    <ul class="overflow-y-auto max-h-36">
-                        {% if app.user.payments %}
-                        {% for payment in app.user.payments %}
-                            <li class="bg-skyTheme-lightCyan rounded-lg"> Status : {{ payment.status }} | Total : {{ payment.total }}€ {% if payment.getPayDate%} | Payment Date :  {{ payment.getPayDate|date('d-m-Y') }} {% endif %} | Service fees : {{payment.getApply.getServiceFee }}%
-                            </li>
-                        {% endfor %}
-                        {% else %}
-                            <li class="bg-gray-500 rounded-lg">No payments</li>
-                        {% endif %}
-                    </ul>
+            </div>
 
-
-
+            <!-- Payment History Section -->
+            <div>
+                <h2 class="text-2xl font-semibold text-oceanTheme-deepBlue mb-4">Payment History</h2>
+                
+                {% if app.user.payments and app.user.payments|length > 0 %}
+                    <div class="bg-white rounded-lg shadow-sm border border-skyTheme-lightCyan overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-skyTheme-lightCyan">
+                                <thead class="bg-skyTheme-lightCyan">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-oceanTheme-deepBlue uppercase tracking-wider">Status</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-oceanTheme-deepBlue uppercase tracking-wider">Payment Date</th>
+                                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-oceanTheme-deepBlue uppercase tracking-wider">Amount</th>
+                                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-oceanTheme-deepBlue uppercase tracking-wider">Service Fee</th>
+                                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-oceanTheme-deepBlue uppercase tracking-wider">Net Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    {% for payment in app.user.payments %}
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                    {% if payment.status == 'Paid' %}
+                                                        bg-green-100 text-green-800
+                                                    {% elseif payment.status == 'Pending' %}
+                                                        bg-yellow-100 text-yellow-800
+                                                    {% else %}
+                                                        bg-gray-100 text-gray-800
+                                                    {% endif %}">
+                                                    {{ payment.status }}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                {% if payment.getPayDate %}
+                                                    <div class="text-sm text-gray-900">{{ payment.getPayDate|date('d M Y') }}</div>
+                                                {% else %}
+                                                    <div class="text-sm text-gray-500">Pending</div>
+                                                {% endif %}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                                                <div class="text-sm font-medium text-gray-900">{{ payment.total }}€</div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                                                <div class="text-sm text-gray-500">{{ payment.getApply.getServiceFee }}%</div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                                                <div class="text-sm font-bold text-oceanTheme-deepBlue">
+                                                    {{ (payment.total - (payment.total * payment.getApply.getServiceFee / 100))|number_format(2) }}€
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="p-8 bg-gray-50 rounded-lg text-center">
+                        <div class="text-5xl text-gray-300 mb-3">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <p class="text-gray-500">You don't have any payment history yet.</p>
+                    </div>
+                {% endif %}
+                
+                <!-- Summary Section -->
+                {% if app.user.payments and app.user.payments|length > 0 %}
+                    <div class="mt-4 bg-skyTheme-cream p-4 rounded-lg">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                            {% set totalPaid = 0 %}
+                            {% set totalPending = 0 %}
+                            {% set totalPayments = 0 %}
+                            
+                            {% for payment in app.user.payments %}
+                                {% set totalPayments = totalPayments + payment.total %}
+                                {% if payment.status == 'Paid' %}
+                                    {% set totalPaid = totalPaid + payment.total %}
+                                {% elseif payment.status == 'Pending' %}
+                                    {% set totalPending = totalPending + payment.total %}
+                                {% endif %}
+                            {% endfor %}
+                            
+                            <div>
+                                <div class="text-sm text-gray-600">Total Payments</div>
+                                <div class="text-xl font-bold text-oceanTheme-deepBlue">{{ totalPayments }}€</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-600">Received</div>
+                                <div class="text-xl font-bold text-green-600">{{ totalPaid }}€</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-600">Pending</div>
+                                <div class="text-xl font-bold text-yellow-600">{{ totalPending }}€</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </section>
 {% endblock %}

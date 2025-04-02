@@ -77,14 +77,10 @@
           </div>
 
           <h3 class="text-xl font-semibold text-oceanTheme-deepBlue mb-3">Car Specifications</h3>
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-skyTheme-cream p-3 rounded-md">
               <span class="text-sm text-gray-600">Brand & Model</span>
               <div class="font-medium">{{ offer.car.brand }} {{ offer.car.model }}</div>
-            </div>
-            <div class="bg-skyTheme-cream p-3 rounded-md">
-              <span class="text-sm text-gray-600">Year</span>
-              <div class="font-medium">{{ offer.car.year }}</div>
             </div>
             <div class="bg-skyTheme-cream p-3 rounded-md">
               <span class="text-sm text-gray-600">Seating Capacity</span>
@@ -94,7 +90,7 @@
               <span class="text-sm text-gray-600">Boot Capacity</span>
               <div class="font-medium">{{ offer.car.bootCapacity }} L</div>
             </div>
-            <div class="bg-skyTheme-cream p-3 rounded-md col-span-2">
+            <div class="bg-skyTheme-cream p-3 rounded-md col-span-full">
               <span class="text-sm text-gray-600">Fuel Type</span>
               <div class="font-medium">{{ offer.car.fuelType }}</div>
             </div>
