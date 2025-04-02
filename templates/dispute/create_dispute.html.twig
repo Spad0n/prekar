@@ -1,28 +1,110 @@
 {% extends 'base_form.html.twig' %}
 
+{% block title %}Create Dispute{% endblock %}
 
 {% block body %}
-    <section class="flex items-center justify-center h-screen">
-        <div  class="w-3/4 p-6 shadow-lg bg-skyTheme-lightCyan rounded-md">
-            <h1 class="text-3xl block text-center font-semibold text-oceanTheme-navyBlue">Create Dispute</h1>
-            <h2 class="text-xl block  font-semibold"> Rental's reminder </h2>
-            {{ renting.offer.car.brand }} {{ renting.offer.car.model }} <br>
-            From {{ renting.startDate|date('d/m/Y') }} to {{ renting.endDate|date('d/m/Y') }}<br>
-            Owner : {{ owner.name }} {{ owner.lastName }}<br>
-            Borrower : {{ borrower.name }} {{ borrower.lastName }}<br>
-            Price : {{ renting.offer.price }} €<br>
-            Location : {{ renting.offer.localisationGarage }}<br>
-
-            <h2 class="text-xl block  font-semibold" >Fill in the form below to create a dispute.</h2>
-            <form method="post">
-                {{ form_start(form) }}
-                {{ form_widget(form) }}
-                note : reporting date must be the date of the incident. <br>
-                <input type="submit" value="Create Dispute" class="blue-button mt-3" />
-                {{ form_end(form) }}
-            </form>
-
+    <section class="flex items-center justify-center min-h-screen py-12 bg-skyTheme-skyBlue">
+        <div class="w-11/12 md:w-3/4 p-6 shadow-lg bg-white rounded-md">
+            <h1 class="text-3xl font-bold text-oceanTheme-navyBlue mb-6 text-center">Create Dispute</h1>
+            
+            <!-- Rental Information Card -->
+            <div class="bg-skyTheme-lightCyan p-4 rounded-lg mb-6">
+                <h2 class="text-xl font-semibold text-oceanTheme-deepBlue mb-3">Rental Summary</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Car & Rental Details -->
+                    <div class="bg-white p-3 rounded-md shadow-sm">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-car text-oceanTheme-deepBlue mr-2"></i>
+                            <h3 class="font-medium">Vehicle Information</h3>
+                        </div>
+                        <div class="space-y-1 pl-6">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Model:</span>
+                                <span class="font-medium">{{ renting.offer.car.brand }} {{ renting.offer.car.model }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Rental Period:</span>
+                                <span class="font-medium">{{ renting.startDate|date('d/m/Y') }} - {{ renting.endDate|date('d/m/Y') }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Price:</span>
+                                <span class="font-medium">{{ renting.offer.price }} €</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Location:</span>
+                                <span class="font-medium">{{ renting.offer.localisationGarage }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- People Involved -->
+                    <div class="bg-white p-3 rounded-md shadow-sm">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-users text-oceanTheme-deepBlue mr-2"></i>
+                            <h3 class="font-medium">People Involved</h3>
+                        </div>
+                        <div class="space-y-3 pl-6">
+                            <div>
+                                <div class="text-gray-600">Owner:</div>
+                                <div class="font-medium">{{ owner.name }} {{ owner.lastName }}</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-600">Borrower:</div>
+                                <div class="font-medium">{{ borrower.name }} {{ borrower.lastName }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dispute Form -->
+            <div class="bg-sunsetTheme-paleYellow p-4 rounded-lg mb-4">
+                <h2 class="text-xl font-semibold text-oceanTheme-deepBlue mb-3">Dispute Details</h2>
+                
+                <div class="bg-white p-4 rounded-md">
+                    {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+                        
+                        {% for field in form %}
+                            <div class="form-group">
+                                <div class="font-medium text-oceanTheme-deepBlue mb-1">
+                                    {{ form_label(field) }}
+                                </div>
+                                <div>
+                                    {{ form_widget(field, {'attr': {'class': 'input-field w-full'}}) }}
+                                </div>
+                                <div class="text-red-500 text-sm mt-1">
+                                    {{ form_errors(field) }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        
+                        <div class="text-sm text-gray-600 bg-gray-100 p-2 rounded">
+                            <i class="fas fa-info-circle mr-1"></i> Note: The reporting date must be the actual date when the incident occurred.
+                        </div>
+                        
+                        <div class="flex justify-between mt-6">
+                            <a href="{{ path('app_user_profile') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">
+                                Cancel
+                            </a>
+                            <button type="submit" class="blue-button">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>Submit Dispute
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+            
+            <!-- Information Box -->
+            <div class="text-sm text-gray-600 bg-gray-100 p-3 rounded-md">
+                <div class="flex items-start">
+                    <i class="fas fa-exclamation-circle text-oceanTheme-deepBlue mt-1 mr-2"></i>
+                    <div>
+                        <p class="font-medium text-oceanTheme-deepBlue">Important Information</p>
+                        <p>Creating a dispute will notify both the owner and borrower. Our customer service team will review the case within 48 hours. Please provide as much detail as possible to help resolve this issue quickly.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
-
 {% endblock %}

@@ -1,89 +1,192 @@
 {% extends 'base_form.html.twig' %}
 
-{% block title %}Profil{% endblock %}
+{% block title %}Profile{% endblock %}
 
 {% block body %}
-  <section class="flex items-center justify-center h-screen">
-    <div class="w-3/4 h-3/4 p-6 shadow-lg bg-white rounded-md flex flex-col">
-      <div class="flex justify-between gap-10 flex-1 overflow-hidden">
-        {# photo part #}
-        <div class="profile-header flex-2" >
-          {% if app.user.profileImage %}
-            <img src="{{ asset('uploads/profile_images/' ~ app.user.profileImage) }}" alt="Photo de profil" class="profile-image" width="200px">
-          {% else %}
-            <img src="https://placehold.co/200x200/png" alt="Default picture" class="profile-image">
-          {% endif %}
-          <h2 class="mt-2 text-xl text-center">{{ app.user.name }} {{ app.user.lastName }}</h2>
-        </div>
-        {# information #}
-        <div class="flex-1 flex flex-col overflow-hidden">
-          <h1 class="text-4xl font-bold text-oceanTheme-navyBlue">Information</h1>
-          <hr class="my-4">
-          {# BORROWER INFORMATION #}
-          <div class="flex flex-col overflow-auto">
-            {% if is_granted('ROLE_BORROWER') %}
-              <div class="text-2xl">Borrower</div>
-              {% if app.user.startSub is not null %}
-                <div>Subcription start date : {{ startSub|date('Y-m-d') }}</div>
-                <br>
-                <div>Subcription end date : {{ startSub|date('Y-m-d') }}</div>
-                <br>
-              {% else %}
-                <div>No subscription</div>
-              {% endif %}
-              <br>
-              {# Renting made by the borrower #}
-              {% if app.user.rentings is empty %}
-                <div>No renting</div>
-              {% else %}
-                <div>Rentings:</div>
-                <ul class="overflow-y-auto max-h-36">
-                  {% for renting in app.user.rentings %}
-                      <li class="bg-skyTheme-lightCyan rounded-lg"> {{ renting.offer.car.brand }} {{ renting.offer.car.model }} {{ renting.startDate|date('d-m-Y') }} {{ renting.endDate|date('d-m-Y') }} {{ renting.deliveryLocation}} {{ renting.totalAmount }}€
-                          <a class="bg-skyTheme-skyBlue rounded-full"  href="{{ path('app_dispute', {renting_id: renting.id}) }}">Declare an accident</a>
-                          {% if renting.done == 0 %}
-                              <a class="bg-skyTheme-darkOrange rounded-full"  href="{{ path('offer_rent_rate', {id: renting.id}) }}">Rent's over</a></li>
-                            {% else %}
-                                <a class="bg-gray-500 rounded-full" >Thanks for the review !</a></li>
-                            {% endif %}
-                  {% endfor %}
-                </ul>
-              {% endif %}
-              <hr class="my-4">
-            {% endif %}
-            {# OWNER INFORMATION #}
-            {% if is_granted('ROLE_OWNER') %}
-              {# car owner by the owner #}
-              <div class="text-2xl">Owner</div>
-              {% if app.user.cars is empty %}
-                <div>No car</div>
-              {% else %}
-                <div>Cars: </div>
-                <ul class="overflow-y-auto max-h-36">
-                  {% for car in app.user.cars %}
-                    <li>{{ car.brand }} {{ car.model }}</li>
-                  {% endfor %}
-                </ul>
-              {% endif %}
-              <br>
-              {# Offer made by the owner #}
-              {% if app.user.offers is empty %}
-                <div>No offer</div>
-              {% else %}
-                <div>Offers: </div>
-                <ul class="overflow-y-auto max-h-36">
-                  {% for offer in app.user.offers %}
-                    <li>{{ offer.car.brand }} {{ offer.car.model }}</li>
-                  {% endfor %}
-                </ul>
-              {% endif %}
+  <section class="flex items-center justify-center min-h-screen py-12">
+    <div class="w-3/4 p-6 shadow-lg bg-white rounded-md flex flex-col">
+      <div class="flex flex-col md:flex-row justify-between gap-8 flex-1 overflow-hidden">
+        {# profile header part #}
+        <div class="md:w-1/3 profile-header flex flex-col items-center">
+          <div class="overflow-hidden rounded-lg shadow-md mb-4">
+            {% if app.user.profileImage %}
+              <img src="{{ asset('uploads/profile_images/' ~ app.user.profileImage) }}" alt="Photo de profil" class="profile-image h-48 w-48 object-cover">
+            {% else %}
+              <img src="https://placehold.co/200x200/png" alt="Default picture" class="profile-image h-48 w-48 object-cover">
             {% endif %}
           </div>
-          <div class="flex justify-end mt-auto pt-4">
-              {% if is_granted('ROLE_OWNER') %}
-            <a class="blue-button " href="{{ path('app_user_profile_claim_payment_maybe')}}">Payment Claim</a>
+          <h2 class="mt-2 text-xl font-semibold text-center">{{ app.user.name }} {{ app.user.lastName }}</h2>
+          
+          {% if app.user.startSub is not null %}
+            <div class="mt-4 w-full bg-skyTheme-lightCyan p-3 rounded-lg text-center">
+              <span class="text-sm font-medium text-oceanTheme-deepBlue">Premium Subscriber</span>
+              <div class="mt-1 text-xs text-gray-600">
+                <div>From: {{ startSub|date('Y-m-d') }}</div>
+                <div>To: {{ startSub|date('Y-m-d') }}</div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+        
+        {# information #}
+        <div class="md:w-2/3 flex flex-col overflow-hidden">
+          <h1 class="text-2xl font-bold text-oceanTheme-navyBlue">Account Information</h1>
+          <hr class="my-4">
+          
+          {# BORROWER INFORMATION #}
+          {% if is_granted('ROLE_BORROWER') %}
+            <div class="mb-6">
+              <div class="flex items-center mb-3">
+                <h2 class="text-xl font-semibold text-oceanTheme-deepBlue">Your Rentals</h2>
+                <span class="ml-2 px-2 py-1 bg-skyTheme-lightCyan text-xs font-medium rounded-full">{{ app.user.rentings|length }}</span>
+              </div>
+              
+              {% if app.user.rentings is empty %}
+                <div class="p-4 bg-gray-50 rounded-md text-gray-500 text-center">
+                  No rental history yet. Start exploring available cars!
+                </div>
+              {% else %}
+                <div class="space-y-3 overflow-y-auto max-h-80 pr-2">
+                  {% for renting in app.user.rentings %}
+                    <div class="bg-white border border-skyTheme-lightCyan rounded-lg shadow-sm overflow-hidden">
+                      <div class="flex items-center p-3 bg-skyTheme-lightCyan">
+                        <div class="flex-1">
+                          <span class="font-semibold text-oceanTheme-deepBlue">{{ renting.offer.car.brand }} {{ renting.offer.car.model }}</span>
+                        </div>
+                        <div class="text-right">
+                          <span class="font-bold text-oceanTheme-deepBlue">{{ renting.totalAmount }}€</span>
+                        </div>
+                      </div>
+                      
+                      <div class="p-3 grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                          <span class="text-gray-600">From:</span>
+                          <span class="font-medium">{{ renting.startDate|date('d M Y') }}</span>
+                        </div>
+                        <div>
+                          <span class="text-gray-600">To:</span>
+                          <span class="font-medium">{{ renting.endDate|date('d M Y') }}</span>
+                        </div>
+                        <div class="col-span-2">
+                          <span class="text-gray-600">Location:</span>
+                          <span class="font-medium">{{ renting.deliveryLocation}}</span>
+                        </div>
+                      </div>
+                      
+                      <div class="flex border-t border-gray-100 divide-x divide-gray-100">
+                        <a href="{{ path('app_dispute', {renting_id: renting.id}) }}" 
+                          class="flex-1 p-2 text-center text-sm font-medium text-oceanTheme-deepBlue hover:bg-skyTheme-lightCyan transition-colors duration-150">
+                          <i class="fas fa-exclamation-triangle mr-1"></i> Report Issue
+                        </a>
+                        
+                        {% if renting.done == 0 %}
+                          <a href="{{ path('offer_rent_rate', {id: renting.id}) }}" 
+                             class="flex-1 p-2 text-center text-sm font-medium text-oceanTheme-deepBlue hover:bg-skyTheme-lightCyan transition-colors duration-150">
+                            <i class="fas fa-star mr-1"></i> Complete & Rate
+                          </a>
+                        {% else %}
+                          <div class="flex-1 p-2 text-center text-sm font-medium text-green-500">
+                            <i class="fas fa-check-circle mr-1"></i> Completed
+                          </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+              <hr class="my-4">
+            </div>
+          {% endif %}
+          
+          {# OWNER INFORMATION #}
+          {% if is_granted('ROLE_OWNER') %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              {# Cars owned by the owner #}
+              <div>
+                <div class="flex items-center mb-3">
+                  <h2 class="text-xl font-semibold text-oceanTheme-deepBlue">Your Cars</h2>
+                  <span class="ml-2 px-2 py-1 bg-skyTheme-lightCyan text-xs font-medium rounded-full">{{ app.user.cars|length }}</span>
+                  <a href="{{ path('offer_new') }}" class="ml-auto text-xs font-medium text-oceanTheme-deepBlue hover:underline">
+                    <i class="fas fa-plus-circle"></i> Add Car
+                  </a>
+                </div>
+                
+                {% if app.user.cars is empty %}
+                  <div class="p-4 bg-gray-50 rounded-md text-gray-500 text-center">
+                    No cars registered yet. Add your first car!
+                  </div>
+                {% else %}
+                  <div class="space-y-2 overflow-y-auto max-h-40 pr-2">
+                    {% for car in app.user.cars %}
+                      <div class="flex items-center p-2 bg-skyTheme-cream rounded-lg">
+                        {% if car.imageFilename %}
+                          <img src="{{ asset('uploads/cars/' ~ car.imageFilename) }}" alt="{{ car.brand }} {{ car.model }}" class="w-10 h-10 rounded-full flex items-center justify-center mr-3">
+                        {% else %}
+                          <img src="{{ asset('static/img/car-pana.png') }}" alt="Photo de profil par dÃ©faut" class="w-10 h-10 rounded-full flex items-center justify-center mr-3">
+                        {% endif %}
+                        <div>
+                          <div class="font-medium">{{ car.brand }} {{ car.model }}</div>
+                          <div class="text-xs text-gray-600">Reg: {{ car.registration }}</div>
+                        </div>
+                        <a href="{{ path('offer_edit', {'id': car.id}) }}" class="ml-auto text-oceanTheme-deepBlue">
+                          <i class="fas fa-edit"></i>
+                        </a>
+                      </div>
+                    {% endfor %}
+                  </div>
                 {% endif %}
-            <a class="blue-button" href="{{ path('app_edit_user_profile') }}">Modify informations</a>
+              </div>
+              
+              {# Offers made by the owner #}
+              <div>
+                <div class="flex items-center mb-3">
+                  <h2 class="text-xl font-semibold text-oceanTheme-deepBlue">Your Offers</h2>
+                  <span class="ml-2 px-2 py-1 bg-skyTheme-lightCyan text-xs font-medium rounded-full">{{ app.user.offers|length }}</span>
+                  <a href="{{ path('offer_new') }}" class="ml-auto text-xs font-medium text-oceanTheme-deepBlue hover:underline">
+                    <i class="fas fa-plus-circle"></i> Create Offer
+                  </a>
+                </div>
+                
+                {% if app.user.offers is empty %}
+                  <div class="p-4 bg-gray-50 rounded-md text-gray-500 text-center">
+                    No offers created yet. Start renting your cars!
+                  </div>
+                {% else %}
+                  <div class="space-y-2 overflow-y-auto max-h-40 pr-2">
+                    {% for offer in app.user.offers %}
+                      <div class="p-2 bg-skyTheme-lightCyan rounded-lg">
+                        <div class="flex justify-between">
+                          <div class="font-medium">{{ offer.car.brand }} {{ offer.car.model }}</div>
+                          <div class="font-bold text-oceanTheme-deepBlue">{{ offer.price }}€ /day</div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-600 mt-1">
+                          <div>{{ offer.startDate|date('d M') }} - {{ offer.endDate|date('d M Y') }}</div>
+                          <div>
+                            <a href="{{ path('offer_edit', {'id': offer.id}) }}" class="text-oceanTheme-deepBlue hover:underline">
+                              Edit
+                            </a> | 
+                            <a href="{{ path('offer_view', {'id': offer.id}) }}" class="text-oceanTheme-deepBlue hover:underline">
+                              View
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+          
+          <div class="flex justify-end mt-auto pt-4">
+            {% if is_granted('ROLE_OWNER') %}
+              <a class="mr-2 blue-button" href="{{ path('app_user_profile_claim_payment_maybe')}}">
+                <i class="fas fa-money-bill-wave mr-1"></i> Payment Claims
+              </a>
+            {% endif %}
+            <a class="blue-button" href="{{ path('app_edit_user_profile') }}">
+              <i class="fas fa-user-edit mr-1"></i> Edit Profile
+            </a>
           </div>
         </div>
       </div>

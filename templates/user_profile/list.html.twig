@@ -46,6 +46,8 @@
                 <td>
                   {% if offer.car.imageFilename %}
                     <img src="{{ asset('uploads/cars/' ~ offer.car.imageFilename) }}" alt="Car image" width="100">
+                  {% else %}
+                    <img src="{{ asset('static/img/car-pana.png') }}" alt="Photo de profil par dÃ©faut" width="100">
                   {% endif %}
                 </td>
               </tr>
