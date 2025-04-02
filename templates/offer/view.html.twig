@@ -15,12 +15,14 @@
         {% else %}
           <div class="flex gap-2">
             <a href="{{ path('offer_list') }}" class="transparent-button bg-skyTheme-lightCyan rounded-full">Back to List</a>
-            {% if offer.available == "available" %}
+            {% if offer.available == "available" and is_granted('ROLE_BORROWER') and app.user.validateUser.state == "Accepted" %}
               <a href="{{ path('offer_rent_date', {id: offer.id}) }}" class="transparent-button bg-skyTheme-skyBlue rounded-full">Rent this car</a>
             {% else %}
               <a href="#" class="transparent-button bg-skyTheme-lightCyan rounded-full cursor-not-allowed" disabled>Not Available</a>
             {% endif %}
-            <a href="{{ path('get_messages', {'userId': offer.userOwner.id}) }}" class="transparent-button bg-orange-300 rounded-full">Contact the owner</a>
+            {% if is_granted('ROLE_BORROWER') and app.user.validateUser.state == "Accepted" %}
+              <a href="{{ path('get_messages', {'userId': offer.userOwner.id}) }}" class="transparent-button bg-orange-300 rounded-full">Contact the owner</a>
+            {% endif %}
           </div>
         {% endif %}
       </div>

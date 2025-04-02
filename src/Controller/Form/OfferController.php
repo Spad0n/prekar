@@ -91,11 +91,12 @@ final class OfferController extends AbstractController
     #[Route('/offer/{id<\d+>}', name: "offer_view")]
     public function view(Offer $offer) {
         $user = $this->getUser();
-        $isActualUser = false;
-        if ($offer->getUserOwner()->getId() === $user->getId()) {
+        if (!$user) {
+            $isActualUser = false;
+        } else if ($offer->getUserOwner()->getId() === $user->getId()) {
             $isActualUser = true;
         }
-        return $this->render('offer/view.html.twig', ['offer' => $offer, 'actualUser' => $isActualUser]); //need to be changed when the offer page is ready
+        return $this->render('offer/view.html.twig', ['offer' => $offer, 'actualUser' => $isActualUser]);
     }
 
     #[Route('/offer/{id<\d+>}/edit', name: 'offer_edit')]
