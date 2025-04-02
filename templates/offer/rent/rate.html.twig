@@ -1,28 +1,116 @@
 {% extends 'base_form.html.twig' %}
 
+{% block title %}Rate Your Experience{% endblock %}
 
 {% block body %}
-    <section class="flex items-center justify-center h-screen">
-        <div  class="w-3/4 p-6 shadow-lg bg-skyTheme-lightCyan rounded-md">
-            <h1 class="text-3xl block text-center font-semibold text-oceanTheme-navyBlue">Create Dispute</h1>
-            <h2 class="text-xl block  font-semibold"> Rental's reminder </h2>
-            {{ renting.offer.car.brand }} {{ renting.offer.car.model }} <br>
-            From {{ renting.startDate|date('d/m/Y') }} to {{ renting.endDate|date('d/m/Y') }}<br>
-            Owner : {{ owner.name }} {{ owner.lastName }}<br>
-            Borrower : {{ borrower.name }} {{ borrower.lastName }}<br>
-            Price : {{ renting.offer.price }} €<br>
-            Location : {{ renting.offer.localisationGarage }}<br>
-
-            <h2 class="text-xl block  font-semibold" > How was your experience with this car ? ⚡ </h2>
-            <form method="post">
-                {{ form_start(form) }}
-                {{ form_widget(form) }}
-
-                <input type="submit" value="Rent's done !" class="blue-button mt-3" />
-                {{ form_end(form) }}
-            </form>
-
+    <section class="flex items-center justify-center min-h-screen py-12 bg-skyTheme-skyBlue">
+        <div class="w-11/12 md:w-3/4 p-6 shadow-lg bg-white rounded-md">
+            <h1 class="text-3xl font-bold text-oceanTheme-navyBlue mb-6 text-center">Rate Your Experience</h1>
+            
+            <!-- Rental Summary Card -->
+            <div class="bg-skyTheme-lightCyan p-4 rounded-lg mb-6">
+                <div class="flex items-center mb-2">
+                    <i class="fas fa-clipboard-list text-oceanTheme-deepBlue text-xl mr-2"></i>
+                    <h2 class="text-xl font-semibold text-oceanTheme-deepBlue">Rental Summary</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                    <!-- Car Information -->
+                    <div class="bg-white p-3 rounded-md shadow-sm flex">
+                      <div class="flex-shrink-0 w-20 h-20 mr-3 overflow-hidden rounded-md">
+                        {% if renting.offer.car.imageFilename %}
+                          <img src="{{ asset('uploads/cars/' ~ renting.offer.car.imageFilename) }}" 
+                               alt="{{ renting.offer.car.brand }} {{ renting.offer.car.model }}" 
+                               class="w-full h-full object-cover">
+                        {% else %}
+                          <img src="{{ asset('static/img/car-pana.png') }}" 
+                               alt="Default car image" 
+                               class="w-full h-full object-contain bg-oceanTheme-lightBlue p-1">
+                        {% endif %}
+                      </div>
+                      <div>
+                        <h3 class="font-semibold text-oceanTheme-deepBlue">{{ renting.offer.car.brand }} {{ renting.offer.car.model }}</h3>
+                        <div class="text-sm text-gray-600 mt-1">{{ renting.offer.localisationGarage }}</div>
+                        <div class="text-sm font-medium mt-1">{{ renting.offer.price }} € per day</div>
+                      </div>
+                    </div>
+                    
+                    <!-- Rental Details -->
+                    <div class="bg-white p-3 rounded-md shadow-sm">
+                        <h3 class="font-semibold text-oceanTheme-deepBlue mb-2">Rental Period</h3>
+                        <div class="flex items-center text-sm mb-2">
+                            <i class="fas fa-calendar-check text-oceanTheme-deepBlue mr-2"></i>
+                            <span>{{ renting.startDate|date('d/m/Y') }} - {{ renting.endDate|date('d/m/Y') }}</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div>
+                                <span class="text-gray-600">Owner:</span>
+                                <div class="font-medium">{{ owner.name }} {{ owner.lastName }}</div>
+                            </div>
+                            <div>
+                                <span class="text-gray-600">Borrower:</span>
+                                <div class="font-medium">{{ borrower.name }} {{ borrower.lastName }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Review Form Section -->
+            <div class="bg-sunsetTheme-paleYellow p-4 rounded-lg">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-star text-yellow-500 text-xl mr-2"></i>
+                    <h2 class="text-xl font-semibold text-oceanTheme-deepBlue">How was your experience with this car? ⚡</h2>
+                </div>
+                
+                <div class="bg-white p-4 rounded-md">
+                    {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+                        
+                        {% for field in form %}
+                            <div class="form-group">
+                                {% if field.vars.label %}
+                                    <div class="font-medium text-oceanTheme-deepBlue mb-1">
+                                        {{ form_label(field) }}
+                                    </div>
+                                {% endif %}
+                                
+                                {% if field.vars.block_prefixes[1] == 'rating' %}
+                                    <div class="flex items-center space-x-1">
+                                        {{ form_widget(field, {'attr': {'class': 'rating-stars'}}) }}
+                                    </div>
+                                {% elseif field.vars.block_prefixes[1] == 'textarea' %}
+                                    {{ form_widget(field, {'attr': {
+                                        'class': 'input-field w-full min-h-[100px]',
+                                        'placeholder': 'Tell us about your experience with this car...'
+                                    }}) }}
+                                {% else %}
+                                    {{ form_widget(field, {'attr': {'class': 'input-field w-full'}}) }}
+                                {% endif %}
+                                
+                                <div class="text-red-500 text-sm mt-1">
+                                    {{ form_errors(field) }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mt-6">
+                            <div class="text-sm text-gray-600">
+                                <i class="fas fa-info-circle mr-1"></i> Your feedback helps improve the service for everyone
+                            </div>
+                            <button type="submit" class="blue-button">
+                                <i class="fas fa-check-circle mr-2"></i>Rent's done!
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+            
+            <!-- Thank You Note -->
+            <div class="mt-6 text-center text-sm text-gray-600">
+                <p>Thank you for using our car rental service. We hope you enjoyed your experience!</p>
+                <p class="mt-1">Need help? <a href="#" class="text-oceanTheme-deepBlue underline">Contact our support team</a></p>
+            </div>
         </div>
     </section>
-
 {% endblock %}
