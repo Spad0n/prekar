@@ -386,4 +386,25 @@ public function toggleBanUser(User $user, EntityManagerInterface $entityManager)
     
     return $this->redirectToRoute('users_dashboard');
 }
+
+#[Route('/admin/offers', name: 'admin_offers')]
+    public function manageOffers(EntityManagerInterface $entityManager, Request $request): Response
+    {
+        $offers = $entityManager->getRepository(Offer::class)->findAll();
+        if ($request->isMethod('POST')) {
+            $offerId = $request->request->get('offer_id');
+            $offer = $entityManager->getRepository(Offer::class)->find($offerId);
+            if ($offer) {
+                $entityManager->remove($offer);
+                $entityManager->flush();
+                $this->addFlash('success', 'Offer deleted successfully.');
+            } else {
+                $this->addFlash('error', 'Offer not found.');
+            }
+            return $this->redirectToRoute('admin_offers');
+        }
+        return $this->render('admin/offers.html.twig', [
+            'offers' => $offers,
+        ]);
+    }
 }

@@ -1,0 +1,55 @@
+{% extends 'base_form.html.twig' %}
+
+{% block title %}Admin - Manage Offers{% endblock %}
+
+{% block body %}
+<section class="flex items-center justify-center min-h-screen py-12 bg-skyTheme-skyBlue">
+    <div class="w-3/4 p-6 shadow-lg bg-white rounded-md">
+        <h1 class="text-4xl font-bold text-oceanTheme-navyBlue text-center mb-8">Manage Offers</h1>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} mb-4">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="overflow-x-auto">
+            <table class="table-auto w-full border-collapse border border-skyTheme-lightCyan">
+                <thead class="bg-skyTheme-lightCyan">
+                    <tr>
+                        <th class="border border-skyTheme-lightCyan px-4 py-2 text-left">ID</th>
+                        <th class="border border-skyTheme-lightCyan px-4 py-2 text-left">Car</th>
+                        <th class="border border-skyTheme-lightCyan px-4 py-2 text-left">Owner</th>
+                        <th class="border border-skyTheme-lightCyan px-4 py-2 text-left">Start Date</th>
+                        <th class="border border-skyTheme-lightCyan px-4 py-2 text-left">End Date</th>
+                        <th class="border border-skyTheme-lightCyan px-4 py-2 text-left">Price</th>
+                        <th class="border border-skyTheme-lightCyan px-4 py-2 text-left">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for offer in offers %}
+                        <tr class="hover:bg-skyTheme-cream">
+                            <td class="border border-skyTheme-lightCyan px-4 py-2">{{ offer.id }}</td>
+                            <td class="border border-skyTheme-lightCyan px-4 py-2">{{ offer.car.brand }} {{ offer.car.model }}</td>
+                            <td class="border border-skyTheme-lightCyan px-4 py-2">{{ offer.userOwner.email }}</td>
+                            <td class="border border-skyTheme-lightCyan px-4 py-2">{{ offer.startDate|date('Y-m-d') }}</td>
+                            <td class="border border-skyTheme-lightCyan px-4 py-2">{{ offer.endDate|date('Y-m-d') }}</td>
+                            <td class="border border-skyTheme-lightCyan px-4 py-2">{{ offer.price }} €</td>
+                            <td class="border border-skyTheme-lightCyan px-4 py-2">
+                                <form action="{{ path('admin_offers') }}" method="post" class="inline-block">
+                                    <input type="hidden" name="offer_id" value="{{ offer.id }}">
+                                    <button type="submit" class="red-button">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center text-gray-500 py-4">No offers found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}
