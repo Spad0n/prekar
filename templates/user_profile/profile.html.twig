@@ -32,15 +32,31 @@
         <div class="md:w-2/3 flex flex-col overflow-hidden">
           <h1 class="text-2xl font-bold text-oceanTheme-navyBlue">Account Information</h1>
           <hr class="my-4">
-          
+          {# Display flash messages #}
+           {% for label, messages in app.flashes %}
+             {% for message in messages %}
+               <div class="alert alert-{{ label }}">{{ message }}</div>
+             {% endfor %}
+           {% endfor %}
           {# BORROWER INFORMATION #}
-          {% if is_granted('ROLE_BORROWER') %}
-            <div class="mb-6">
-              <div class="flex items-center mb-3">
-                <h2 class="text-xl font-semibold text-oceanTheme-deepBlue">Your Rentals</h2>
-                <span class="ml-2 px-2 py-1 bg-skyTheme-lightCyan text-xs font-medium rounded-full">{{ app.user.rentings|length }}</span>
-              </div>
-              
+          <div class="flex flex-col overflow-auto">
+            {% if is_granted('ROLE_BORROWER') %}
+              <div class="text-2xl">Borrower</div>
+              {% if app.user.subscriptions|length > 0 %}
+                 {% for subscription in app.user.subscriptions %}
+                   <div>Your last subscription start date: {{ subscription.startDate|date('Y-m-d') }}</div>
+                   <div>Your last subscription end date: {{ subscription.endDate|date('Y-m-d') }}</div>
+                   <form action="{{ path('subscription_cancel', {'id': subscription.id}) }}" method="post" style="display:inline;">
+                     <button type="submit" class="btn btn-danger">Cancel Subscription</button>
+                   </form>
+                   <br>
+                 {% endfor %}
+              {% else %}
+                <div>No subscription</div>
+                <a href="{{ path('subscription_new') }}" class="btn btn-primary">Create Subscription</a>
+              {% endif %}
+              <br>
+              {# Renting made by the borrower #}
               {% if app.user.rentings is empty %}
                 <div class="p-4 bg-gray-50 rounded-md text-gray-500 text-center">
                   No rental history yet. Start exploring available cars!

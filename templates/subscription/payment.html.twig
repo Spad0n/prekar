@@ -1,0 +1,25 @@
+{% extends 'base_form.html.twig' %}
+
+{% block title %}Subscription Payment{% endblock %}
+
+{% block body %}
+    <section class="flex items-center justify-center min-h-screen pt-32 pb-8 bg-skyTheme-skyBlue">
+        <div class="w-3/4 p-6 shadow-lg bg-white rounded-md overflow-hidden">
+            <div class="bg-skyTheme-lightCyan rounded-lg p-4 mt-auto md:w-3/5">
+                <form action="{{ path('subscription_confirm_payment') }}" method="post">
+                    <input type="hidden" name="startDate" value="{{ startDate }}">
+                    <input type="hidden" name="endDate" value="{{ endDate }}">
+                    <input type="hidden" name="cost" value="{{ cost }}">
+                    <input type="hidden" name="returnUrl" value="{{ returnUrl }}">
+                    <h2 class="text-3xl font-bold text-oceanTheme-deepBlue">Total amount: {{ cost }}€</h2>
+                    <input type="number" name="creditCardNumber" placeholder="Enter your credit card number" min="1000000000000000" max="9999999999999999" class="rounded-lg p-2 border border-gray-300" required>
+                    <input type="text" name="creditCardName" placeholder="Enter the name on the card" pattern="[A-Za-z\s]+" class="rounded-lg p-2 border border-gray-300" required>
+                    <input type="month" name="creditCardExpiration" placeholder="Enter the expiration date" class="rounded-lg p-2 border border-gray-300" required>
+                    <input type="number" name="creditCardCVC" min="100" max="999" placeholder="Enter the CVC" class="rounded-lg p-2 border border-gray-300" required>
+                    <br>
+                    <button type="submit" class="blue-button">Confirm Payment</button>
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock %}
