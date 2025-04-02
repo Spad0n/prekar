@@ -187,10 +187,17 @@ final class OfferController extends AbstractController
 
         // Check for active subscription
         $user = $this->getUser();
-        $subscription = $entityManager->getRepository(Subscription::class)->findOneBy(['user' => $user]);
+        $subscription = $entityManager->getRepository(Subscription::class)->findBy(['user' => $user]);
 
         $currentDate = new \DateTime();
-        if (!$subscription || $subscription->getEndDate() < $currentDate || $subscription->getStartDate() > $currentDate) {
+
+        $hasSubscription = false;
+        foreach($subscription as $sub) {
+            if ($sub->getEndDate() > $currentDate && $sub->getStartDate() < $currentDate) {
+                $hasSubscription = true;
+            }
+        }
+        if (!$subscription || !$hasSubscription) {
             $this->addFlash('error', 'You need an active subscription to rent a car.');
             return $this->redirectToRoute('subscription_new', [
                 'returnUrl' => $this->generateUrl('offer_rent_date', ['id' => $id]),
@@ -290,12 +297,21 @@ final class OfferController extends AbstractController
 
         // Check for active subscription
         $user = $this->getUser();
-        $subscription = $entityManager->getRepository(Subscription::class)->findOneBy(['user' => $user]);
+        $subscription = $entityManager->getRepository(Subscription::class)->findBy(['user' => $user]);
 
         $currentDate = new \DateTime();
-        if (!$subscription || $subscription->getEndDate() < $currentDate || $subscription->getStartDate() > $currentDate) {
+
+        $hasSubscription = false;
+        foreach($subscription as $sub) {
+            if ($sub->getEndDate() > $currentDate && $sub->getStartDate() < $currentDate) {
+                $hasSubscription = true;
+            }
+        }
+        if (!$subscription || !$hasSubscription) {
             $this->addFlash('error', 'You need an active subscription to rent a car.');
-            return $this->redirectToRoute('subscription_new');
+            return $this->redirectToRoute('subscription_new', [
+                'returnUrl' => $this->generateUrl('offer_rent_date', ['id' => $id]),
+            ]);
         }
 
         if($offer->getAvailable() == "not_available") {

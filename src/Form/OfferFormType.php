@@ -28,7 +28,7 @@ class OfferFormType extends AbstractType
                 ->add('endDate', DateType::class, [
                     'widget' => 'single_text',
                     'required' => false,
-                    'label' => 'End Date (Optional)',
+                    'label' => 'End Date',
                 ])
                 ->add('localisationGarage', TextType::class, [
                     'required' => false,
@@ -96,11 +96,12 @@ class OfferFormType extends AbstractType
                 ->add('startDate', DateType::class, [
                     'widget' => 'single_text',
                     'label' => 'Start Date',
+                    'required' => true,
                 ])
                 ->add('endDate', DateType::class, [
                     'widget' => 'single_text',
-                    'required' => false,
-                    'label' => 'End Date (Optional)',
+                    'required' => true,
+                    'label' => 'End Date',
                 ])
                 ->add('localisationGarage', TextType::class, [
                     'required' => false,
