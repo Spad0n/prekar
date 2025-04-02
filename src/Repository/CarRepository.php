@@ -22,6 +22,9 @@ class CarRepository extends ServiceEntityRepository
             fn($c) => $c['brand'],
             $this->createQueryBuilder('c')
                 ->select('DISTINCT c.brand')
+                ->innerJoin('c.offers', 'o')
+                ->andWhere('o.available = :available')
+                ->setParameter('available', 'available')
                 ->getQuery()
                 ->getResult()
         );
@@ -33,6 +36,9 @@ class CarRepository extends ServiceEntityRepository
             fn($c) => $c['model'],
             $this->createQueryBuilder('c')
                 ->select('DISTINCT c.model')
+                ->innerJoin('c.offers', 'o')
+                ->andWhere('o.available = :available')
+                ->setParameter('available', 'available')
                 ->getQuery()
                 ->getResult()
         );
@@ -44,6 +50,9 @@ class CarRepository extends ServiceEntityRepository
             fn($c) => $c['fuelType'],
             $this->createQueryBuilder('c')
                 ->select('DISTINCT c.fuelType')
+                ->innerJoin('c.offers', 'o')
+                ->andWhere('o.available = :available')
+                ->setParameter('available', 'available')
                 ->getQuery()
                 ->getResult()
         );
@@ -55,6 +64,9 @@ class CarRepository extends ServiceEntityRepository
             fn($c) => $c['nbSeat'],
             $this->createQueryBuilder('c')
                 ->select('DISTINCT c.nbSeat')
+                ->innerJoin('c.offers', 'o')
+                ->andWhere('o.available = :available')
+                ->setParameter('available', 'available')
                 ->getQuery()
                 ->getResult()
         );
@@ -66,6 +78,9 @@ class CarRepository extends ServiceEntityRepository
             fn($c) => $c['bootCapacity'],
             $this->createQueryBuilder('c')
                 ->select('DISTINCT c.bootCapacity')
+                ->innerJoin('c.offers', 'o')
+                ->andWhere('o.available = :available')
+                ->setParameter('available', 'available')
                 ->getQuery()
                 ->getResult()
         );

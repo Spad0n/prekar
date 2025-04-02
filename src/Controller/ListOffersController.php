@@ -25,6 +25,20 @@ final class ListOffersController extends AbstractController
     
         // Fetch available filter options
         $locations = $offerRepo->getDistinctLocations();
+
+        // Transform each location to keep only the last word
+        $locations = array_map(function ($location) {
+            $parts = explode(',', $location);
+            return trim(end($parts)); // Get the last word and trim any extra spaces
+        }, $locations);
+
+        // Remove duplicates and sort
+        $locations = array_unique($locations);
+        sort($locations);
+
+        // Re-index array
+        $locations = array_values($locations);
+        
         $brands = $carRepo->getDistinctCarBrands();
         $fuelTypes = $carRepo->getDistinctCarFuelTypes();
         $seats = $carRepo->getDistinctCarSeats();
