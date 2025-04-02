@@ -3,6 +3,7 @@
 namespace App\Controller\Form;
 
 use App\Entity\Dispute;
+use App\Entity\Message;
 use App\Entity\Renting;
 use App\Entity\Report;
 use App\Form\DisputeType;
@@ -59,6 +60,23 @@ final class DisputeController extends AbstractController
             $dispute->addReport($report);
             $dispute->setRenting($renting);
             $dispute->setStatus("Waiting for a jurist...");
+
+            //Send a message to the owner and the borrower
+            $sender = $borrower;
+            $text =("Hello, by this message I inform you that a dispute has been opened for the renting of the item ".$renting->getOffer()->getCar()->getBrand()." rented from ".$renting->getStartDate()->format('Y-m-d')." to ".$renting->getEndDate()->format('Y-m-d').". The dispute is currently waiting for a jurist to be assigned. We will keep you informed of the progress of the dispute. Thank you for your understanding.");
+            $receiver = $owner;
+
+            if (!$receiver) {
+                throw $this->createNotFoundException('Receiver not found.');
+            }
+
+            $message = new Message();
+            $message->setSender($sender);
+            $message->setReceiver($receiver);
+            $message->setText($text);
+            $message->setDateMessage(new \DateTime());
+            $message->setTimeMessage(new \DateTime());
+            $entityManager->persist($message);
             $entityManager->persist($report);
             $entityManager->persist($dispute);
             $entityManager->flush();
