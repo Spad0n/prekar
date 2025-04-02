@@ -6,10 +6,7 @@
       <a href="/" class="text-2xl font-semibold text-black pr-6">Prekar</a>
 
       <!-- Navigation Links -->
-      {% if is_granted('ROLE_BORROWER') and app.user.validateUser.state == "Accepted" %}
-
       <a href="{{ path('offer_list') }}" class="transparent-button">Find Rentals</a>
-      {% endif %}
       {% if is_granted('ROLE_OWNER') %}
         <a href="{{ path('offer_new') }}" class="transparent-button">Create an offer</a>
         <a href="{{ path('user_offer_list') }}" class="transparent-button">List your offers</a>
