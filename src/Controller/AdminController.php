@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Admin;
+use App\Entity\Message;
 use App\Entity\Payment;
 use App\Entity\Service;
 use App\Entity\User;
@@ -12,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Offer;
 
 class AdminController extends AbstractController
 {
@@ -273,6 +275,28 @@ class AdminController extends AbstractController
         $user->setAdmin($admin);
         $user->setValidationDate(new \DateTime());
         $entityManager->flush();
+
+        //Send a message to the user
+
+        $sender = $this->getUser();
+        $receiverId = $id;
+        $text = "Hello, your driver's license has been accepted! You can now use our services. :)";
+
+        $receiver = $user->getUser();
+
+        if (!$receiver) {
+            throw $this->createNotFoundException('Receiver not found.');
+        }
+
+        $message = new Message();
+        $message->setSender($sender);
+        $message->setReceiver($receiver);
+        $message->setText($text);
+        $message->setDateMessage(new \DateTime());
+        $message->setTimeMessage(new \DateTime());
+
+        $entityManager->persist($message);
+        $entityManager->flush();
     }
 
     public function denyDriverLicence($entityManager, $id): void
@@ -283,6 +307,28 @@ class AdminController extends AbstractController
         $user->setAdmin($admin);
         //$user->setValidationDate(new \DateTime());
         $entityManager->flush();
+        //Send a message to the user
+
+        $sender = $this->getUser();
+        $receiverId = $id;
+        $text = "Hello, your driver's license has been denied. Please contact an administrator.";
+
+        $receiver = $user->getUser();
+
+        if (!$receiver) {
+            throw $this->createNotFoundException('Receiver not found.');
+        }
+
+        $message = new Message();
+        $message->setSender($sender);
+        $message->setReceiver($receiver);
+        $message->setText($text);
+        $message->setDateMessage(new \DateTime());
+        $message->setTimeMessage(new \DateTime());
+
+        $entityManager->persist($message);
+        $entityManager->flush();
+
     }
 
     #[Route('/admin/user/profil/{id}', name: 'admin_user_profilpage', methods: ['POST', 'GET'])]
@@ -302,10 +348,42 @@ class AdminController extends AbstractController
         ]);
     }
 
+/**
+ * @Route("/admin/user/{id}/toggle-ban", name="admin_toggle_ban_user")
+ */
+#[Route('/admin/user/{id}/toggle-ban', name: 'admin_toggle_ban_user')]
+public function toggleBanUser(User $user, EntityManagerInterface $entityManager): Response
+{
+    $user->setIsBanned(!$user->isBanned());
+    
+    if ($user->isBanned()) {
+        $offers = $user->getOffers();
+        
+        foreach ($offers as $offer) {
+            $offer->setAvailable("not_available");
+            $entityManager->persist($offer);
+        }
+        
+        $cars = $user->getCars();
+        
+        foreach ($cars as $car) {
+            if (method_exists($car, 'setAvailable')) {
+                $car->setAvailable(false);
+                $entityManager->persist($car);
+            }
+        }
+    }
 
-
-
-
-
-
+    $entityManager->persist($user);
+    $entityManager->flush();
+    
+    $this->addFlash(
+        'success',
+        $user->isBanned() 
+            ? sprintf('User %s has been successfully banned.', $user->getEmail())
+            : sprintf('User %s has been successfully unbanned', $user->getEmail())
+    );
+    
+    return $this->redirectToRoute('users_dashboard');
+}
 }
